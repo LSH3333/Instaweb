@@ -1,12 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Page List</title>
 </head>
 <body>
 
-    <a href="/pages/new">글쓰기</a>
+    <p>
+        <a href="/pages/new">글쓰기</a>
+    </p>
+
+    <!-- 글 목록 -->
+    <div>
+        <table>
+            <tr th:each="page : ${pages}">
+                <td th:text="${page.id}"></td>
+                <td th:text="${page.title}"></td>
+            </tr>
+        </table>
+    </div>
 
 </body>
 </html>

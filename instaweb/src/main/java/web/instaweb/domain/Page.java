@@ -23,6 +23,8 @@ public class Page {
     // 작성일
     private LocalDateTime createdDate;
 
+    protected Page() {
+    }
 
     public Page(String title, String content, LocalDateTime createdDate) {
         this.title = title;
