@@ -67,4 +67,12 @@ public class PageController {
         return "pages/pageView";
     }
 
+    /**
+     * 글 수정
+     */
+    @PostMapping("/pages/{id}/view")
+    public String updatePage() {
+
+        return null;
+    }
 }
