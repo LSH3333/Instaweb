@@ -5,6 +5,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import web.instaweb.domain.Page;
 import web.instaweb.service.PageService;
@@ -55,6 +57,14 @@ public class PageController {
         return "/pages/pageList";
     }
 
-
+    /**
+     * 글 보기
+     */
+    @GetMapping("/pages/{id}/view")
+    public String viewPage(@PathVariable("id") Long pageId, Model model) {
+        Page page = pageService.findOne(pageId);
+        model.addAttribute("page", page);
+        return "pages/pageView";
+    }
 
 }

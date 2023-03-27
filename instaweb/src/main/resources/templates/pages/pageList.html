@@ -14,8 +14,7 @@
     <div>
         <table>
             <tr th:each="page : ${pages}">
-                <td th:text="${page.id}"></td>
-                <td th:text="${page.title}"></td>
+                <td><a th:text="${page.title}" href="#" th:href="@{/pages/{id}/view (id=${page.id})}">글 확인</a></td>
             </tr>
         </table>
     </div>
