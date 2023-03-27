@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<body>
+    <div>
+        <form th:action="@{/pages/new}" th:object="${form}" method="post">
+            <!-- title -->
+            <div>
+                <label th:for="title">제목</label>
+                <input type="text" th:field="*{title}" placeholder="제목을 입력하세요">
+            </div>
+
+            <!-- content -->
+            <div>
+                <label th:for="content">내용</label>
+                <input type="text" th:field="*{content}" placeholder="내용을 입력하세요">
+            </div>
+
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+
+
+</body>
+
+</html>

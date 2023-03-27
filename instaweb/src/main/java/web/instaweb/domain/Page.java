@@ -20,17 +20,13 @@ public class Page {
     // 내용
     private String content;
 
-    // 작성자
-    private String writer;
-
     // 작성일
     private LocalDateTime createdDate;
 
 
-    public Page(String title, String content, String writer, LocalDateTime createdDate) {
+    public Page(String title, String content, LocalDateTime createdDate) {
         this.title = title;
         this.content = content;
-        this.writer = writer;
         this.createdDate = createdDate;
     }
 

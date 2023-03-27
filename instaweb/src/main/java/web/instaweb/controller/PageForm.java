@@ -1,11 +1,12 @@
 package web.instaweb.controller;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 
-@Getter
+@Getter @Setter
 public class PageForm {
     private Long id;
 
@@ -16,9 +17,6 @@ public class PageForm {
     // 내용
     private String content;
 
-    // 작성자
-    @NotEmpty(message = "작성자는 필수입니다")
-    private String writer;
 
 
 }

@@ -10,6 +10,8 @@ import web.instaweb.domain.Page;
 import web.instaweb.service.PageService;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -22,11 +24,12 @@ public class PageController {
      */
     @GetMapping("/pages/new")
     public String createForm(Model model) {
-        model.addAttribute("pageForm", new PageForm());
+        model.addAttribute("form", new PageForm());
         return "pages/createPageForm";
     }
 
     /**
+     * 글 작성
      * 페이지폼에서 작성 후 작성 버튼
      */
     @PostMapping("/pages/new")
@@ -36,11 +39,22 @@ public class PageController {
             return "pages/createPageForm";
         }
 
-
-
+        Page page = new Page(form.getTitle(), form.getContent(), LocalDateTime.now());
+        pageService.savePage(page);
 
         return "redirect:/";
     }
+
+    /**
+     * 글 목록
+     */
+    @GetMapping("/pages")
+    public String list(Model model) {
+        List<Page> pages = pageService.findAll();
+        model.addAttribute("pages", pages);
+        return "/pages/pageList";
+    }
+
 
 
 }
