@@ -26,7 +26,15 @@ public class Page {
     protected Page() {
     }
 
-    public Page(String title, String content, LocalDateTime createdDate) {
+    public Page(Long id, String title, String content, LocalDateTime createdDate) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.createdDate = createdDate;
+    }
+
+    public void changeAll(Long id, String title, String content, LocalDateTime createdDate) {
+        this.id = id;
         this.title = title;
         this.content = content;
         this.createdDate = createdDate;

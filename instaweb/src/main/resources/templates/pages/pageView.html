@@ -12,6 +12,8 @@
     <p th:text="${page.title}"></p>
     <p th:text="${page.content}"></p>
 
+    <!-- 글 수정 폼으로 이동  -->
+    <a href="#" th:href="@{/pages/{id}/view (id=${page.id})}"></a>
 
 </body>
 </html>

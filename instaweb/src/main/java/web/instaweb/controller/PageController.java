@@ -41,7 +41,7 @@ public class PageController {
             return "pages/createPageForm";
         }
 
-        Page page = new Page(form.getTitle(), form.getContent(), LocalDateTime.now());
+        Page page = new Page(null, form.getTitle(), form.getContent(), LocalDateTime.now());
         pageService.savePage(page);
 
         return "redirect:/";
@@ -68,10 +68,32 @@ public class PageController {
     }
 
     /**
+     * 글 수정 폼
+     * 새로운 폼을 만들어서 "updatePageForm" 에 전달
+     */
+    @GetMapping("/pages/{id}/view")
+    public String updatePageForm(@PathVariable("id") Long id, Model model) {
+        Page page = pageService.findOne(id);
+
+        PageForm form = new PageForm();
+        form.setId(page.getId());
+        form.setTitle(page.getTitle());
+        form.setContent(page.getContent());
+        form.setCreatedTime(page.getCreatedDate());
+
+        model.addAttribute("form", form);
+        return "updatePageForm";
+    }
+
+    /**
      * 글 수정
+     * 전달받은 폼을 기반으로 새로운 Page 객체를 만들고 db 에 저장한다
+     * 이 과정에서 변경 감지 후 update 된다
      */
     @PostMapping("/pages/{id}/view")
-    public String updatePage() {
+    public String updatePage(@PathVariable("id") Long id, @ModelAttribute("form") PageForm form) {
+
+        pageService.updatePage(id, form.getTitle(), form.getContent(), form.getCreatedTime());
 
         return null;
     }
