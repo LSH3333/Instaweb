@@ -6,6 +6,22 @@
 </head>
 <body>
 
+    <div>
+        <form th:object="${form}" method="post">
+            <!-- 제목 -->
+            <div>
+                <label th:for="title">제목</label>
+                <input type="text" th:field="*{title}" placeholder="제목을 입력하세요" />
+            </div>
+            <!-- 내용 -->
+            <div>
+                <label th:for="content">제목</label>
+                <input type="text" th:field="*{content}" placeholder="내용을 입력하세요" />
+            </div>
+
+            <button type="submit">수정</button>
+        </form>
+    </div>
 
 </body>
 </html>

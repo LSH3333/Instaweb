@@ -71,7 +71,7 @@ public class PageController {
      * 글 수정 폼
      * 새로운 폼을 만들어서 "updatePageForm" 에 전달
      */
-    @GetMapping("/pages/{id}/view")
+    @GetMapping("/pages/{id}/edit")
     public String updatePageForm(@PathVariable("id") Long id, Model model) {
         Page page = pageService.findOne(id);
 
@@ -82,7 +82,7 @@ public class PageController {
         form.setCreatedTime(page.getCreatedDate());
 
         model.addAttribute("form", form);
-        return "updatePageForm";
+        return "pages/updatePageForm";
     }
 
     /**
@@ -90,11 +90,11 @@ public class PageController {
      * 전달받은 폼을 기반으로 새로운 Page 객체를 만들고 db 에 저장한다
      * 이 과정에서 변경 감지 후 update 된다
      */
-    @PostMapping("/pages/{id}/view")
+    @PostMapping("/pages/{id}/edit")
     public String updatePage(@PathVariable("id") Long id, @ModelAttribute("form") PageForm form) {
 
         pageService.updatePage(id, form.getTitle(), form.getContent(), form.getCreatedTime());
 
-        return null;
+        return "redirect:/pages";
     }
 }
