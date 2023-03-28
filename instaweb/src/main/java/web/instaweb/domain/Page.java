@@ -40,4 +40,8 @@ public class Page {
         this.createdDate = createdDate;
     }
 
+    public void delete() {
+
+    }
+
 }

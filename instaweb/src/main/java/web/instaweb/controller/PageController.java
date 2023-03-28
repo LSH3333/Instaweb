@@ -97,4 +97,13 @@ public class PageController {
 
         return "redirect:/pages";
     }
+
+    /**
+     * 글 삭제
+     */
+    @GetMapping("/pages/{id}/delete")
+    public String deletePage(@PathVariable("id") Long id) {
+        pageService.deletePage(id);
+        return "redirect:/pages";
+    }
 }

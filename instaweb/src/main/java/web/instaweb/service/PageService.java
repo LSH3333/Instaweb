@@ -30,6 +30,12 @@ public class PageService {
         // @Transactional 에 의해 commit 됨 -> flush (변경 감지)
     }
 
+    // 제거
+    @Transactional
+    public void deletePage(Long id) {
+        pageRepository.deletePage(id);
+    }
+
     public Page findOne(Long pageId) {
         return pageRepository.findOne(pageId);
     }

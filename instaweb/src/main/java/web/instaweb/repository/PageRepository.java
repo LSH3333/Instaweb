@@ -24,4 +24,9 @@ public class PageRepository {
     public List<Page> findAll() {
         return em.createQuery("select p from Page p", Page.class).getResultList();
     }
+
+    public void deletePage(Long id) {
+        Page page = em.find(Page.class, id);
+        em.remove(page);
+    }
 }
