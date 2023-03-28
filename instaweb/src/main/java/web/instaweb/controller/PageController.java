@@ -79,7 +79,9 @@ public class PageController {
         form.setId(page.getId());
         form.setTitle(page.getTitle());
         form.setContent(page.getContent());
-        form.setCreatedTime(page.getCreatedDate());
+        form.setCreatedTime(page.getCreatedTime());
+
+        System.out.println("PageController.updatePageForm : " + page.getCreatedTime());
 
         model.addAttribute("form", form);
         return "pages/updatePageForm";
@@ -92,6 +94,9 @@ public class PageController {
      */
     @PostMapping("/pages/{id}/edit")
     public String updatePage(@PathVariable("id") Long id, @ModelAttribute("form") PageForm form) {
+
+        // 여기서 form.getCreatedTime() = null
+        System.out.println("PageController.updatePage : " + form.getCreatedTime());
 
         pageService.updatePage(id, form.getTitle(), form.getContent(), form.getCreatedTime());
 

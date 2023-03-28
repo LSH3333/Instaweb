@@ -21,23 +21,23 @@ public class Page {
     private String content;
 
     // 작성일
-    private LocalDateTime createdDate;
+    private LocalDateTime createdTime;
 
     protected Page() {
     }
 
-    public Page(Long id, String title, String content, LocalDateTime createdDate) {
+    public Page(Long id, String title, String content, LocalDateTime createdTime) {
         this.id = id;
         this.title = title;
         this.content = content;
-        this.createdDate = createdDate;
+        this.createdTime = createdTime;
     }
 
-    public void changeAll(Long id, String title, String content, LocalDateTime createdDate) {
+    public void changeAll(Long id, String title, String content, LocalDateTime createdTime) {
         this.id = id;
         this.title = title;
         this.content = content;
-        this.createdDate = createdDate;
+        this.createdTime = createdTime;
     }
 
     public void delete() {
