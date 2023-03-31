@@ -5,6 +5,8 @@ spring:
     password:
     driver-class-name: org.h2.Driver
 
+  file.dir: D:/Works/devTools/uploaded/
+
   jpa:
     hibernate:
       ddl-auto: create
