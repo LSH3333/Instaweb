@@ -4,6 +4,7 @@ import lombok.Getter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table
@@ -22,6 +23,12 @@ public class Page {
 
     // 작성일
     private LocalDateTime createdTime;
+
+    // 업로드한 이미지들
+    private List<UploadFile> imageFiles;
+
+    // 업로드한 파일
+    private UploadFile attachFile;
 
     protected Page() {
     }

@@ -17,6 +17,8 @@ public class PageForm {
     // 내용
     private String content;
 
+    // 이미지
+
     // 시간
     private LocalDateTime createdTime;
 }
