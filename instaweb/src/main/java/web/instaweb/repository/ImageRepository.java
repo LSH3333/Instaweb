@@ -3,8 +3,10 @@ package web.instaweb.repository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import web.instaweb.domain.Image;
+import web.instaweb.domain.Page;
 
 import javax.persistence.EntityManager;
+import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
@@ -20,5 +22,8 @@ public class ImageRepository {
         return em.find(Image.class, id);
     }
 
+    public List<Image> findAll() {
+        return em.createQuery("select i from Image i", Image.class).getResultList();
+    }
 
 }

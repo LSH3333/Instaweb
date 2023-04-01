@@ -14,10 +14,10 @@ public class Image {
     private Long id;
 
     @Lob
-    private Byte[] image;
+    private byte[] image;
 
 
-    public void setImage(Byte[] image) {
+    public void setImage(byte[] image) {
         this.image = image;
     }
 }

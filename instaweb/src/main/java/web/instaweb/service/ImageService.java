@@ -6,9 +6,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import web.instaweb.domain.Image;
+import web.instaweb.domain.Page;
 import web.instaweb.repository.ImageRepository;
 
 import java.io.IOException;
+import java.util.List;
 
 @Service
 @Transactional(readOnly = false)
@@ -25,7 +27,7 @@ public class ImageService {
 //            Image image = imageRepository.findOne(id);
             Image image = new Image();
 
-            Byte[] byteObject = new Byte[file.getBytes().length];
+            byte[] byteObject = new byte[file.getBytes().length];
 
             int i = 0;
 
@@ -43,5 +45,11 @@ public class ImageService {
         }
     }
 
+    public Image findOne(Long id) {
+        return imageRepository.findOne(id);
+    }
 
+    public List<Image> findAll() {
+        return imageRepository.findAll();
+    }
 }

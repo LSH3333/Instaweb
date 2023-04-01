@@ -10,5 +10,16 @@
         <a href="/images/new">이미지 업로드</a>
     </p>
 
+    <!-- 이미지 목록 -->
+    <div>
+        <table>
+            <tr th:each="image : ${images}">
+                <td><a href="#" th:href="@{/images/{id}/download (id=${image.id})}">이미지</a></td>
+            </tr>
+        </table>
+    </div>
+
+
+
 </body>
 </html>
