@@ -4,5 +4,5 @@ import lombok.Data;
 
 @Data
 public class ImageForm {
-    private Byte[] image;
+    private byte[] image;
 }

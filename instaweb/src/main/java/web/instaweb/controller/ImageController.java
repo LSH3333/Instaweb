@@ -57,6 +57,8 @@ public class ImageController {
 
     /**
      * 이미지 출력 (다운로드)
+     *
+     * byte 타입으로 저장된 이미지 가져와서 인코딩 후 모델에 추가
      */
     @GetMapping("/images/{id}/download")
     public ModelAndView downloadImage(@PathVariable Long id, ModelAndView mav) {
