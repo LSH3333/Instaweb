@@ -4,14 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import web.instaweb.domain.Page;
+import web.instaweb.service.ImageService;
 import web.instaweb.service.PageService;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,6 +20,7 @@ import java.util.List;
 public class PageController {
 
     private final PageService pageService;
+    private final ImageService imageService;
 
     /**
      * 글 작성 폼
@@ -35,13 +36,17 @@ public class PageController {
      * 페이지폼에서 작성 후 작성 버튼
      */
     @PostMapping("/pages/new")
-    public String create(@Valid PageForm form, BindingResult result) {
+    public String create(@Valid PageForm form, BindingResult result, @RequestParam("images") MultipartFile file) throws IOException {
         // 오류 발생 시 글 작성 폼으로 되돌아감
         if (result.hasErrors()) {
             return "pages/createPageForm";
         }
 
-        Page page = new Page(null, form.getTitle(), form.getContent(), LocalDateTime.now());
+        // id 는 jpa 가 생성하도록함
+        Page page = new Page(null, form.getTitle(), form.getContent(), LocalDateTime.now(), form.getImages());
+
+        // to-do : 현재 Page 객체에서 이미지 객체 생성하는데, 여기서 이미지 객체 생성하고 레포지토리에 넣는 방식으로 수정 필요 
+        imageService.saveImages();
         pageService.savePage(page);
 
         return "redirect:/";
@@ -66,6 +71,21 @@ public class PageController {
         model.addAttribute("page", page);
         return "pages/pageView";
     }
+
+    //    /**
+//     * 이미지 출력 (다운로드)
+//     *
+//     * byte 타입으로 저장된 이미지 가져와서 인코딩 후 모델에 추가
+//     */
+//    @GetMapping("/images/{id}/download")
+//    public ModelAndView downloadImage(@PathVariable Long id, ModelAndView mav) {
+//        Image image = imageService.findOne(id);
+//        byte[] bytes = image.getImage();
+//
+//        mav.addObject("img", Base64.getEncoder().encodeToString(bytes));
+//        mav.setViewName("images/imageView");
+//        return mav;
+//    }
 
     /**
      * 글 수정 폼

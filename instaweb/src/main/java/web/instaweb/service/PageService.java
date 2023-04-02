@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import web.instaweb.domain.Page;
+import web.instaweb.repository.ImageRepository;
 import web.instaweb.repository.PageRepository;
 
 import java.time.LocalDateTime;

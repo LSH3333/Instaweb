@@ -1,9 +1,12 @@
 package web.instaweb.domain;
 
 import lombok.Getter;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,15 +27,23 @@ public class Page {
     // 작성일
     private LocalDateTime createdTime;
 
+    // 이미지
+    @OneToMany(mappedBy = "page")
+    private List<Image> images = new ArrayList<>();
+
 
     protected Page() {
     }
 
-    public Page(Long id, String title, String content, LocalDateTime createdTime) {
+    public Page(Long id, String title, String content, LocalDateTime createdTime, List<MultipartFile> files) throws IOException {
         this.id = id;
         this.title = title;
         this.content = content;
         this.createdTime = createdTime;
+
+        for(MultipartFile file : files) {
+            addImage(file);
+        }
     }
 
     public void changeAll(Long id, String title, String content, LocalDateTime createdTime) {
@@ -41,6 +52,12 @@ public class Page {
         this.content = content;
         this.createdTime = createdTime;
     }
+
+    private void addImage(MultipartFile file) throws IOException {
+        Image image = new Image(file, this);
+        images.add(image);
+    }
+
 
     public void delete() {
 

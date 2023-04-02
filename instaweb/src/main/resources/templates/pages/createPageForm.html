@@ -7,7 +7,7 @@
 
 <body>
     <div>
-        <form th:action="@{/pages/new}" th:object="${form}" method="post">
+        <form th:action="@{/pages/new}" th:object="${form}" method="post" enctype="multipart/form-data">
             <!-- title -->
             <div>
                 <label th:for="title">제목</label>
@@ -20,8 +20,22 @@
                 <input type="text" th:field="*{content}" placeholder="내용을 입력하세요">
             </div>
 
+            <!-- images upload    -->
+            <div>
+                <label th:for="images">이미지 파일들</label>
+                <input id="images" name="images" type="file" multiple="multiple" class="file">
+            </div>
+
             <button type="submit">Submit</button>
         </form>
+
+        <!-- image upload    -->
+<!--        <form  action="http:\\localhost" method="post" enctype="multipart/form-data" th:action>-->
+<!--            select file-->
+<!--            <input id="images" name="images" type="file" multiple="multiple" class="file">-->
+<!--            <button type="submit" class="btn btn-primary">Submit</button>-->
+<!--        </form>-->
+
     </div>
 
 

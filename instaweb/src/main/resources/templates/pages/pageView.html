@@ -17,5 +17,11 @@
     <!-- 글 삭제 -->
     <a href="#" th:href="@{/pages/{id}/delete (id=${page.id})}">삭제</a>
 
+    <!-- 모델에 담겨있는 "img" 불러옴   -->
+    <tr th:each="image : ${page.images}">
+        <td><img th:src="${'data:image/jpeg;charset=utf-8;base64,' + image}" alt=""></td>
+    </tr>
+
+
 </body>
 </html>
