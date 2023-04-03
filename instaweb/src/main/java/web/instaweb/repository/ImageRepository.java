@@ -26,4 +26,8 @@ public class ImageRepository {
         return em.createQuery("select i from Image i", Image.class).getResultList();
     }
 
+    public void deleteImage(Long id) {
+        Image image = em.find(Image.class, id);
+        if(image != null) em.remove(image);
+    }
 }

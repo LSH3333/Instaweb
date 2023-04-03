@@ -118,7 +118,6 @@ public class PageController {
         form.setContent(page.getContent());
         form.setCreatedTime(page.getCreatedTime());
 
-        System.out.println("PageController.updatePageForm : " + page.getCreatedTime());
 
         model.addAttribute("form", form);
         return "pages/updatePageForm";

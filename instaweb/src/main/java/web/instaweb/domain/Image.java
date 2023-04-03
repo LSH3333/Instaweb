@@ -59,4 +59,5 @@ public class Image {
         return Base64.encodeBase64String(this.getImage());
     }
 
+
 }
