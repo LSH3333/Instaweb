@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import web.instaweb.domain.Image;
 import web.instaweb.domain.Page;
 import web.instaweb.service.ImageService;
 import web.instaweb.service.PageService;
@@ -13,6 +14,7 @@ import web.instaweb.service.PageService;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -36,18 +38,33 @@ public class PageController {
      * 페이지폼에서 작성 후 작성 버튼
      */
     @PostMapping("/pages/new")
-    public String create(@Valid PageForm form, BindingResult result, @RequestParam("images") MultipartFile file) throws IOException {
+    public String create(@Valid PageForm form, BindingResult result) throws IOException {
         // 오류 발생 시 글 작성 폼으로 되돌아감
         if (result.hasErrors()) {
             return "pages/createPageForm";
         }
 
-        // id 는 jpa 가 생성하도록함
-        Page page = new Page(null, form.getTitle(), form.getContent(), LocalDateTime.now(), form.getImages());
+        // 이미지 객체들 먼저 만들고
+        List<MultipartFile> files = form.getImages();
+        List<Image> images = new ArrayList<>();
+        for (MultipartFile file : files) {
+            Image image = new Image(file);
+            images.add(image);
+        }
 
-        // to-do : 현재 Page 객체에서 이미지 객체 생성하는데, 여기서 이미지 객체 생성하고 레포지토리에 넣는 방식으로 수정 필요 
-        imageService.saveImages();
+        // 페이지 객체 만들고
+        // id 는 jpa 가 생성하도록함
+        Page page = new Page(form.getTitle(), form.getContent(), LocalDateTime.now());
+        // 페이지 객체 먼저 영속성 객체로 만든 후 이미지 객체와 연결 (그렇지 않으면 이미지 객체가 페이지 객체의 pk 값 모르는 문제 발생)
         pageService.savePage(page);
+
+        // 페이지와 이미지들 연결 후 레포지토리에 저장
+        for (Image image : images) {
+            image.setPage(page);
+            page.addImage(image);
+            imageService.saveImage(image);
+        }
+
 
         return "redirect:/";
     }

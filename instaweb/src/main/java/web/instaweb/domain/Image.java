@@ -15,6 +15,7 @@ public class Image {
     @Column(name = "image_id")
     private Long id;
 
+    // Image 기준 Page 와 N:1 관계
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "page_id")
     private Page page;
@@ -22,12 +23,17 @@ public class Image {
     @Lob
     private byte[] image;
 
+    protected Image() {}
+
     public void setImage(byte[] image) {
         this.image = image;
     }
 
-    public Image(MultipartFile file, Page page) throws IOException {
+    public Image(MultipartFile file) throws IOException {
         saveImage(file);
+    }
+
+    public void setPage(Page page) {
         this.page = page;
     }
 

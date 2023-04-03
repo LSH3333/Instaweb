@@ -35,15 +35,10 @@ public class Page {
     protected Page() {
     }
 
-    public Page(Long id, String title, String content, LocalDateTime createdTime, List<MultipartFile> files) throws IOException {
-        this.id = id;
+    public Page(String title, String content, LocalDateTime createdTime)  {
         this.title = title;
         this.content = content;
         this.createdTime = createdTime;
-
-        for(MultipartFile file : files) {
-            addImage(file);
-        }
     }
 
     public void changeAll(Long id, String title, String content, LocalDateTime createdTime) {
@@ -53,8 +48,7 @@ public class Page {
         this.createdTime = createdTime;
     }
 
-    private void addImage(MultipartFile file) throws IOException {
-        Image image = new Image(file, this);
+    public void addImage(Image image) {
         images.add(image);
     }
 
