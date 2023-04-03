@@ -12,15 +12,23 @@
     <p th:text="${page.title}"></p>
     <p th:text="${page.content}"></p>
 
-    <!-- 글 수정 폼으로 이동  -->
-    <a href="#" th:href="@{/pages/{id}/edit (id=${page.id})}">수정</a>
-    <!-- 글 삭제 -->
-    <a href="#" th:href="@{/pages/{id}/delete (id=${page.id})}">삭제</a>
-
     <!-- 모델에 담겨있는 "img" 불러옴   -->
     <tr th:each="image : ${page.images}">
-        <td><img th:src="${'data:image/jpeg;charset=utf-8;base64,' + image}" alt=""></td>
+        <td>
+           <p th:text="${image.id}"></p>
+            <img th:src="${'data:image/jpeg;charset=utf-8;base64,' + image.generateBase64Image()}" alt="">
+        </td>
     </tr>
+
+
+    <div>
+        <!-- 글 수정 폼으로 이동  -->
+        <a href="#" th:href="@{/pages/{id}/edit (id=${page.id})}">수정</a>
+        <!-- 글 삭제 -->
+        <a href="#" th:href="@{/pages/{id}/delete (id=${page.id})}">삭제</a>
+    </div>
+
+
 
 
 </body>

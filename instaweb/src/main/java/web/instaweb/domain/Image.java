@@ -1,6 +1,7 @@
 package web.instaweb.domain;
 
 import lombok.Getter;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
@@ -50,6 +51,12 @@ public class Image {
         }
 
         this.image = byteObject;
+    }
+
+    // byte 배열을 base64 string 형으로 변환해 리턴
+    // 이 형식으로 뷰에서 display 가능
+    public String generateBase64Image() {
+        return Base64.encodeBase64String(this.getImage());
     }
 
 }
