@@ -107,10 +107,15 @@ public class PageController {
     /**
      * 글 수정 폼
      * 새로운 폼을 만들어서 "updatePageForm" 에 전달
+     *
+     * todo : ajax 이용해 이미지 변경->디스플레이 기능 구현 필요
      */
     @GetMapping("/pages/{id}/edit")
     public String updatePageForm(@PathVariable("id") Long id, Model model) {
         Page page = pageService.findOne(id);
+
+        // 1. 뷰에서는 저장된 이미지를 보여줘야함
+        // Page 에는 Image 형으로 저장되어있음, 폼은 MultiPartFile 형식 -> 폼에 Image 형으로도 저장할수 있도록 선언
 
         PageForm form = new PageForm();
         form.setId(page.getId());
@@ -119,10 +124,6 @@ public class PageController {
         form.setCreatedTime(page.getCreatedTime());
         // 수정을 위해서 PageForm 에는 Image 형으로도 저장 가능
         form.setByteImages(page.getImages());
-
-        // 1. 뷰에서는 저장된 이미지를 보여줘야함
-        // Page 에는 Image 형으로 저장되어있음, 폼은 MultiPartFile 형식 -> 폼에 Image 형으로도 저장할수 있도록 선언
-        // 2. 눌러서 수정할수 있어야함
 
         model.addAttribute("form", form);
         return "pages/updatePageForm";
@@ -135,6 +136,8 @@ public class PageController {
      */
     @PostMapping("/pages/{id}/edit")
     public String updatePage(@PathVariable("id") Long id, @ModelAttribute("form") PageForm form) {
+
+        // 2. 이미지 눌러서 수정할수 있어야함
 
         // 여기서 form.getCreatedTime() = null
         System.out.println("PageController.updatePage : " + form.getCreatedTime());
