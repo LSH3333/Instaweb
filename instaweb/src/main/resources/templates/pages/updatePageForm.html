@@ -18,9 +18,19 @@
             </div>
             <!-- 내용 -->
             <div>
-                <label th:for="content">제목</label>
+                <label th:for="content">내용</label>
                 <input type="text" th:field="*{content}" placeholder="내용을 입력하세요" />
             </div>
+            <!-- 이미지 -->
+            <div>
+                <tr th:each="image : *{byteImages}">
+                    <td>
+                        <p th:text="${image.id}"></p>
+                        <img th:src="${'data:image/jpeg;charset=utf-8;base64,' + image.generateBase64Image()}" alt="">
+                    </td>
+                </tr>
+            </div>
+
 
             <button type="submit">수정</button>
         </form>

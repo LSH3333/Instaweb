@@ -117,7 +117,12 @@ public class PageController {
         form.setTitle(page.getTitle());
         form.setContent(page.getContent());
         form.setCreatedTime(page.getCreatedTime());
+        // 수정을 위해서 PageForm 에는 Image 형으로도 저장 가능
+        form.setByteImages(page.getImages());
 
+        // 1. 뷰에서는 저장된 이미지를 보여줘야함
+        // Page 에는 Image 형으로 저장되어있음, 폼은 MultiPartFile 형식 -> 폼에 Image 형으로도 저장할수 있도록 선언
+        // 2. 눌러서 수정할수 있어야함
 
         model.addAttribute("form", form);
         return "pages/updatePageForm";

@@ -17,7 +17,6 @@
         <td>
            <p th:text="${image.id}"></p>
             <img th:src="${'data:image/jpeg;charset=utf-8;base64,' + image.generateBase64Image()}" alt="">
-<!--            <a th:href="@{/pages/{imageId}/delete (id=${image.id})}">이미지 삭제</a>-->
         </td>
     </tr>
 
