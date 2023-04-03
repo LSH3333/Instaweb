@@ -31,4 +31,9 @@ public class ImageService {
     public List<Image> findAll() {
         return imageRepository.findAll();
     }
+
+    @Transactional
+    public void deleteImage(Long id) {
+        imageRepository.deleteImage(id);
+    }
 }
