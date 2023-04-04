@@ -28,7 +28,8 @@ public class Page {
     private LocalDateTime createdTime;
 
     // 이미지
-    @OneToMany(mappedBy = "page")
+    // Image 는 Page 없이 존재할수 없다
+    @OneToMany(mappedBy = "page", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Image> images = new ArrayList<>();
 
 

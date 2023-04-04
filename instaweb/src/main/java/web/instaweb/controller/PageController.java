@@ -160,9 +160,9 @@ public class PageController {
      * 이미지 삭제
      * todo : 수정 폼에서 삭제 될수 있도록 변경 필요 
      */
-    @GetMapping("/pages/{imageId}/delete")
-    public String deleteImage(@PathVariable("imageId") Long imageId) {
-        imageService.deleteImage(imageId);
-        return "";
-    }
+//    @GetMapping("/pages/{imageId}/delete")
+//    public String deleteImage(@PathVariable("imageId") Long imageId) {
+//        imageService.deleteImage(imageId);
+//        return "";
+//    }
 }
