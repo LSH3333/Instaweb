@@ -1,23 +1,64 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>Page List</title>
 </head>
+
 <body>
 
-    <p>
-        <a href="/pages/new">글쓰기</a>
-    </p>
+<p>
+    <a href="/pages/new">글쓰기</a>
+</p>
 
-    <!-- 글 목록 -->
-    <div>
-        <table>
-            <tr th:each="page : ${pages}">
-                <td><a th:text="${page.title}" href="#" th:href="@{/pages/{id}/view (id=${page.id})}">글 확인</a></td>
-            </tr>
-        </table>
-    </div>
+<!-- 글 목록 -->
+<div style="width:300px; height:200px; overflow-y:auto" id="listDiv">
+    <table>
+        <tr th:each="page : ${pages}">
+            <td><a th:text="${page.title}" href="#" th:href="@{/pages/{id}/view (id=${page.id})}">글 확인</a></td>
+        </tr>
 
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+
+    </table>
+</div>
+
+
+<script type="text/javascript">
+        var listDiv = document.getElementById('listDiv');
+        listDiv.addEventListener("scroll", PageScroll);
+
+        function PageScroll() {
+            var scrollTop = listDiv.scrollTop;
+            var scrollHeight = listDiv.scrollHeight;
+
+            var diff = scrollHeight - scrollTop;
+            var height = listDiv.clientHeight;
+            var offPageHeight = 5;
+            if (diff < height + offPageHeight) {
+                console.log("call ajax to refresh");
+                document.location.reload(true);
+            }
+
+            console.log("scroll: " + scrollTop + " " + scrollHeight)
+        }
+    </script>
 </body>
+
 </html>
