@@ -33,7 +33,7 @@ public class Page {
     private List<Image> images = new ArrayList<>();
 
 
-    protected Page() {
+    public Page() {
     }
 
     public Page(String title, String content, LocalDateTime createdTime)  {

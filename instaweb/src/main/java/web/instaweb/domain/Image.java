@@ -24,7 +24,7 @@ public class Image {
     @Lob
     private byte[] image;
 
-    protected Image() {}
+    public Image() {}
 
     public void setImage(byte[] image) {
         this.image = image;
