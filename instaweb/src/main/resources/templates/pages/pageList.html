@@ -29,9 +29,6 @@
                                         '<h2>' + '<a href="pages/' + data.pages[i].id + '/view">' + data.pages[i].title + '</a>' + '</h2>' +
                                         '<p>' + data.pages[i].content + '</p>';
 
-
-<!--                                        <a th:text="제목" href="/pages/아이디/view">글확인</a>                                        -->
-
                         contentContainer.appendChild(div);
                     }
 
@@ -45,7 +42,7 @@
         window.addEventListener('scroll', function() {
             if(window.innerHeight + window.scrollY + 5 >= document.body.offsetHeight) {
                 console.log("scrollEvent");
-                xhr.open('GET', '/pages/ajaxReq', true);
+                xhr.open('GET', '/pages/ajaxReq2', true);
                 xhr.send();
             }
         })
@@ -56,6 +53,22 @@
 <p>
     <a href="/pages/new">글쓰기</a>
 </p>
+
+<div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore, ut.</div>
+<div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore, ut.</div>
+<div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore, ut.</div>
+<div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore, ut.</div>
+<div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore, ut.</div>
+<div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore, ut.</div>
+<div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore, ut.</div>
+<div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore, ut.</div>
+<div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore, ut.</div>
+<div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore, ut.</div>
+<div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore, ut.</div>
+<div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore, ut.</div>
+<div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore, ut.</div>
+<div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore, ut.</div>
+<div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore, ut.</div>
 
 
 <div id="contentContainer">

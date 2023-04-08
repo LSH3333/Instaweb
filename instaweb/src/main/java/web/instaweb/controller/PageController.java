@@ -116,6 +116,40 @@ public class PageController {
         return ret;
     }
 
+    @ResponseBody
+    @GetMapping("/pages/ajaxReq2")
+    public Map<String, ?> loadPagesAndImages2(int beginIdx, int cnt) {
+        Map<String, List<?>> ret = new HashMap<>();
+
+        // page
+        List<Page> pages = pageService.findRange(beginIdx, cnt);
+        List<Object> pageListForms = new ArrayList<>();
+        for (Page page : pages) {
+            PageListForm pageListForm = new PageListForm();
+            pageListForm.setId(page.getId());
+            pageListForm.setTitle(page.getTitle());
+            pageListForm.setContent(page.getContent());
+            pageListForms.add(pageListForm);
+        }
+
+
+        // images
+        // 각 페이지의 첫번째 이미지(존재한다면)를 base64 로 인코딩 후 리스트에 저장
+        List<String> images = new ArrayList<>();
+        for (Page page : pages) {
+            List<Image> pageImages = page.getImages();
+            if (!pageImages.isEmpty()) {
+                String base64Image = pageImages.get(0).generateBase64Image();
+                images.add(base64Image);
+            }
+        }
+
+        ret.put("pages", pageListForms);
+        ret.put("images", images);
+
+        return ret;
+    }
+
     /**
      * 글 보기
      */
@@ -126,20 +160,6 @@ public class PageController {
         return "pages/pageView";
     }
 
-    //    /**
-//     * 이미지 출력 (다운로드)
-//     *
-//     * byte 타입으로 저장된 이미지 가져와서 인코딩 후 모델에 추가
-//     */
-//    @GetMapping("/images/{id}/download")
-//    public ModelAndView downloadImage(@PathVariable Long id, ModelAndView mav) {
-//        Image image = imageService.findOne(id);
-//        byte[] bytes = image.getImage();
-//
-//        mav.addObject("img", Base64.getEncoder().encodeToString(bytes));
-//        mav.setViewName("images/imageView");
-//        return mav;
-//    }
 
     /**
      * 글 수정 폼

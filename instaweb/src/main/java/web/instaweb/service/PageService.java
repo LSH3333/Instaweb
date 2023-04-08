@@ -46,5 +46,7 @@ public class PageService {
         return pageRepository.findAll();
     }
 
-
+    public List<Page> findRange(int beginIdx, int cnt) {
+        return pageRepository.findRange(beginIdx, cnt);
+    }
 }
