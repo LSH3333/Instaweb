@@ -7,6 +7,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class InstawebApplication {
 
 	public static void main(String[] args) {
+
+
+
 		SpringApplication.run(InstawebApplication.class, args);
 	}
 
