@@ -1,10 +1,4 @@
 
-
-
-
-
-
-
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -25,15 +19,18 @@
                 if(xhr.status == 200) {
                     var contentContainer = document.getElementById('contentContainer');
                     var data = JSON.parse(xhr.responseText);
-                    data.forEach(function(page) {
-                    console.log("page.title: " + page.title);
-                        var div = document.createElement('div');
-                        // 받은 데이터 기반으로 div 생성
-                        div.innerHTML = '<h2>' + page.title + '</h2>' +
-                                        '<p>' + page.content + '</p>';
+<!--                    console.log(data.pages); // Page-->
+<!--                    console.log(data.images); // base64 String 형으로 인코딩된 이미지-->
 
+                    <!-- response로 받은 page와 image들로 html 객체 만듦    -->
+                    for(let i = 0; i < data.pages.length; i++) {
+                        var div = document.createElement('div');
+                        div.innerHTML = '<img src="data:image/jpeg;charset=utf-8;base64,' + data.images[i] + '">' +
+                                        '<h2>' + data.pages[i].title + '</h2>' +
+                                        '<p>' + data.pages[i].content + '</p>';
                         contentContainer.appendChild(div);
-                    });
+                    }
+
                 } else {
                     console.error("error");
                 }
@@ -42,9 +39,6 @@
 
         // infinite scroll
         window.addEventListener('scroll', function() {
-<!--            console.log("window.innerHeight = " + window.innerHeight);-->
-<!--            console.log("window.scrollY = " + window.scrollY);-->
-<!--            console.log("document.body.offsetHeight = " + document.body.offsetHeight);-->
             if(window.innerHeight + window.scrollY + 5 >= document.body.offsetHeight) {
                 console.log("scrollEvent");
                 xhr.open('GET', '/pages/ajaxReq', true);
@@ -55,60 +49,60 @@
 </head>
 <body>
 
-    <p>
-        <a href="/pages/new">글쓰기</a>
-    </p>
+<p>
+    <a href="/pages/new">글쓰기</a>
+</p>
 
 
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
 
 
-    <div id="contentContainer">
-    </div>
+<div id="contentContainer">
+</div>
 
 
 </body>

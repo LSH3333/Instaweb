@@ -15,8 +15,7 @@ import web.instaweb.service.PageService;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -80,18 +79,41 @@ public class PageController {
         return "/pages/pageList";
     }
 
+    /**
+     * ajax
+     * request 받으면 모든 페이지와 base64 string 으로 인코딩된 이미지를 리턴한다
+     */
     @ResponseBody
     @GetMapping("/pages/ajaxReq")
-    public List<PageListForm> loadPages() {
+    public Map<String, ?> loadPagesAndImages() {
+        Map<String, List<?>> ret = new HashMap<>();
+
+        // page
         List<Page> pages = pageService.findAll();
-        List<PageListForm> pageListForms = new ArrayList<>();
+        List<Object> pageListForms = new ArrayList<>();
         for (Page page : pages) {
             PageListForm pageListForm = new PageListForm();
             pageListForm.setTitle(page.getTitle());
             pageListForm.setContent(page.getContent());
             pageListForms.add(pageListForm);
         }
-        return pageListForms;
+
+
+        // images
+        // 각 페이지의 첫번째 이미지(존재한다면)를 base64 로 인코딩 후 리스트에 저장
+        List<String> images = new ArrayList<>();
+        for (Page page : pages) {
+            List<Image> pageImages = page.getImages();
+            if (!pageImages.isEmpty()) {
+                String base64Image = pageImages.get(0).generateBase64Image();
+                images.add(base64Image);
+            }
+        }
+
+        ret.put("pages", pageListForms);
+        ret.put("images", images);
+
+        return ret;
     }
 
     /**
