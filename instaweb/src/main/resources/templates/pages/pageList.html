@@ -1,23 +1,64 @@
+
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-
 <head>
     <meta charset="UTF-8">
-    <title>Page List</title>
-</head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
 
+    <style>
+        html, body {margin:0;}
+    </style>
+
+    <script type="text/javascript">
+        // ajax request
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+            if(xhr.readyState == XMLHttpRequest.DONE) {
+                if(xhr.status == 200) {
+                    var contentContainer = document.getElementById('contentContainer');
+                    var data = JSON.parse(xhr.responseText);
+                    data.forEach(function(page) {
+                    console.log("page.title: " + page.title);
+                        var div = document.createElement('div');
+                        // 받은 데이터 기반으로 div 생성
+                        div.innerHTML = '<h2>' + page.title + '</h2>' +
+                                        '<p>' + page.content + '</p>';
+
+                        contentContainer.appendChild(div);
+                    });
+                } else {
+                    console.error("error");
+                }
+            }
+        }
+
+        // infinite scroll
+        window.addEventListener('scroll', function() {
+<!--            console.log("window.innerHeight = " + window.innerHeight);-->
+<!--            console.log("window.scrollY = " + window.scrollY);-->
+<!--            console.log("document.body.offsetHeight = " + document.body.offsetHeight);-->
+            if(window.innerHeight + window.scrollY + 5 >= document.body.offsetHeight) {
+                console.log("scrollEvent");
+                xhr.open('GET', '/pages/ajaxReq', true);
+                xhr.send();
+            }
+        })
+    </script>
+</head>
 <body>
 
-<p>
-    <a href="/pages/new">글쓰기</a>
-</p>
+    <p>
+        <a href="/pages/new">글쓰기</a>
+    </p>
 
-<!-- 글 목록 -->
-<div style="width:300px; height:200px; overflow-y:auto" id="listDiv">
-    <table>
-        <tr th:each="page : ${pages}">
-            <td><a th:text="${page.title}" href="#" th:href="@{/pages/{id}/view (id=${page.id})}">글 확인</a></td>
-        </tr>
 
         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
@@ -35,30 +76,95 @@
         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis, magnam.</p>
 
-    </table>
-</div>
 
-<!-- 스크롤 하단 도달시 리프레쉬 -->
-<script type="text/javascript">
-        var listDiv = document.getElementById('listDiv');
-        listDiv.addEventListener("scroll", PageScroll);
+    <div id="contentContainer">
+    </div>
 
-        function PageScroll() {
-            var scrollTop = listDiv.scrollTop;
-            var scrollHeight = listDiv.scrollHeight;
 
-            var diff = scrollHeight - scrollTop;
-            var height = listDiv.clientHeight;
-            var offPageHeight = 5;
-            if (diff < height + offPageHeight) {
-                console.log("call ajax to refresh");
-                document.location.reload(true);
-            }
-
-            console.log("scroll: " + scrollTop + " " + scrollHeight)
-        }
-    </script>
 </body>
-
 </html>
+
+
+
+
+
+<!----------------------------------------------------------------------------------------------->
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org">-->
+
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Page List</title>-->
+<!--</head>-->
+
+<!--<body>-->
+
+<!--<p>-->
+<!--    <a href="/pages/new">글쓰기</a>-->
+<!--</p>-->
+
+<!--&lt;!&ndash; 글 목록 &ndash;&gt;-->
+<!--<div style="width:300px; height:200px; overflow-y:auto" id="listDiv">-->
+<!--    <table>-->
+<!--        <tr th:each="page : ${pages}">-->
+<!--            <td><a th:text="${page.title}" href="#" th:href="@{/pages/{id}/view (id=${page.id})}">글 확인</a></td>-->
+<!--        </tr>-->
+
+
+<!--    </table>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; 스크롤 하단 도달시 리프레쉬 &ndash;&gt;-->
+<!--&lt;!&ndash;    <script type="text/javascript">&ndash;&gt;-->
+<!--&lt;!&ndash;        var listDiv = document.getElementById('listDiv');&ndash;&gt;-->
+<!--&lt;!&ndash;        listDiv.addEventListener("scroll", PageScroll);&ndash;&gt;-->
+
+<!--&lt;!&ndash;        function PageScroll() {&ndash;&gt;-->
+<!--&lt;!&ndash;            var scrollTop = listDiv.scrollTop;&ndash;&gt;-->
+<!--&lt;!&ndash;            var scrollHeight = listDiv.scrollHeight;&ndash;&gt;-->
+
+<!--&lt;!&ndash;            var diff = scrollHeight - scrollTop;&ndash;&gt;-->
+<!--&lt;!&ndash;            var height = listDiv.clientHeight;&ndash;&gt;-->
+<!--&lt;!&ndash;            var offPageHeight = 5;&ndash;&gt;-->
+<!--&lt;!&ndash;            if (diff < height + offPageHeight) {&ndash;&gt;-->
+<!--&lt;!&ndash;                console.log("call ajax to refresh");&ndash;&gt;-->
+<!--&lt;!&ndash;                document.location.reload(true);&ndash;&gt;-->
+<!--&lt;!&ndash;            }&ndash;&gt;-->
+
+<!--&lt;!&ndash;            console.log("scroll: " + scrollTop + " " + scrollHeight)&ndash;&gt;-->
+<!--&lt;!&ndash;        }&ndash;&gt;-->
+<!--&lt;!&ndash;    </script>&ndash;&gt;-->
+<!--</body>-->
+
+<!--</html>-->

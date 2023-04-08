@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import web.instaweb.domain.Image;
 import web.instaweb.domain.Page;
+import web.instaweb.domain.PageListForm;
 import web.instaweb.service.ImageService;
 import web.instaweb.service.PageService;
 
@@ -77,6 +78,20 @@ public class PageController {
         List<Page> pages = pageService.findAll();
         model.addAttribute("pages", pages);
         return "/pages/pageList";
+    }
+
+    @ResponseBody
+    @GetMapping("/pages/ajaxReq")
+    public List<PageListForm> loadPages() {
+        List<Page> pages = pageService.findAll();
+        List<PageListForm> pageListForms = new ArrayList<>();
+        for (Page page : pages) {
+            PageListForm pageListForm = new PageListForm();
+            pageListForm.setTitle(page.getTitle());
+            pageListForm.setContent(page.getContent());
+            pageListForms.add(pageListForm);
+        }
+        return pageListForms;
     }
 
     /**
