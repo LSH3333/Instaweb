@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import web.instaweb.domain.Image;
 import web.instaweb.domain.Page;
-import web.instaweb.domain.PageListForm;
 import web.instaweb.service.ImageService;
 import web.instaweb.service.PageService;
 
@@ -93,6 +92,7 @@ public class PageController {
         List<Object> pageListForms = new ArrayList<>();
         for (Page page : pages) {
             PageListForm pageListForm = new PageListForm();
+            pageListForm.setId(page.getId());
             pageListForm.setTitle(page.getTitle());
             pageListForm.setContent(page.getContent());
             pageListForms.add(pageListForm);

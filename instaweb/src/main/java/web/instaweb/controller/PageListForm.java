@@ -1,10 +1,13 @@
-package web.instaweb.domain;
+package web.instaweb.controller;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
 public class PageListForm {
+
+    private Long id;
+
     // 제목
     private String title;
 
