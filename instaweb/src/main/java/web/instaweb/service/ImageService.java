@@ -14,7 +14,6 @@ import java.util.List;
 @Service
 @Transactional(readOnly = false)
 @RequiredArgsConstructor
-@Slf4j
 public class ImageService {
 
     private final ImageRepository imageRepository;

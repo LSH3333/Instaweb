@@ -12,17 +12,18 @@
     </style>
 
     <script type="text/javascript">
+
         // ajax request
         var xhr = new XMLHttpRequest();
+		let beginIdx = 0, cnt = 10;
+
         xhr.onreadystatechange = function() {
             if(xhr.readyState == XMLHttpRequest.DONE) {
                 if(xhr.status == 200) {
                     var contentContainer = document.getElementById('contentContainer');
                     var data = JSON.parse(xhr.responseText);
-<!--                    console.log(data.pages); // Page-->
-<!--                    console.log(data.images); // base64 String 형으로 인코딩된 이미지-->
 
-                    <!-- response로 받은 page와 image들로 html 객체 만듦    -->
+                    // response로 받은 page와 image들로 html 객체 만듦
                     for(let i = 0; i < data.pages.length; i++) {
                         var div = document.createElement('div');
                         div.innerHTML = '<img src="data:image/jpeg;charset=utf-8;base64,' + data.images[i] + '">' +
@@ -41,11 +42,25 @@
         // infinite scroll
         window.addEventListener('scroll', function() {
             if(window.innerHeight + window.scrollY + 5 >= document.body.offsetHeight) {
-                console.log("scrollEvent");
-                xhr.open('GET', '/pages/ajaxReq2', true);
-                xhr.send();
+                // 이전 request 에 대한 게시글들 로딩 완료된 이후에만 또 다른 request 보냄
+				if(xhr.readyState == XMLHttpRequest.DONE) {
+					if(xhr.status == 200) {
+						xhr.open('GET', '/pages/ajaxReq2?beginIdx=' + beginIdx.toString() + '&cnt=' + cnt.toString(), true);
+						beginIdx += cnt;
+						xhr.send();
+					}
+				}
             }
         })
+
+        // 최초 페이지 로드 완료시 idx=0 부터 cnt=10 개 로드
+        window.onload = function() {
+			xhr.open('GET', '/pages/ajaxReq2?beginIdx=' + beginIdx.toString() + '&cnt=' + cnt.toString(), true);
+			beginIdx += cnt;
+            xhr.send();
+        };
+
+
     </script>
 </head>
 <body>
@@ -53,22 +68,6 @@
 <p>
     <a href="/pages/new">글쓰기</a>
 </p>
-
-<div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore, ut.</div>
-<div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore, ut.</div>
-<div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore, ut.</div>
-<div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore, ut.</div>
-<div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore, ut.</div>
-<div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore, ut.</div>
-<div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore, ut.</div>
-<div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore, ut.</div>
-<div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore, ut.</div>
-<div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore, ut.</div>
-<div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore, ut.</div>
-<div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore, ut.</div>
-<div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore, ut.</div>
-<div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore, ut.</div>
-<div>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore, ut.</div>
 
 
 <div id="contentContainer">
@@ -80,55 +79,3 @@
 
 
 
-
-
-<!----------------------------------------------------------------------------------------------->
-
-<!--<!DOCTYPE html>-->
-<!--<html lang="en" xmlns:th="http://www.thymeleaf.org">-->
-
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <title>Page List</title>-->
-<!--</head>-->
-
-<!--<body>-->
-
-<!--<p>-->
-<!--    <a href="/pages/new">글쓰기</a>-->
-<!--</p>-->
-
-<!--&lt;!&ndash; 글 목록 &ndash;&gt;-->
-<!--<div style="width:300px; height:200px; overflow-y:auto" id="listDiv">-->
-<!--    <table>-->
-<!--        <tr th:each="page : ${pages}">-->
-<!--            <td><a th:text="${page.title}" href="#" th:href="@{/pages/{id}/view (id=${page.id})}">글 확인</a></td>-->
-<!--        </tr>-->
-
-
-<!--    </table>-->
-<!--</div>-->
-
-<!--&lt;!&ndash; 스크롤 하단 도달시 리프레쉬 &ndash;&gt;-->
-<!--&lt;!&ndash;    <script type="text/javascript">&ndash;&gt;-->
-<!--&lt;!&ndash;        var listDiv = document.getElementById('listDiv');&ndash;&gt;-->
-<!--&lt;!&ndash;        listDiv.addEventListener("scroll", PageScroll);&ndash;&gt;-->
-
-<!--&lt;!&ndash;        function PageScroll() {&ndash;&gt;-->
-<!--&lt;!&ndash;            var scrollTop = listDiv.scrollTop;&ndash;&gt;-->
-<!--&lt;!&ndash;            var scrollHeight = listDiv.scrollHeight;&ndash;&gt;-->
-
-<!--&lt;!&ndash;            var diff = scrollHeight - scrollTop;&ndash;&gt;-->
-<!--&lt;!&ndash;            var height = listDiv.clientHeight;&ndash;&gt;-->
-<!--&lt;!&ndash;            var offPageHeight = 5;&ndash;&gt;-->
-<!--&lt;!&ndash;            if (diff < height + offPageHeight) {&ndash;&gt;-->
-<!--&lt;!&ndash;                console.log("call ajax to refresh");&ndash;&gt;-->
-<!--&lt;!&ndash;                document.location.reload(true);&ndash;&gt;-->
-<!--&lt;!&ndash;            }&ndash;&gt;-->
-
-<!--&lt;!&ndash;            console.log("scroll: " + scrollTop + " " + scrollHeight)&ndash;&gt;-->
-<!--&lt;!&ndash;        }&ndash;&gt;-->
-<!--&lt;!&ndash;    </script>&ndash;&gt;-->
-<!--</body>-->
-
-<!--</html>-->

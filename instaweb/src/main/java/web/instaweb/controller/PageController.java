@@ -116,10 +116,18 @@ public class PageController {
         return ret;
     }
 
+    /**
+     *
+     * @param beginIdx : 가져올 페이지 시작 인덱스
+     * @param cnt : beginIdx 부터 몇개 가져올지
+     * @return : beginIdx 부터 cnt 개의 페이지 레포지토리에서 리턴
+     */
     @ResponseBody
     @GetMapping("/pages/ajaxReq2")
-    public Map<String, ?> loadPagesAndImages2(int beginIdx, int cnt) {
+    public Map<String, ?> loadPagesAndImages2(@RequestParam int beginIdx, @RequestParam int cnt) {
         Map<String, List<?>> ret = new HashMap<>();
+
+        System.out.println("beginIdx :"  + beginIdx + ' ' + "cnt : " + cnt);
 
         // page
         List<Page> pages = pageService.findRange(beginIdx, cnt);
@@ -143,6 +151,9 @@ public class PageController {
                 images.add(base64Image);
             }
         }
+
+        System.out.println("pages.size : " + pages.size());
+        System.out.println("images.size : " + images.size());
 
         ret.put("pages", pageListForms);
         ret.put("images", images);
