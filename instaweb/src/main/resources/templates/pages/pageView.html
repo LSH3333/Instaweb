@@ -10,7 +10,7 @@
 <body>
 
     <p th:text="${page.title}"></p>
-    <p th:text="${page.content}"></p>
+    <textarea cols="50" rows="10" readonly th:text="${page.content}"></textarea>
 
     <!-- 모델에 담겨있는 "img" 불러옴   -->
     <tr th:each="image : ${page.images}">

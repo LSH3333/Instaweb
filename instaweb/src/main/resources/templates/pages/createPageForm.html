@@ -16,8 +16,10 @@
 
             <!-- content -->
             <div>
-                <label th:for="content">내용</label>
-                <input type="text" th:field="*{content}" placeholder="내용을 입력하세요">
+                <div style="display: flex; align-items: center;">
+                    <label th:for="content">내용</label>
+                    <textarea cols="50" rows="10" th:field="*{content}" placeholder="내용을 입력하세요"></textarea>
+                </div>
             </div>
 
             <!-- images upload    -->
@@ -29,12 +31,6 @@
             <button type="submit">Submit</button>
         </form>
 
-        <!-- image upload    -->
-<!--        <form  action="http:\\localhost" method="post" enctype="multipart/form-data" th:action>-->
-<!--            select file-->
-<!--            <input id="images" name="images" type="file" multiple="multiple" class="file">-->
-<!--            <button type="submit" class="btn btn-primary">Submit</button>-->
-<!--        </form>-->
 
     </div>
 
