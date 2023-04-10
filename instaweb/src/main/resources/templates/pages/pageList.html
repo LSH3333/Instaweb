@@ -21,6 +21,7 @@
             if(xhr.readyState == XMLHttpRequest.DONE) {
                 if(xhr.status == 200) {
                     var contentContainer = document.getElementById('contentContainer');
+                    // Map<String, List<>> 의 형태로 리턴받음
                     var data = JSON.parse(xhr.responseText);
 
                     // response로 받은 page와 image들로 html 객체 만듦

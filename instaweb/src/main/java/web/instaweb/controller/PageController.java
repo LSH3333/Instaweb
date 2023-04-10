@@ -92,8 +92,6 @@ public class PageController {
     public Map<String, ?> loadPagesAndImages(@RequestParam int beginIdx, @RequestParam int cnt) {
         Map<String, List<?>> ret = new HashMap<>();
 
-        System.out.println("beginIdx :"  + beginIdx + ' ' + "cnt : " + cnt);
-
         // page
         List<Page> pages = pageService.findRange(beginIdx, cnt);
         List<Object> pageListForms = new ArrayList<>();
@@ -116,9 +114,6 @@ public class PageController {
                 images.add(base64Image);
             }
         }
-
-        System.out.println("pages.size : " + pages.size());
-        System.out.println("images.size : " + images.size());
 
         ret.put("pages", pageListForms);
         ret.put("images", images);
