@@ -27,7 +27,7 @@
                 <tr th:each="image : *{byteImages}">
                     <td>
                         <p th:text="${image.id}"></p>
-                        <img th:src="${'data:image/jpeg;charset=utf-8;base64,' + image.generateBase64Image()}" alt="">
+                        <img th:id="|imgId${image.id}|" th:src="${'data:image/jpeg;charset=utf-8;base64,' + image.generateBase64Image()}" alt="">
                     </td>
                 </tr>
             </div>
