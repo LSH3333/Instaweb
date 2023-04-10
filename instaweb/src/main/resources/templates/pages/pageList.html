@@ -27,9 +27,17 @@
                     // response로 받은 page와 image들로 html 객체 만듦
                     for(let i = 0; i < data.pages.length; i++) {
                         var div = document.createElement('div');
-                        div.innerHTML = '<img src="data:image/jpeg;charset=utf-8;base64,' + data.images[i] + '">' +
-                                        '<h2>' + '<a href="pages/' + data.pages[i].id + '/view">' + data.pages[i].title + '</a>' + '</h2>' +
-                                        '<p>' + data.pages[i].content + '</p>';
+
+						var imgElement = document.createElement('img');
+						imgElement.src = 'data:image/jpeg;charset=utf-8;base64,' + data.images[i];
+						var h2Element = document.createElement('h2');
+						h2Element.innerHTML = '<a href="pages/' + data.pages[i].id + '/view">' + data.pages[i].title + '</a>'
+						var pElement = document.createElement('p');
+						pElement.innerHTML = data.pages[i].content;
+
+						div.appendChild(imgElement);
+						div.appendChild(h2Element);
+						div.appendChild(pElement);
 
                         contentContainer.appendChild(div);
                     }
@@ -60,7 +68,11 @@
 			beginIdx += cnt;
             xhr.send();
         };
-        
+
+
+        // img click event
+		var imgElement = document.getElementById()
+
     </script>
 </head>
 <body>
