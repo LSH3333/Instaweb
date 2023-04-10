@@ -78,53 +78,18 @@ public class PageController {
         return "/pages/pageList";
     }
 
-    /**
-     * ajax
-     * request 받으면 모든 페이지와 base64 string 으로 인코딩된 이미지를 리턴한다
-     */
-    @ResponseBody
-    @GetMapping("/pages/ajaxReq")
-    public Map<String, ?> loadPagesAndImages() {
-        Map<String, List<?>> ret = new HashMap<>();
-
-        // page
-        List<Page> pages = pageService.findAll();
-        List<Object> pageListForms = new ArrayList<>();
-        for (Page page : pages) {
-            PageListForm pageListForm = new PageListForm();
-            pageListForm.setId(page.getId());
-            pageListForm.setTitle(page.getTitle());
-            pageListForm.setContent(page.getContent());
-            pageListForms.add(pageListForm);
-        }
-
-
-        // images
-        // 각 페이지의 첫번째 이미지(존재한다면)를 base64 로 인코딩 후 리스트에 저장
-        List<String> images = new ArrayList<>();
-        for (Page page : pages) {
-            List<Image> pageImages = page.getImages();
-            if (!pageImages.isEmpty()) {
-                String base64Image = pageImages.get(0).generateBase64Image();
-                images.add(base64Image);
-            }
-        }
-
-        ret.put("pages", pageListForms);
-        ret.put("images", images);
-
-        return ret;
-    }
 
     /**
      *
+     * ajax
+     * request 받으면 모든 페이지와 base64 string 으로 인코딩된 이미지를 리턴한다
      * @param beginIdx : 가져올 페이지 시작 인덱스
      * @param cnt : beginIdx 부터 몇개 가져올지
      * @return : beginIdx 부터 cnt 개의 페이지 레포지토리에서 리턴
      */
     @ResponseBody
-    @GetMapping("/pages/ajaxReq2")
-    public Map<String, ?> loadPagesAndImages2(@RequestParam int beginIdx, @RequestParam int cnt) {
+    @GetMapping("/pages/ajaxReq")
+    public Map<String, ?> loadPagesAndImages(@RequestParam int beginIdx, @RequestParam int cnt) {
         Map<String, List<?>> ret = new HashMap<>();
 
         System.out.println("beginIdx :"  + beginIdx + ' ' + "cnt : " + cnt);
