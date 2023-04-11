@@ -4,11 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Page Edit</title>
-
+    
     <script type="text/javascript">
-
+        
         window.onload = function() {
-            var imageInput = document.getElementById('imageInput');
+            var imageInput = document.getElementById('images');
             var selectedImgContainer = document.getElementById('selectedImgContainer');
 
             // multiple images 선택시 이벤트
@@ -57,10 +57,11 @@
             </div>
         </div>
 
-        <!-- images upload    -->
+        <!-- images upload  -->
+        <!-- 복수 이미지 선택시 imageInput.eventListener 에 의해 선택한 이미지 디스플레이됨        -->
         <div>
-            <label th:for="imageInput">이미지 파일들</label>
-            <input id="imageInput" name="imageInput" type="file" multiple="multiple">
+            <label th:for="images">이미지 파일들</label>
+            <input id="images" name="images" type="file" multiple="multiple">
             <div id="selectedImgContainer"></div>
         </div>
 
