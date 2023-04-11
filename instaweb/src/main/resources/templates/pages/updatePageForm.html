@@ -5,13 +5,7 @@
     <meta charset="UTF-8">
     <title>Page Update</title>
 
-    <script type="text/javascript">
-        // img click event
-        var imgElement = document.getElementById()
-        imgElement.addEventListener('click', function () {
-
-        });
-    </script>
+    
 
 </head>
 
@@ -30,10 +24,9 @@
         <!-- 내용 -->
         <div>
             <label th:for="content">내용</label>
-            <!-- <input type="text" th:field="*{content}" placeholder="내용을 입력하세요" /> -->
             <textarea cols="50" rows="10" th:field="*{content}" placeholder="내용을 입력하세요"></textarea>
         </div>
-        <!-- 이미지 -->
+        <!-- 이미지, byte 배열 형의 이미지를 generateBase64Image() 로 변환 후 디스플레이  -->
         <div>
             <tr th:each="image : *{byteImages}">
                 <td>
@@ -48,6 +41,20 @@
         <button type="submit">수정</button>
     </form>
 </div>
+
+
+
+<script type="text/javascript">
+
+    // var div = document.getElementById("divID"); 
+    // in this code, can i get div's child element with out knowing it's id?    
+
+    // img click event
+    var imgElement = document.getElementById()        
+    imgElement.addEventListener('click', function () {
+
+    });
+</script>
 
 </body>
 

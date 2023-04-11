@@ -136,7 +136,6 @@ public class PageController {
      * 글 수정 폼
      * 새로운 폼을 만들어서 "updatePageForm" 에 전달
      *
-     * todo : ajax 이용해 이미지 변경->디스플레이 기능 구현 필요
      */
     @GetMapping("/pages/{id}/edit")
     public String updatePageForm(@PathVariable("id") Long id, Model model) {
