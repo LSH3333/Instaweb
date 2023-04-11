@@ -3,33 +3,38 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Page Edit</title>
 
     <script type="text/javascript">
 
         window.onload = function() {
             var imageInput = document.getElementById('imageInput');
             var selectedImgContainer = document.getElementById('selectedImgContainer');
-            console.log("imageInput : " + imageInput);
+
+            // multiple images 선택시 이벤트
             imageInput.addEventListener('change', function (event) {
+                // 이미지 다시 선택시 초기화
+                selectedImgContainer.innerHTML = "";
                 var files = event.target.files;
-                console.log("eventlistner");
+
+                // 이미지 URL 저장
+                var imgList = [];
+
                 for (var i = 0; i < files.length; i++) {
                     var file = files[i];
-
-                    var reader = new FileReader();
-
-                    reader.onload = function () {
-                        var image = document.createElement('img');
-                        image.src = reader.result;
-                        selectedImgContainer.appendChild(image);
-                    };
-
-                    reader.readAsDataURL(file);
+                    imgList.push(URL.createObjectURL(file));
                 }
-            });
-        };
 
+                // selectedImgContainer 에 <img> append
+                imgList.map((imgURL) => {
+                    var image = document.createElement('img');
+                    image.src = imgURL;
+                    selectedImgContainer.appendChild(image);
+                });
+
+            });
+
+        };
 
 
     </script>
