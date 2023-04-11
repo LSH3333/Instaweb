@@ -1,38 +1,69 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+
+    <script type="text/javascript">
+
+        window.onload = function() {
+            var imageInput = document.getElementById('imageInput');
+            var selectedImgContainer = document.getElementById('selectedImgContainer');
+            console.log("imageInput : " + imageInput);
+            imageInput.addEventListener('change', function (event) {
+                var files = event.target.files;
+                console.log("eventlistner");
+                for (var i = 0; i < files.length; i++) {
+                    var file = files[i];
+
+                    var reader = new FileReader();
+
+                    reader.onload = function () {
+                        var image = document.createElement('img');
+                        image.src = reader.result;
+                        selectedImgContainer.appendChild(image);
+                    };
+
+                    reader.readAsDataURL(file);
+                }
+            });
+        };
+
+
+
+    </script>
 </head>
 
 <body>
-    <div>
-        <form th:action="@{/pages/new}" th:object="${form}" method="post" enctype="multipart/form-data">
-            <!-- title -->
-            <div>
-                <label th:for="title">제목</label>
-                <input type="text" th:field="*{title}" placeholder="제목을 입력하세요">
+<div>
+    <form th:action="@{/pages/new}" th:object="${form}" method="post" enctype="multipart/form-data">
+        <!-- title -->
+        <div>
+            <label th:for="title">제목</label>
+            <input type="text" th:field="*{title}" placeholder="제목을 입력하세요">
+        </div>
+
+        <!-- content -->
+        <div>
+            <div style="display: flex; align-items: center;">
+                <label th:for="content">내용</label>
+                <textarea cols="50" rows="10" th:field="*{content}" placeholder="내용을 입력하세요"></textarea>
             </div>
+        </div>
 
-            <!-- content -->
-            <div>
-                <div style="display: flex; align-items: center;">
-                    <label th:for="content">내용</label>
-                    <textarea cols="50" rows="10" th:field="*{content}" placeholder="내용을 입력하세요"></textarea>
-                </div>
-            </div>
+        <!-- images upload    -->
+        <div>
+            <label th:for="imageInput">이미지 파일들</label>
+            <input id="imageInput" name="imageInput" type="file" multiple="multiple">
+            <div id="selectedImgContainer"></div>
+        </div>
 
-            <!-- images upload    -->
-            <div>
-                <label th:for="images">이미지 파일들</label>
-                <input id="images" name="images" type="file" multiple="multiple" class="file">
-            </div>
-
-            <button type="submit">Submit</button>
-        </form>
+        <button type="submit">Submit</button>
+    </form>
 
 
-    </div>
+</div>
 
 
 

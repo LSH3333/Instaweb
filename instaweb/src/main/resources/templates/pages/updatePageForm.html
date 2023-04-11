@@ -1,41 +1,53 @@
 <!DOCTYPE html>
-<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>Page Update</title>
+
+    <script type="text/javascript">
+        // img click event
+        var imgElement = document.getElementById()
+        imgElement.addEventListener('click', function () {
+
+        });
+    </script>
+
 </head>
+
 <body>
 
-    <div>
-        <form th:object="${form}" method="post">
-            <!-- type="hidden" 으로 안넘겨주면 null 됨 -->
-            <input type="hidden" th:field="*{id}" />
-            <input type="hidden" th:field="*{createdTime}" />
-            <!-- 제목 -->
-            <div>
-                <label th:for="title">제목</label>
-                <input type="text" th:field="*{title}" placeholder="제목을 입력하세요" />
-            </div>
-            <!-- 내용 -->
-            <div>
-                <label th:for="content">내용</label>
-                <input type="text" th:field="*{content}" placeholder="내용을 입력하세요" />
-            </div>
-            <!-- 이미지 -->
-            <!-- 이미지 변경할수 있도록 수정 필요 (ajax 사용)            -->
-            <div>
-                <tr th:each="image : *{byteImages}">
-                    <td>
-                        <p th:text="${image.id}"></p>
-                        <img th:id="|imgId${image.id}|" th:src="${'data:image/jpeg;charset=utf-8;base64,' + image.generateBase64Image()}" alt="">
-                    </td>
-                </tr>
-            </div>
+<div>
+    <form th:object="${form}" method="post">
+        <!-- type="hidden" 으로 안넘겨주면 null 됨 -->
+        <input type="hidden" th:field="*{id}" />
+        <input type="hidden" th:field="*{createdTime}" />
+        <!-- 제목 -->
+        <div>
+            <label th:for="title">제목</label>
+            <input type="text" th:field="*{title}" placeholder="제목을 입력하세요" />
+        </div>
+        <!-- 내용 -->
+        <div>
+            <label th:for="content">내용</label>
+            <input type="text" th:field="*{content}" placeholder="내용을 입력하세요" />
+        </div>
+        <!-- 이미지 -->
+        <div>
+            <tr th:each="image : *{byteImages}">
+                <td>
+                    <p th:text="${image.id}"></p>
+                    <img th:id="|imgId${image.id}|"
+                         th:src="${'data:image/jpeg;charset=utf-8;base64,' + image.generateBase64Image()}" alt="">
+                </td>
+            </tr>
+        </div>
 
 
-            <button type="submit">수정</button>
-        </form>
-    </div>
+        <button type="submit">수정</button>
+    </form>
+</div>
 
 </body>
+
 </html>
