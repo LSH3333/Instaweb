@@ -81,7 +81,7 @@ public class PageController {
 
     /**
      *
-     * ajax
+     * ajax, request from pageList.html
      * request 받으면 모든 페이지와 base64 string 으로 인코딩된 이미지를 리턴한다
      * @param beginIdx : 가져올 페이지 시작 인덱스
      * @param cnt : beginIdx 부터 몇개 가져올지
@@ -173,6 +173,19 @@ public class PageController {
 
         return "redirect:/pages";
     }
+
+    /**
+     * 글 수정 폼에서 (updatePageForm.html) 요청
+     * 특정 id 페이지에 저장된 모든 이미지들 리턴  
+     */
+    @ResponseBody
+    @GetMapping("/pages/requestImages")
+    public List<Image> requestImages(@RequestParam Long id) {
+        Page page = pageService.findOne(id);
+        List<Image> images = page.getImages();
+        return images;
+    }
+
 
     /**
      * 글 삭제
