@@ -29,7 +29,7 @@ public class Page {
 
     // 이미지
     // Image 는 Page 없이 존재할수 없다
-    @OneToMany(mappedBy = "page", fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "page", orphanRemoval = true)
     private List<Image> images = new ArrayList<>();
 
 
