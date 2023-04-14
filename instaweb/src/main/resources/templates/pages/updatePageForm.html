@@ -5,61 +5,6 @@
     <meta charset="UTF-8">
     <title>Page Update</title>
 
-    <script type="text/javascript">
-
-        // var div = document.getElementById("divID"); 
-        // in this code, can i get div's child element with out knowing it's id?    
-    
-        // img click event
-        // var myData = "[[${form}]]"; // thymeleaf syntax 
-        // var title1 = "[[${form.title}]]";
-        // var byteImages = "[[${form.byteImages}]]";
-        // var images = "[[${form.images}]]";
-        // console.log("title : " + title1);
-        // console.log("images : " + byteImages);
-    
-    
-        // 서버에서 데이터 처리 후 (map 형식으로?), JSON 으로 리턴해야할듯
-        var xhr = new XMLHttpRequest();
-        var idAndImagesrc = new Map();
-        var pageID = "[[${form.id}]]";
-        
-    
-        window.onload = function() {
-            // 페이지에 저장되어 있는 모든 이미지들 요청 
-            xhr.open('GET', '/pages/requestImages?id=' + pageID.toString(), true);
-            // 순환참조 에러 발생, dto 사용 or 
-            /**
-             * 발생하게된 주원인은 '양방향 매핑'이기도 하지만, 더 정확하게는 Entity 자체를 response로 리턴한데에 있다. 
-             * entity 자체를 return 하지 말고, DTO 객체를 만들어 필요한 데이터만 옮겨담아 Client로 리턴하면 순환 참조 관련 문제는 애초에 방지 할 수 있다.
-             * 
-             * */
-            xhr.send();
-        };
-    
-        xhr.onreadystatechange = function() {
-            if(xhr.readyState == XMLHttpRequest.DONE) {
-                if(xhr.status == 200) {
-                    var imgContainer = document.getElementById("imgContainer");
-                    var data = JSON.parse(xhr.responseText);
-                    console.log("here1");
-                    for(let i = 0; i < data.length; i++) {
-                        var divEle = document.createElement('div');
-    
-                        var pEle = document.createElement('p');
-                        pEle.innerHTML = data[i].id.toString();
-    
-                        var imgEle = document.createElement('img');
-                        imgEle.src = 'data:image/jpeg;charset=utf-8;base64,' + '${data[i].generateBase64Image()}';
-                        console.log(imgEle.src); 
-                    }
-                }
-            }
-        }
-    
-    
-    </script>
-
 </head>
 
 <body>
@@ -97,6 +42,48 @@
 </div>
 
 
+<script type="text/javascript">
+
+    // 서버에서 데이터 처리 후 (map 형식으로?), JSON 으로 리턴해야할듯
+    var xhr = new XMLHttpRequest();
+    var idAndImagesrc = new Map();
+    var pageID = "[[${form.id}]]";
+    
+
+    window.onload = function() {
+        // 페이지에 저장되어 있는 모든 이미지들 요청 
+        xhr.open('GET', '/pages/requestImages?id=' + pageID.toString(), true);
+        // 순환참조 에러 발생, dto 사용 or 
+        /**
+         * 발생하게된 주원인은 '양방향 매핑'이기도 하지만, 더 정확하게는 Entity 자체를 response로 리턴한데에 있다. 
+         * entity 자체를 return 하지 말고, DTO 객체를 만들어 필요한 데이터만 옮겨담아 Client로 리턴하면 순환 참조 관련 문제는 애초에 방지 할 수 있다.
+         * 
+         * */
+        xhr.send();
+    };
+
+    xhr.onreadystatechange = function() {
+        if(xhr.readyState == XMLHttpRequest.DONE) {
+            if(xhr.status == 200) {
+                var imgContainer = document.getElementById("imgContainer");
+                var data = JSON.parse(xhr.responseText);
+                
+                for(let i = 0; i < data.length; i++) {
+                    var divEle = document.createElement('div');
+
+                    var pEle = document.createElement('p');
+                    pEle.innerHTML = data[i].id.toString();
+
+                    var imgEle = document.createElement('img');
+                    imgEle.src = 'data:image/jpeg;charset=utf-8;base64,' + data[i].base64Image;
+                    
+                }
+            }
+        }
+    }
+
+
+</script>
 
 </body>
 

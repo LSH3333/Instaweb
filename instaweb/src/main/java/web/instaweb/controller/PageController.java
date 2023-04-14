@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import web.instaweb.domain.Image;
 import web.instaweb.domain.Page;
+import web.instaweb.dto.GetImageDto;
 import web.instaweb.service.ImageService;
 import web.instaweb.service.PageService;
 
@@ -178,14 +179,24 @@ public class PageController {
      * 글 수정 폼에서 (updatePageForm.html) 요청
      * 특정 id 페이지에 저장된 모든 이미지들 리턴
      */
+//    @ResponseBody
+//    @GetMapping("/pages/requestImages")
+//    public List<Image> requestImages(@RequestParam Long id) {
+//        Page page = pageService.findOne(id);
+//        List<Image> images = page.getImages();
+//        return images;
+//    }
     @ResponseBody
     @GetMapping("/pages/requestImages")
-    public List<Image> requestImages(@RequestParam Long id) {
-        System.out.println("requestImages : ");
+    public List<GetImageDto> requestImages(@RequestParam Long id) {
         Page page = pageService.findOne(id);
+        List<GetImageDto> imageDtoList = new ArrayList<>();
         List<Image> images = page.getImages();
-        System.out.println("requestImages.images : " + images);
-        return images;
+        for (Image image : images) {
+            GetImageDto getImageDto = new GetImageDto(image);
+            imageDtoList.add(getImageDto);
+        }
+        return imageDtoList;
     }
 
 
