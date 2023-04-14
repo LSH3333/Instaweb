@@ -24,18 +24,18 @@
             <label th:for="content">내용</label>
             <textarea cols="50" rows="10" th:field="*{content}" placeholder="내용을 입력하세요"></textarea>
         </div>
+
         <!-- 이미지, byte 배열 형의 이미지를 generateBase64Image() 로 변환 후 디스플레이  -->
         <div id="imgContainer">
-            <tr th:each="image : *{byteImages}">
+            <!-- <tr th:each="image : *{byteImages}">
                 <td>
                     <p th:text="${image.id}"></p>
                     <img th:id="|imgId${image.id}|"
                          th:src="${'data:image/jpeg;charset=utf-8;base64,' + image.generateBase64Image()}" alt="">
                 </td>
-            </tr>
-
+            </tr> -->
         </div>
-
+        
 
         <button type="submit">수정</button>
     </form>
@@ -48,6 +48,7 @@
     var xhr = new XMLHttpRequest();
     var idAndImagesrc = new Map();
     var pageID = "[[${form.id}]]";
+    var imgContainer = document.getElementById("imgContainer");
     
 
     window.onload = function() {
@@ -62,27 +63,52 @@
         xhr.send();
     };
 
+    // imgEle에 해당하는 imgInput 엘레먼트 저장 
+    var inputMap = new Map();    
     xhr.onreadystatechange = function() {
         if(xhr.readyState == XMLHttpRequest.DONE) {
             if(xhr.status == 200) {
-                var imgContainer = document.getElementById("imgContainer");
-                var data = JSON.parse(xhr.responseText);
                 
-                for(let i = 0; i < data.length; i++) {
-                    var divEle = document.createElement('div');
-
-                    var pEle = document.createElement('p');
-                    pEle.innerHTML = data[i].id.toString();
-
-                    var imgEle = document.createElement('img');
-                    imgEle.src = 'data:image/jpeg;charset=utf-8;base64,' + data[i].base64Image;
-                    
+                let data = JSON.parse(xhr.responseText);
+                let imgIdx = 0;
+                
+                for(imgIdx = 0; imgIdx < data.length; imgIdx++) {
+                    let divEle = document.createElement('div');
+                    // <p>
+                    let pEle = document.createElement('p');
+                    pEle.innerHTML = data[imgIdx].id.toString();        
+                    // <img> 
+                    let imgEle = document.createElement('img');
+                    imgEle.id = "imgEle" + imgIdx.toString();
+                    imgEle.src = 'data:image/jpeg;charset=utf-8;base64,' + data[imgIdx].base64Image;
+                    imgEle.classList.add('added-img');
+                    // <input> 이미지 클릭 시 파일 선택하도록 
+                    let inputEle = document.createElement('input');
+                    inputEle.type = "file";
+                    inputEle.style = "display:none;";             
+                    inputEle.classList.add('added-input')       
+                   
+                    divEle.appendChild(pEle);
+                    divEle.appendChild(imgEle);
+                    divEle.appendChild(inputEle);
+                    imgContainer.appendChild(divEle);
+                    inputMap.set("imgEle" + imgIdx.toString(), inputEle);
                 }
+                
             }
         }
     }
+    
+    // imgContainer 하위 엘레먼트에 eventListener  
+    imgContainer.addEventListener('click', function (e) {
+        if (e.target.classList.contains('added-img')) {
+            var fileInput = inputMap.get(e.target.id.toString());
+            fileInput.click();
+        }        
+    });
 
 
+    
 </script>
 
 </body>

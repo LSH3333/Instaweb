@@ -178,7 +178,7 @@ public class PageController {
     /**
      * 글 수정 폼에서 (updatePageForm.html) 요청
      * 특정 id 페이지에 저장된 모든 이미지들 리턴
-     * 순환참조 오류 때문에 GetImageDto 로 반환 
+     * 순환참조 오류 때문에 GetImageDto 로 반환
      */
     @ResponseBody
     @GetMapping("/pages/requestImages")
