@@ -36,8 +36,7 @@
             </tr> -->
         </div>
         
-
-        <button type="submit">수정</button>
+        <button id="submitBtn" type="submit">수정</button>
     </form>
 </div>
 
@@ -88,7 +87,15 @@
                     inputEle.type = "file";
                     inputEle.style = "display:none;";             
                     inputEle.classList.add('added-input')       
-                   
+                    /**
+                     * <div id="imgContainer">
+                     *  <div>
+                     *   <p></p>
+                     *   <img>
+                     *   <input>    
+                     *  </div>
+                     * </div>
+                     * */
                     divEle.appendChild(pEle);
                     divEle.appendChild(imgEle);
                     divEle.appendChild(inputEle);
@@ -112,11 +119,23 @@
     imgContainer.addEventListener('change', function(e) {
         // <input> 에 변경 발생시 변경한 이미지로 디스플레이 
         if(e.target.classList.contains('added-input')) {
-            var imgEle = imgInputEleList[e.target.id][0];     
+            var imgEle = imgInputEleList[e.target.id][0];
             imgEle.src = URL.createObjectURL(e.target.files[0]);
         }
     });
 
+    // submit 버튼 클릭 시 
+    document.getElementById("submitBtn").addEventListener('click', function() {
+        var sendData = [];
+        imgInputEleList.map((x) => {
+            sendData.push(x[0].src);
+        });
+
+        console.log("sendData");
+        xhr.open('POST', '/pages/editImages', true);
+        // xhr.setRequestHeader('Content-Type', 'text/plain;charset=UTF-8');
+        xhr.send(sendData.join(','));
+    });
 
     
 </script>

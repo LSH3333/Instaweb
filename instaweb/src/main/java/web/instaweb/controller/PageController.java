@@ -65,7 +65,6 @@ public class PageController {
             imageService.saveImage(image);
         }
 
-
         return "redirect:/";
     }
 
@@ -193,6 +192,18 @@ public class PageController {
         return imageDtoList;
     }
 
+    /**
+     * updatePageForm.html 에서 보내온 수정된 이미지들 정보 
+     */
+    @ResponseBody
+    @PostMapping("/pages/editImages")
+    public void editImages(@RequestBody String data) {
+        System.out.println("editImages");
+        String[] imageSrc = data.split(",");
+        for(String s : imageSrc) {
+            System.out.println("s : " + s);
+        }
+    }
 
     /**
      * 글 삭제
