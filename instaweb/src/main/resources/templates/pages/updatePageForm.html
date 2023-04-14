@@ -63,8 +63,8 @@
         xhr.send();
     };
 
-    // imgEle에 해당하는 imgInput 엘레먼트 저장 
-    var inputMap = new Map();    
+    // ajax response 로 가져온 이미지들 엘레먼트로 만들어서 디스플레이 
+    var imgInputEleList = [] 
     xhr.onreadystatechange = function() {
         if(xhr.readyState == XMLHttpRequest.DONE) {
             if(xhr.status == 200) {
@@ -79,11 +79,12 @@
                     pEle.innerHTML = data[imgIdx].id.toString();        
                     // <img> 
                     let imgEle = document.createElement('img');
-                    imgEle.id = "imgEle" + imgIdx.toString();
+                    imgEle.id = imgIdx;
                     imgEle.src = 'data:image/jpeg;charset=utf-8;base64,' + data[imgIdx].base64Image;
                     imgEle.classList.add('added-img');
                     // <input> 이미지 클릭 시 파일 선택하도록 
                     let inputEle = document.createElement('input');
+                    inputEle.id = imgIdx;
                     inputEle.type = "file";
                     inputEle.style = "display:none;";             
                     inputEle.classList.add('added-input')       
@@ -91,20 +92,29 @@
                     divEle.appendChild(pEle);
                     divEle.appendChild(imgEle);
                     divEle.appendChild(inputEle);
-                    imgContainer.appendChild(divEle);
-                    inputMap.set("imgEle" + imgIdx.toString(), inputEle);
+                    imgContainer.appendChild(divEle);                    
+                    imgInputEleList.push([imgEle, inputEle])
                 }
                 
             }
         }
     }
     
-    // imgContainer 하위 엘레먼트에 eventListener  
+    // imgContainer 하위 <img>에 eventListener  
     imgContainer.addEventListener('click', function (e) {
         if (e.target.classList.contains('added-img')) {
-            var fileInput = inputMap.get(e.target.id.toString());
+            var fileInput = imgInputEleList[e.target.id][1];
             fileInput.click();
-        }        
+        }    
+    });
+
+    // imgContainer 하위 <input>에 eventListner 
+    imgContainer.addEventListener('change', function(e) {
+        // <input> 에 변경 발생시 변경한 이미지로 디스플레이 
+        if(e.target.classList.contains('added-input')) {
+            var imgEle = imgInputEleList[e.target.id][0];     
+            imgEle.src = URL.createObjectURL(e.target.files[0]);
+        }
     });
 
 
