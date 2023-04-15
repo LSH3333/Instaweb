@@ -18,6 +18,7 @@ import web.instaweb.service.PageService;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Controller
@@ -152,6 +153,7 @@ public class PageController {
         form.setTitle(page.getTitle());
         form.setContent(page.getContent());
         form.setCreatedTime(page.getCreatedTime());
+        System.out.println("updatePageForm createdTime = " + page.getCreatedTime());
         // 수정을 위해서 PageForm 에는 Image 형으로도 저장 가능
         form.setByteImages(page.getImages());
 
@@ -168,9 +170,7 @@ public class PageController {
     @PostMapping("/pages/{id}/edit")
     public String updatePage(@PathVariable("id") Long id, @ModelAttribute("form") PageForm form) {
 
-        // 2. 이미지 눌러서 수정할수 있어야함
-
-        // 여기서 form.getCreatedTime() = null
+        // 여기서 createdTime 의 second 부분 소실됨 
         System.out.println("PageController.updatePage : " + form.getCreatedTime());
 
         pageService.updatePage(id, form.getTitle(), form.getContent(), form.getCreatedTime());
@@ -196,11 +196,11 @@ public class PageController {
             Iterator<Map.Entry<String, JsonNode>> fields = jsonNode.fields();
             while (fields.hasNext()) {
                 Map.Entry<String, JsonNode> entry = fields.next();
-                String key = entry.getKey();
-                String value = entry.getValue().asText();
+                String id = entry.getKey(); // key
+                String image = entry.getValue().asText(); // value
 
-                // Do something with the key and value
-                System.out.println("Key: " + key + ", Value: " + value);
+                System.out.println("id = " + id + "," + "image = " + image);
+                imageService.updateImage(Long.parseLong(id), image);
             }
         }
 

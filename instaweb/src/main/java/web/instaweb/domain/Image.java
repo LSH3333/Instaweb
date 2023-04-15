@@ -59,5 +59,7 @@ public class Image {
         return Base64.encodeBase64String(this.getImage());
     }
 
-
+    public void changeImage(byte[] image) {
+        this.image = image;
+    }
 }

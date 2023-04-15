@@ -14,6 +14,10 @@
         <!-- type="hidden" 으로 안넘겨주면 null 됨 -->
         <input type="hidden" th:field="*{id}" />
         <input type="hidden" th:field="*{createdTime}" />
+        <script>
+            let cc1 = "[[${form.createdTime}]]";
+            console.log("cc1 = " + cc1);
+        </script>
         <!-- 제목 -->
         <div>
             <label th:for="title">제목</label>
@@ -140,6 +144,9 @@
 
     // submit 버튼 클릭 시 
     document.getElementById("submitBtn").addEventListener('click', function() {
+        let cc2 = "[[${form.createdTime}]]";
+        console.log("cc2 = " + cc2);
+
         // {db에 저장된 이미지 id : 이미지 src}
         let imgEleAndId = [];
         imgInputEleList.map((x) => {

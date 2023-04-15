@@ -32,7 +32,6 @@ public class PageService {
     }
 
     // 제거
-    // todo : 페이지 제거할때 연관관계인 이미지도 제거 하도록 해야함
     @Transactional
     public void deletePage(Long id) {
         pageRepository.deletePage(id);
