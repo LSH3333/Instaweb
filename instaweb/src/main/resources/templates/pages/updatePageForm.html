@@ -63,6 +63,7 @@
     };
 
     // ajax response 로 가져온 이미지들 엘레먼트로 만들어서 디스플레이 
+    // [imgEle, inputEle, db에 저장된 이미지의 id]
     var imgInputEleList = [] 
     xhr.onreadystatechange = function() {
         if(xhr.readyState == XMLHttpRequest.DONE) {
@@ -80,7 +81,6 @@
                     let imgEle = document.createElement('img');
                     imgEle.id = imgIdx;                
                     imgEle.src = 'data:image/jpeg;charset=utf-8;base64,' + data[imgIdx].image;
-                    console.log("data = " + data[imgIdx].image);
                     imgEle.classList.add('added-img');
                     // <input> 이미지 클릭 시 파일 선택하도록 
                     let inputEle = document.createElement('input');
@@ -101,7 +101,7 @@
                     divEle.appendChild(imgEle);
                     divEle.appendChild(inputEle);
                     imgContainer.appendChild(divEle);                    
-                    imgInputEleList.push([imgEle, inputEle])
+                    imgInputEleList.push([imgEle, inputEle, data[imgIdx].id])
                 }
                 
             }
@@ -140,15 +140,24 @@
 
     // submit 버튼 클릭 시 
     document.getElementById("submitBtn").addEventListener('click', function() {
-        var sendData = [];
+        // {db에 저장된 이미지 id : 이미지 src}
+        let imgEleAndId = [];
         imgInputEleList.map((x) => {
             let imgEle = x[0];
-            sendData.push(imgEle.src);
+            let id = x[2];            
+            imgEleAndId.push([id, imgEle.src.split(',')[1]]);
         });
         
-        xhr.open('POST', '/pages/editImages', true);
-        // xhr.setRequestHeader('Content-Type', 'text/plain;charset=UTF-8');
-        xhr.send(sendData.join(','));
+        let sendData = {};
+        imgEleAndId.forEach(function(item) {
+            sendData[item[0]] = item[1];
+        });
+
+        let jsonString = JSON.stringify(sendData);
+
+        xhr.open('POST', '/pages/editImages', true);        
+        xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+        xhr.send(jsonString);
     });
 
     

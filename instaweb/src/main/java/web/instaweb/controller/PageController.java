@@ -1,5 +1,8 @@
 package web.instaweb.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -160,6 +163,7 @@ public class PageController {
      * 글 수정
      * 전달받은 폼을 기반으로 새로운 Page 객체를 만들고 db 에 저장한다
      * 이 과정에서 변경 감지 후 update 된다
+     * Image 는 editImages() 에서 업데이트 된다
      */
     @PostMapping("/pages/{id}/edit")
     public String updatePage(@PathVariable("id") Long id, @ModelAttribute("form") PageForm form) {
@@ -172,6 +176,34 @@ public class PageController {
         pageService.updatePage(id, form.getTitle(), form.getContent(), form.getCreatedTime());
 
         return "redirect:/pages";
+    }
+
+    /**
+     * updatePageForm.html 에서 보내온 수정된 이미지들 정보
+     * 디비에 반영
+     */
+    @ResponseBody
+    @PostMapping("/pages/editImages")
+    public void editImages(@RequestBody String data) throws JsonProcessingException {
+        System.out.println("editImages");
+
+        // JsonString 으로 온 data 를 iterate 하면서 key, value 처리
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        JsonNode jsonNode = objectMapper.readTree(data);
+
+        if (jsonNode.isObject()) {
+            Iterator<Map.Entry<String, JsonNode>> fields = jsonNode.fields();
+            while (fields.hasNext()) {
+                Map.Entry<String, JsonNode> entry = fields.next();
+                String key = entry.getKey();
+                String value = entry.getValue().asText();
+
+                // Do something with the key and value
+                System.out.println("Key: " + key + ", Value: " + value);
+            }
+        }
+
     }
 
     /**
@@ -192,18 +224,7 @@ public class PageController {
         return imageDtoList;
     }
 
-    /**
-     * updatePageForm.html 에서 보내온 수정된 이미지들 정보
-     */
-    @ResponseBody
-    @PostMapping("/pages/editImages")
-    public void editImages(@RequestBody String data) {
-        System.out.println("editImages");
-        String[] imageSrc = data.split(",");
-        for(String s : imageSrc) {
-            System.out.println("s : " + s);
-        }
-    }
+
 
     /**
      * 글 삭제
