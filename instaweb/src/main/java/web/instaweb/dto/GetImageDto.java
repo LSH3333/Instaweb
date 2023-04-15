@@ -8,7 +8,7 @@ import web.instaweb.domain.Image;
 public class GetImageDto {
     private Long id;
     private byte[] image;
-    private String base64Image;
+    private String base64Image; // view 에서 디스플레이 할때 사용
 
     public GetImageDto(Image image) {
         this.id = image.getId();

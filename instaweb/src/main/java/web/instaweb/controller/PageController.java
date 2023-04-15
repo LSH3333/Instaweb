@@ -193,7 +193,7 @@ public class PageController {
     }
 
     /**
-     * updatePageForm.html 에서 보내온 수정된 이미지들 정보 
+     * updatePageForm.html 에서 보내온 수정된 이미지들 정보
      */
     @ResponseBody
     @PostMapping("/pages/editImages")
