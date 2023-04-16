@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Page Edit</title>
+    <title>Create Page</title>
     
     <script type="text/javascript">
         
@@ -11,7 +11,7 @@
             var imageInput = document.getElementById('images');
             var selectedImgContainer = document.getElementById('selectedImgContainer');
 
-            // multiple images 선택시 이벤트
+            // 유저가 이미지 선택시 선택한 이미지들 디스플레이 
             imageInput.addEventListener('change', function (event) {
                 // 이미지 다시 선택시 초기화
                 selectedImgContainer.innerHTML = "";
@@ -59,7 +59,7 @@
         </div>
 
         <!-- images upload  -->
-        <!-- 복수 이미지 선택시 imageInput.eventListener 에 의해 선택한 이미지 디스플레이됨        -->
+        <!-- 이미지 선택시 imageInput.eventListener 에 의해 선택한 이미지 디스플레이됨        -->
         <div>
             <label th:for="images">이미지 파일들</label>
             <input id="images" name="images" type="file" multiple="multiple">

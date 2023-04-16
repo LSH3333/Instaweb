@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Page Update</title>
+    <title>Update Page</title>
 
 </head>
 
@@ -14,10 +14,7 @@
         <!-- type="hidden" 으로 안넘겨주면 null 됨 -->
         <input type="hidden" th:field="*{id}" />
         <input type="hidden" th:field="*{createdTime}" />
-        <script>
-            let cc1 = "[[${form.createdTime}]]";
-            console.log("cc1 = " + cc1);
-        </script>
+        
         <!-- 제목 -->
         <div>
             <label th:for="title">제목</label>
@@ -31,13 +28,6 @@
 
         <!-- 이미지, byte 배열 형의 이미지를 generateBase64Image() 로 변환 후 디스플레이  -->
         <div id="imgContainer">
-            <!-- <tr th:each="image : *{byteImages}">
-                <td>
-                    <p th:text="${image.id}"></p>
-                    <img th:id="|imgId${image.id}|"
-                         th:src="${'data:image/jpeg;charset=utf-8;base64,' + image.generateBase64Image()}" alt="">
-                </td>
-            </tr> -->
         </div>
         
         <button id="submitBtn" type="submit">수정</button>
@@ -121,6 +111,7 @@
     });
 
     // imgContainer 하위 <input> eventListener 
+    // 유저가 변경하도록 선택한 이미지를 디스플레이함 
     imgContainer.addEventListener('change', function(e) {
         // <input> 에 변경 발생시 변경한 이미지로 디스플레이 
         if(e.target.classList.contains('added-input')) {
@@ -141,10 +132,9 @@
         }
     });
 
-    // submit 버튼 클릭 시 
+    // submit 버튼 클릭 시 imgInputEleList 에 저장된 imgEle를 기반으로 
+    // {id : 이미지 src} JSON 형식으로 서버로 보냄 
     document.getElementById("submitBtn").addEventListener('click', function() {
-        let cc2 = "[[${form.createdTime}]]";
-        console.log("cc2 = " + cc2);
 
         // {db에 저장된 이미지 id : 이미지 src}
         let imgEleAndId = [];
@@ -166,6 +156,7 @@
         xhr.send(jsonString);
     });
 
+    
     function byteArrayToBase64String(bytes) {
         let binary = '';
         for(let i = 0; i < bytes.length; i++) {
