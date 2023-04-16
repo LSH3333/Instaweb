@@ -130,12 +130,8 @@
             // 선택한 파일을 base64 String 으로 변환 후 디스플레이 
             var reader = new FileReader();
             reader.onload = function(event) {
-                // Get the result, which contains the byte code of the file
-                var byteArray = new Uint8Array(event.target.result);
+                var byteArray = new Uint8Array(event.target.result);            
                 // Convert the byteArray to a base64 string
-                // var binaryString = String.fromCharCode.apply(null, byteArray);
-                // var base64String = btoa(binaryString);
-
                 var base64String = byteArrayToBase64String(byteArray);
                 
 

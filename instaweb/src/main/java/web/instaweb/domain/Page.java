@@ -1,6 +1,7 @@
 package web.instaweb.domain;
 
 import lombok.Getter;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
@@ -25,6 +26,7 @@ public class Page {
     private String content;
 
     // 작성일
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     private LocalDateTime createdTime;
 
     // 이미지
