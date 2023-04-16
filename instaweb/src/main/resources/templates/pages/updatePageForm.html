@@ -132,11 +132,10 @@
             reader.onload = function(event) {
                 var byteArray = new Uint8Array(event.target.result);            
                 // Convert the byteArray to a base64 string
-                var base64String = byteArrayToBase64String(byteArray);
-                
+                var base64String = byteArrayToBase64String(byteArray);                
 
                 imgEle.src = 'data:image/jpeg;charset=utf-8;base64,' + base64String;
-            };
+            }
             // Read the file as an ArrayBuffer
             reader.readAsArrayBuffer(e.target.files[0]);
         }
