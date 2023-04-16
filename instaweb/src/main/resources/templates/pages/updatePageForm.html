@@ -133,8 +133,12 @@
                 // Get the result, which contains the byte code of the file
                 var byteArray = new Uint8Array(event.target.result);
                 // Convert the byteArray to a base64 string
-                var binaryString = String.fromCharCode.apply(null, byteArray);
-                var base64String = btoa(binaryString);
+                // var binaryString = String.fromCharCode.apply(null, byteArray);
+                // var base64String = btoa(binaryString);
+
+                var base64String = byteArrayToBase64String(byteArray);
+                
+
                 imgEle.src = 'data:image/jpeg;charset=utf-8;base64,' + base64String;
             };
             // Read the file as an ArrayBuffer
@@ -167,6 +171,13 @@
         xhr.send(jsonString);
     });
 
+    function byteArrayToBase64String(bytes) {
+        let binary = '';
+        for(let i = 0; i < bytes.length; i++) {
+            binary += String.fromCharCode(bytes[i]);
+        }
+        return btoa(binary);
+    }
     
 </script>
 
