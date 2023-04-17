@@ -8,10 +8,10 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import web.instaweb.domain.Image;
 import web.instaweb.domain.Page;
-import web.instaweb.repository.PageRepository;
 import web.instaweb.service.ImageService;
 import web.instaweb.service.PageService;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 
@@ -23,24 +23,32 @@ public class DataInitializer implements ApplicationRunner {
     @Autowired
     private ImageService imageService;
 
+    private byte[] imgFile;
+
+    private void getNoImgFile() throws IOException {
+        // Load the image file from the resources/static folder
+        Resource resource = new ClassPathResource("static/unityImg" +
+                ".png");
+        InputStream inputStream = resource.getInputStream();
+        imgFile = inputStream.readAllBytes();
+        inputStream.close();
+    }
+
     /**
      * dataCnt 개의 데이터 서버 시작전 미리 저장해놓음
      */
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        // Load the image file from the resources/static folder
-        Resource resource = new ClassPathResource("static/unityImg.png");
-        InputStream inputStream = resource.getInputStream();
-        byte[] imageBytes = inputStream.readAllBytes();
-        inputStream.close();
-
+        getNoImgFile();
 
         int dataCnt = 50;
         for(int i = 0; i < dataCnt; i++) {
-            MakePage(Integer.toString(i), imageBytes);
+            MakePage(Integer.toString(i), imgFile);
         }
 
     }
+
+
 
     private void MakePage(String num, byte[] imageBytes) {
         Page page = new Page("title " + num, "content " + num, LocalDateTime.now());

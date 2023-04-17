@@ -4,6 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.codec.binary.Base64;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,6 +20,7 @@ import web.instaweb.service.PageService;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -27,6 +31,9 @@ public class PageController {
 
     private final PageService pageService;
     private final ImageService imageService;
+
+    private byte[] noImgFile;
+
 
     /**
      * 글 작성 폼
@@ -93,8 +100,9 @@ public class PageController {
      */
     @ResponseBody
     @GetMapping("/pages/ajaxReq")
-    public Map<String, ?> loadPagesAndImages(@RequestParam int beginIdx, @RequestParam int cnt) {
+    public Map<String, ?> loadPagesAndImages(@RequestParam int beginIdx, @RequestParam int cnt) throws IOException {
         Map<String, List<?>> ret = new HashMap<>();
+        getNoImgFile();
 
         // page
         List<Page> pages = pageService.findRange(beginIdx, cnt);
@@ -113,10 +121,15 @@ public class PageController {
         List<String> images = new ArrayList<>();
         for (Page page : pages) {
             List<Image> pageImages = page.getImages();
+            String base64Image;
             if (!pageImages.isEmpty()) {
-                String base64Image = pageImages.get(0).generateBase64Image();
-                images.add(base64Image);
+                base64Image = pageImages.get(0).generateBase64Image();
             }
+            else {
+                // 페이지에 이미지가 하나도 없을 경우 "no-img.png" 디스플레이 하도록함
+                base64Image = Base64.encodeBase64String(noImgFile);
+            }
+            images.add(base64Image);
         }
 
         ret.put("pages", pageListForms);
@@ -241,13 +254,13 @@ public class PageController {
         return "redirect:/pages";
     }
 
-    /**
-     * 이미지 삭제
-     * todo : 수정 폼에서 삭제 될수 있도록 변경 필요 
-     */
-//    @GetMapping("/pages/{imageId}/delete")
-//    public String deleteImage(@PathVariable("imageId") Long imageId) {
-//        imageService.deleteImage(imageId);
-//        return "";
-//    }
+
+    private void getNoImgFile() throws IOException {
+        // Load the image file from the resources/static folder
+        Resource resource = new ClassPathResource("static/no-img" +
+                ".png");
+        InputStream inputStream = resource.getInputStream();
+        noImgFile = inputStream.readAllBytes();
+        inputStream.close();
+    }
 }
