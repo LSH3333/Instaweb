@@ -34,6 +34,15 @@ public class PageController {
 
     private byte[] noImgFile;
 
+    private void getNoImgFile() throws IOException {
+        // Load the image file from the resources/static folder
+        Resource resource = new ClassPathResource("static/no-img" +
+                ".png");
+        InputStream inputStream = resource.getInputStream();
+        noImgFile = inputStream.readAllBytes();
+        inputStream.close();
+    }
+
 
     /**
      * 글 작성 폼
@@ -57,18 +66,18 @@ public class PageController {
 
         // 이미지 객체들 먼저 만들고
         /**
-         * 글 작성시 이미지 선택하지 않으면 아무것도 없어야 하는데, 현재 files.size() = 1 로 나옴, 해결 필요
+         * 생성폼에서 이미지를 선택하지 않았다면 form.getImages().get(0).getContentType() = "application/octet-stream" 이 된다
+         * 이미지 파일이라면 "image/png" 이런식으로 온다
+         * "application/octet-stream" 은 8 비트 단위 binary 라는 의미
          */
-        if(form.getImages() == null){
-            System.out.println("img null");
-        }
-        List<MultipartFile> files = form.getImages();
-        System.out.println("files.size() = " + files.size());
+        // 생성폼에서 이미지 1개 이상 선택했다면 Image 객체 만듦
         List<Image> images = new ArrayList<>();
-        for (MultipartFile file : files) {
-            System.out.println("file = " + file);
-            Image image = new Image(file);
-            images.add(image);
+        if(!form.getImages().get(0).getContentType().equals("application/octet-stream")){
+            List<MultipartFile> files = form.getImages();
+            for (MultipartFile file : files) {
+                Image image = new Image(file);
+                images.add(image);
+            }
         }
 
         // 페이지 객체 만들고
@@ -263,12 +272,5 @@ public class PageController {
     }
 
 
-    private void getNoImgFile() throws IOException {
-        // Load the image file from the resources/static folder
-        Resource resource = new ClassPathResource("static/no-img" +
-                ".png");
-        InputStream inputStream = resource.getInputStream();
-        noImgFile = inputStream.readAllBytes();
-        inputStream.close();
-    }
+
 }
