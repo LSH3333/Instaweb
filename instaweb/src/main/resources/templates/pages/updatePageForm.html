@@ -120,11 +120,12 @@
     // imgContainer 하위 <input> eventListener 
     // 유저가 변경하도록 선택한 이미지를 디스플레이함 
     imgContainer.addEventListener('change', function(e) {
-        // <input> 에 변경 발생시 변경한 이미지로 디스플레이 
+        // <input> 에 변경 발생시 변경한 이미지로 디스플레이, e.target 은 <input> 
         if(e.target.classList.contains('added-input')) {
+            // input 창 열린 후 아무것도 선택하지 않고 취소 누를 경우 file = undefined 됨 
             if(e.target.files[0] != undefined) {
-                // 이 부분 아래 버튼 삭제 처리 처럼 수정 필요 (parentNode.childNodes...)
-                var imgEle = imgInputEleList[e.target.id][0];
+                var inputEle = e.target;
+                var imgEle = getNodeThatContainsClassFromSibling(inputEle, 'added-img');
                 
                 // e.target.files[0] = <input> 에서 선택한 파일
                 // 선택한 파일을 base64 String 으로 변환 후 디스플레이 
@@ -144,26 +145,32 @@
 
     // 이미지에 대한 삭제 버튼 눌렀을시 이미지 삭제 
     imgContainer.addEventListener('click', function(e) {
-        if(e.target.classList.contains('added-btn')) {
+        if(e.target.classList.contains('added-btn')) {            
             let btnEle = e.target;
-            let parentNode = btnEle.parentNode;
-            for(let i = 0; i < parentNode.childNodes.length; i++) {
-                if(parentNode.childNodes[i].classList.contains('added-img')) {
-                    parentNode.childNodes[i].style = "display:none";
-                }
-            }
+            // <button> 의 자매 엘레먼트 중 <img> 
+            let imgEle = getNodeThatContainsClassFromSibling(btnEle, 'added-img');
+            btnEle.parentNode.style = "display:none";
+            imgEle.style = "display:none";
+            btnEle.style = "display:none";
+            imgEle.classList.add('deleted')
         }
     });
 
-    // element 의 자매 element 들 중 containClass 를 클래스로 갖는 element 찾음 
-    function getNodeThatContainsClass(element, containClass) {
-        
+    // element 의 자매 element 들 중 containClass(string) 를 클래스로 갖는 element 찾음 
+    // return : HtmlElement 
+    function getNodeThatContainsClassFromSibling(element, containClass) {
+        let parentNode = element.parentNode;
+        for(let i = 0; i < parentNode.childNodes.length; i++) {
+            if(parentNode.childNodes[i].classList.contains(containClass)) {
+                return parentNode.childNodes[i];
+            }
+        }
     }
 
     
-
     // submit 버튼 클릭 시 imgInputEleList 에 저장된 imgEle를 기반으로 
     // {id : 이미지 src} JSON 형식으로 서버로 보냄 
+    // 이미지가 제거된 상태라면 src 대신 'deleted' 보냄 
     document.getElementById("submitBtn").addEventListener('click', function() {
 
         // {db에 저장된 이미지 id : 이미지 src}
@@ -171,7 +178,14 @@
         imgInputEleList.map((x) => {
             let imgEle = x[0];
             let id = x[2];            
-            imgEleAndId.push([id, imgEle.src.split(',')[1]]);
+            // 이미지가 제거된 상태라면 
+            if(imgEle.classList.contains('deleted')) {
+                imgEleAndId.push([id, 'deleted']);
+            }
+            else {
+                // 'data:image/jpeg;charset=utf-8;base64,' 제외 한 뒷부분 실제 src 만 보냄 
+                imgEleAndId.push([id, imgEle.src.split(',')[1]]);
+            }            
         });
         
         let sendData = {};

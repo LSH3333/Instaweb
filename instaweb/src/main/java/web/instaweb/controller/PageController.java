@@ -179,7 +179,7 @@ public class PageController {
     }
 
     /**
-     * updatePageForm.html 에서 보내온 수정된 이미지들 정보
+     * updatePageForm.html 에서 submit 누를시 XmlHttpRequest 가 보내온 수정된 이미지들 정보
      * 디비에 반영
      */
     @ResponseBody
@@ -199,8 +199,14 @@ public class PageController {
                 String id = entry.getKey(); // key
                 String image = entry.getValue().asText(); // value
 
-                System.out.println("id = " + id + "," + "image = " + image);
-                imageService.updateImage(Long.parseLong(id), image);
+                // 수정폼에서 이미지가 제거된 상태라면 image src = 'deleted' 로 받음
+                System.out.println("id = " + id + "," + "image src = " + image);
+                if (image.equals("deleted")) {
+                    imageService.deleteImage(Long.parseLong(id));
+                }
+                else {
+                    imageService.updateImage(Long.parseLong(id), image);
+                }
             }
         }
 
