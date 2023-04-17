@@ -56,9 +56,17 @@ public class PageController {
         }
 
         // 이미지 객체들 먼저 만들고
+        /**
+         * 글 작성시 이미지 선택하지 않으면 아무것도 없어야 하는데, 현재 files.size() = 1 로 나옴, 해결 필요
+         */
+        if(form.getImages() == null){
+            System.out.println("img null");
+        }
         List<MultipartFile> files = form.getImages();
+        System.out.println("files.size() = " + files.size());
         List<Image> images = new ArrayList<>();
         for (MultipartFile file : files) {
+            System.out.println("file = " + file);
             Image image = new Image(file);
             images.add(image);
         }
