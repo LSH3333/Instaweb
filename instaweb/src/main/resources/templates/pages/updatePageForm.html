@@ -4,6 +4,29 @@
 <head>
     <meta charset="UTF-8">
     <title>Update Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <!-- <link rel="stylesheet" href="/resources/demos/style.css"> -->
+    <style>
+    #sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
+    #sortable li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; height: 18px; }
+    #sortable li span { position: absolute; margin-left: -1.3em; }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script>
+  
+    $(function() {
+      $("#imgContainer").sortable({
+        update: function(event, ui) {
+          var changedOrder = $(this).sortable('toArray', {attribute: 'data-item'}); // Get the updated order as an array
+          // 변경된 순서대로 data-item 출력 
+          console.log(changedOrder);
+        }
+      });
+    });
+
+    </script>
 
 </head>
 
@@ -27,8 +50,8 @@
         </div>
 
         <!-- 이미지, byte 배열 형의 이미지를 generateBase64Image() 로 변환 후 디스플레이  -->
-        <div id="imgContainer">
-        </div>
+        <ul id="imgContainer">
+        </ul>
         
         <button id="submitBtn" type="submit">수정</button>
     </form>
@@ -66,7 +89,7 @@
                 let imgIdx = 0;
                 
                 for(imgIdx = 0; imgIdx < data.length; imgIdx++) {
-                    let divEle = document.createElement('div');
+                    let liEle = document.createElement('li');
                     // <p>
                     let pEle = document.createElement('p');
                     pEle.innerHTML = data[imgIdx].id.toString();        
@@ -96,11 +119,11 @@
                      *  </div>
                      * </div>
                      * */
-                    divEle.appendChild(pEle);
-                    divEle.appendChild(imgEle);
-                    divEle.appendChild(inputEle);
-                    divEle.appendChild(btnEle);
-                    imgContainer.appendChild(divEle);                    
+                    liEle.appendChild(pEle);
+                    liEle.appendChild(imgEle);
+                    liEle.appendChild(inputEle);
+                    liEle.appendChild(btnEle);
+                    imgContainer.appendChild(liEle);                    
                     imgInputEleList.push([imgEle, inputEle, data[imgIdx].id])
                 }
                 
