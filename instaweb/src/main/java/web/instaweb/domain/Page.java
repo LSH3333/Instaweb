@@ -30,8 +30,9 @@ public class Page {
     private LocalDateTime createdTime;
 
     // 이미지
-    // Image 는 Page 없이 존재할수 없다
+    // orphanRemoval : Image 는 Page 없이 존재할수 없다
     @OneToMany(mappedBy = "page", orphanRemoval = true)
+    @OrderBy("imgIdx asc") // Image 의 imgIdx 기준 오름차순
     private List<Image> images = new ArrayList<>();
 
 

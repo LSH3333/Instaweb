@@ -24,6 +24,13 @@ public class Image {
     @Lob
     private byte[] image;
 
+    // Page.images 리스트에 저장되는 순서
+    private long imgIdx;
+
+    public void setImgIdx(long imgIdx) {
+        this.imgIdx = imgIdx;
+    }
+
     public Image() {}
 
     public void setImage(byte[] image) {
@@ -37,6 +44,7 @@ public class Image {
     public void setPage(Page page) {
         this.page = page;
     }
+
 
     /**
      * MultiPartFile 로 받은 이미지 파일들 byte 로 변환 후 저장

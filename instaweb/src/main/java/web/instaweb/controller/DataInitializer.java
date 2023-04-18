@@ -34,6 +34,17 @@ public class DataInitializer implements ApplicationRunner {
         inputStream.close();
     }
 
+    private byte[] noImgFile;
+
+    private void getNoImgFile2() throws IOException {
+        // Load the image file from the resources/static folder
+        Resource resource = new ClassPathResource("static/no-img" +
+                ".png");
+        InputStream inputStream = resource.getInputStream();
+        noImgFile = inputStream.readAllBytes();
+        inputStream.close();
+    }
+
     /**
      * dataCnt 개의 데이터 서버 시작전 미리 저장해놓음
      */
@@ -46,6 +57,20 @@ public class DataInitializer implements ApplicationRunner {
             MakePage(Integer.toString(i), imgFile);
         }
 
+        // temp 51 page for test
+//        getNoImgFile2();
+//        Page page = new Page("title " + "51", "content " + "51", LocalDateTime.now());
+//        pageService.savePage(page);
+//
+//        Image image = new Image();
+//        image.setPage(page);
+//        image.setImage(imgFile);
+//        imageService.saveImage(image);
+//
+//        Image image2 = new Image();
+//        image2.setPage(page);
+//        image2.setImage(noImgFile);
+//        imageService.saveImage(image2);
     }
 
 

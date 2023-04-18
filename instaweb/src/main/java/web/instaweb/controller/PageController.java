@@ -87,8 +87,10 @@ public class PageController {
         pageService.savePage(page);
 
         // 페이지와 이미지들 연결 후 레포지토리에 저장
+        long imgIdx = 0L; // 선택한 이미지의 순서 저장
         for (Image image : images) {
             image.setPage(page);
+            image.setImgIdx(imgIdx++);
             page.addImage(image);
             imageService.saveImage(image);
         }
@@ -219,7 +221,7 @@ public class PageController {
 
         // JsonString 으로 온 data 를 iterate 하면서 key, value 처리
         ObjectMapper objectMapper = new ObjectMapper();
-
+        // data 는 JSON 형식으로 전달 받았음
         JsonNode jsonNode = objectMapper.readTree(data);
 
         if (jsonNode.isObject()) {
