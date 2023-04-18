@@ -217,11 +217,10 @@ public class PageController {
     @ResponseBody
     @PostMapping("/pages/editImages")
     public void editImages(@RequestBody String data) throws JsonProcessingException {
-        System.out.println("editImages");
 
         // JsonString 으로 온 data 를 iterate 하면서 key, value 처리
         ObjectMapper objectMapper = new ObjectMapper();
-        // data 는 JSON 형식으로 전달 받았음
+        // data 는 JSON 형식으로 전달 받았음 {id : imgSrc}
         JsonNode jsonNode = objectMapper.readTree(data);
 
         if (jsonNode.isObject()) {
@@ -245,7 +244,7 @@ public class PageController {
     }
 
     /**
-     * 글 수정 폼에서 (updatePageForm.html) 요청
+     * 글 수정 폼(updatePageForm.html) 에서  요청
      * 특정 id 페이지에 저장된 모든 이미지들 리턴
      * 순환참조 오류 때문에 GetImageDto 로 반환
      */

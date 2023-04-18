@@ -20,8 +20,8 @@
     $(function() {
       $("#imgContainer").sortable({
         update: function(event, ui) {
-          var changedOrder = $(this).sortable('toArray', {attribute: 'data-item'}); // Get the updated order as an array
-          // 변경된 순서대로 data-item 출력 
+          var changedOrder = $(this).sortable('toArray', {attribute: 'imgIdx'}); // Get the updated order as an array
+          // 변경된 순서대로 imgIdx 출력 
           console.log(changedOrder);
         }
       });
