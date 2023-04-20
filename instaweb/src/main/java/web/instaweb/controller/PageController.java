@@ -61,6 +61,12 @@ public class PageController {
             return "pages/createPageForm";
         }
 
+        List<String> imageOrder = form.getImageOrder();
+        System.out.println("imageOrder :");
+        for (String s : imageOrder) {
+            System.out.println(s);
+        }
+
         // 이미지 객체들 먼저 만들고
         /**
          * 생성폼에서 이미지를 선택하지 않았다면 form.getImages().get(0).getContentType() = "application/octet-stream" 이 된다

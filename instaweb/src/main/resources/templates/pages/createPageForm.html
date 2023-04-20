@@ -20,15 +20,29 @@
         
     // let changedOrder = [];
     // JQuery sortable <ul id="imgContainer"> 내 의 리스트 드래그로 이동 가능하도록함 
+    // $(function() {
+    //   $("#selectedImgContainer").sortable({
+    //     update: function(event, ui) {
+    //     //   changedOrder = $(this).sortable('toArray', {attribute: 'imgIdx'}); // Get the updated order as an array
+    //       // 변경된 순서대로 imgIdx 출력 
+    //     //   console.log(changedOrder);
+    //     }
+    //   });
+    // });
+
     $(function() {
-      $("#selectedImgContainer").sortable({
-        update: function(event, ui) {
-        //   changedOrder = $(this).sortable('toArray', {attribute: 'imgIdx'}); // Get the updated order as an array
-          // 변경된 순서대로 imgIdx 출력 
-        //   console.log(changedOrder);
-        }
-      });
-    });
+        $("#selectedImgContainer").sortable({
+            update: function(event, ui) {
+                var imageOrder = [];
+                $("#selectedImgContainer li").each(function() {
+                    var imgSrc = $(this).find("img").attr("src");
+                    imageOrder.push(imgSrc);
+                });
+                $("#imageOrder").val(JSON.stringify(imageOrder));
+            }
+        });
+});
+
 
     </script>
     
@@ -98,13 +112,12 @@
         <ul id="selectedImgContainer" style="list-style:none;">                
         </ul>
 
-        <button type="submit">Submit</button>
+        <input type="hidden" name="imageOrder" id="imageOrder" value="">
+        <button id="submitBtn" type="submit">Submit</button>
     </form>
 
 
 </div>
-
-
 
 </body>
 

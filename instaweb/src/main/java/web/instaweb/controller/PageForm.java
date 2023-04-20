@@ -30,5 +30,6 @@ public class PageForm {
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     private LocalDateTime createdTime;
 
+    private List<String> imageOrder;
 
 }
