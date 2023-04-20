@@ -47,7 +47,7 @@ public class ImageService {
      *
      */
     @Transactional
-    public void updateImage(Long id, String base64String) {
+    public void updateImage(Long id, String base64String, long imgIdx) {
         // 여기서 image 는 db에서 가져왔으므로 영속 상태
         Image image = imageRepository.findOne(id);
         if (image == null) {
@@ -55,6 +55,7 @@ public class ImageService {
         }
         byte[] decoded = Base64.getDecoder().decode(base64String);
         image.changeImage(decoded);
+        image.changeImgIdx(imgIdx);
         // @Transactional 에 의해 commit 됨 -> flush (변경 감지)
     }
 }

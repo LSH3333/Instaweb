@@ -70,4 +70,8 @@ public class Image {
     public void changeImage(byte[] image) {
         this.image = image;
     }
+
+    public void changeImgIdx(long imgIdx) {
+        this.imgIdx = imgIdx;
+    }
 }

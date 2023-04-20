@@ -1,8 +1,5 @@
 package web.instaweb.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.core.io.ClassPathResource;
@@ -23,7 +20,6 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Controller
@@ -247,26 +243,25 @@ public class PageController {
     public ResponseEntity<String> handleEditImagesRequest(@RequestBody Map<String, Object> jsonData) {
         // Do something with the received JSON data
         for (Map.Entry<String, Object> entry : jsonData.entrySet()) {
-            String imageId = entry.getKey();
+            String id = entry.getKey();
             Object imageDataObj = entry.getValue();
             // Check if the image data is an array
             if (imageDataObj instanceof List) {
                 List<Object> imageDataList = (List<Object>) imageDataObj;
                 // Extract the image data and order from the array
                 String imageData = (String) imageDataList.get(0);
-                String order = (String) imageDataList.get(1);
-                System.out.println("handleEditImagesRequest \n" + imageId + '\n' + imageData + '\n' + order);
-                // Handle the image data based on whether it is deleted or not
+                String imgIdx = (String) imageDataList.get(1);
+                System.out.println("handleEditImagesRequest \n" + id + '\n' + imageData + '\n' + imgIdx);
+
+                // 삭제된 이미지
                 if (imageData.equals("deleted")) {
-                    // Handle the case where the image is deleted
-                    // ...
-                } else {
-                    // Handle the case where the image is not deleted and also contains order information
-                    // ...
+                    imageService.deleteImage(Long.parseLong(id));
+                }
+                else {
+                    imageService.updateImage(Long.parseLong(id), imageData, Long.parseLong(imgIdx));
                 }
             } else {
-                // Handle the case where the image data is not an array
-                // ...
+                System.out.println("not instance of List");
             }
         }
         // Return a response indicating success
