@@ -4,9 +4,37 @@
 <head>
     <meta charset="UTF-8">
     <title>Create Page</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    
+    <style>
+        #sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
+        #sortable li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; height: 18px; }
+        #sortable li span { position: absolute; margin-left: -1.3em; }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+
+    <script>
+        
+    // let changedOrder = [];
+    // JQuery sortable <ul id="imgContainer"> 내 의 리스트 드래그로 이동 가능하도록함 
+    $(function() {
+      $("#selectedImgContainer").sortable({
+        update: function(event, ui) {
+        //   changedOrder = $(this).sortable('toArray', {attribute: 'imgIdx'}); // Get the updated order as an array
+          // 변경된 순서대로 imgIdx 출력 
+        //   console.log(changedOrder);
+        }
+      });
+    });
+
+    </script>
+    
     
     <script type="text/javascript">
-        
+              
         window.onload = function() {
             var imageInput = document.getElementById('images');
             var selectedImgContainer = document.getElementById('selectedImgContainer');
@@ -28,9 +56,11 @@
 
                 // selectedImgContainer 에 <img> append
                 imgList.map((imgURL) => {
+                    var li = document.createElement('li')
                     var image = document.createElement('img');
                     image.src = imgURL;
-                    selectedImgContainer.appendChild(image);
+                    li.appendChild(image);
+                    selectedImgContainer.appendChild(li);
                 });
 
             });
@@ -62,9 +92,11 @@
         <!-- 이미지 선택시 imageInput.eventListener 에 의해 선택한 이미지 디스플레이됨        -->
         <div>
             <label th:for="images">이미지 파일들</label>
-            <input id="images" name="images" type="file" multiple="multiple">
-            <div id="selectedImgContainer"></div>
+            <input id="images" name="images" type="file" multiple="multiple">        
         </div>
+
+        <ul id="selectedImgContainer" style="list-style:none;">                
+        </ul>
 
         <button type="submit">Submit</button>
     </form>

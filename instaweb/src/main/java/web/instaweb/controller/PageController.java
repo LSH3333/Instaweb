@@ -52,7 +52,7 @@ public class PageController {
 
     /**
      * 글 작성
-     * 페이지폼에서 작성 후 작성 버튼
+     * 페이지폼에서 작성 후 submit 버튼
      */
     @PostMapping("/pages/new")
     public String create(@Valid PageForm form, BindingResult result) throws IOException {
@@ -211,34 +211,6 @@ public class PageController {
      * updatePageForm.html 에서 submit 누를시 XmlHttpRequest 가 보내온 수정된 이미지들 정보
      * 디비에 반영
      */
-//    @ResponseBody
-//    @PostMapping("/pages/editImages")
-//    public void editImages(@RequestBody String data) throws JsonProcessingException {
-//
-//        // JsonString 으로 온 data 를 iterate 하면서 key, value 처리
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        // data 는 JSON 형식으로 전달 받았음 {id : imgSrc}
-//        JsonNode jsonNode = objectMapper.readTree(data);
-//
-//        if (jsonNode.isObject()) {
-//            Iterator<Map.Entry<String, JsonNode>> fields = jsonNode.fields();
-//            while (fields.hasNext()) {
-//                Map.Entry<String, JsonNode> entry = fields.next();
-//                String id = entry.getKey(); // key
-//                String image = entry.getValue().asText(); // value
-//
-//                // 수정폼에서 이미지가 제거된 상태라면 image src = 'deleted' 로 받음
-//                System.out.println("id = " + id + "," + "image src = " + image);
-//                if (image.equals("deleted")) {
-//                    imageService.deleteImage(Long.parseLong(id));
-//                }
-//                else {
-//                    imageService.updateImage(Long.parseLong(id), image);
-//                }
-//            }
-//        }
-//    }
-
     @PostMapping("/pages/editImages")
     public ResponseEntity<String> handleEditImagesRequest(@RequestBody Map<String, Object> jsonData) {
         // Do something with the received JSON data
