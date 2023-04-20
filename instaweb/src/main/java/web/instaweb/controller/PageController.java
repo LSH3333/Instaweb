@@ -182,9 +182,9 @@ public class PageController {
         form.setTitle(page.getTitle());
         form.setContent(page.getContent());
         form.setCreatedTime(page.getCreatedTime());
-        System.out.println("updatePageForm createdTime = " + page.getCreatedTime());
         // 수정을 위해서 PageForm 에는 Image 형으로도 저장 가능
         form.setByteImages(page.getImages());
+
 
         model.addAttribute("form", form);
         return "pages/updatePageForm";
@@ -248,6 +248,7 @@ public class PageController {
             // Check if the image data is an array
             if (imageDataObj instanceof List) {
                 List<Object> imageDataList = (List<Object>) imageDataObj;
+                System.out.println("imageDataList.size() = " + imageDataList.size());
                 // Extract the image data and order from the array
                 String imageData = (String) imageDataList.get(0);
                 String imgIdx = (String) imageDataList.get(1);
