@@ -14,13 +14,15 @@
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+
     <script>
-  
+
+    let changedOrder = [];
     // JQuery sortable <ul id="imgContainer"> 내 의 리스트 드래그로 이동 가능하도록함 
     $(function() {
       $("#imgContainer").sortable({
         update: function(event, ui) {
-          var changedOrder = $(this).sortable('toArray', {attribute: 'imgIdx'}); // Get the updated order as an array
+          changedOrder = $(this).sortable('toArray', {attribute: 'imgIdx'}); // Get the updated order as an array
           // 변경된 순서대로 imgIdx 출력 
           console.log(changedOrder);
         }
@@ -59,8 +61,7 @@
 </div>
 
 
-<script type="text/javascript">
-
+<script type="text/javascript">    
     var xhr = new XMLHttpRequest();
     var idAndImagesrc = new Map();
     var pageID = "[[${form.id}]]";
@@ -91,6 +92,8 @@
                 
                 for(imgIdx = 0; imgIdx < data.length; imgIdx++) {
                     let liEle = document.createElement('li');
+                    liEle.setAttribute('imgIdx', data[imgIdx].imgIdx);
+                    console.log("imgIdx = " + data[imgIdx].imgIdx);
                     // <p>
                     let pEle = document.createElement('p');
                     pEle.innerHTML = data[imgIdx].id.toString();        
@@ -112,12 +115,12 @@
                     btnEle.classList.add('added-btn'); 
                     /**
                      * <div id="imgContainer">
-                     *  <div>
+                     *  <li>
                      *   <p>
                      *   <img>
                      *   <input> 
                      *   <button>   
-                     *  </div>
+                     *  </li>
                      * </div>
                      * */
                     liEle.appendChild(pEle);
@@ -196,7 +199,7 @@
     // 이미지가 제거된 상태라면 src 대신 'deleted' 보냄 
     document.getElementById("submitBtn").addEventListener('click', function() {
 
-        // {db에 저장된 이미지 id : 이미지 src}
+        // {db에 저장된 이미지 id : 이미지 src(제거됐다면 'deleted')}
         let imgEleAndId = [];
         imgInputEleList.map((x) => {
             let imgEle = x[0];
@@ -208,13 +211,16 @@
             else {
                 // 'data:image/jpeg;charset=utf-8;base64,' 제외 한 뒷부분 실제 src 만 보냄 
                 imgEleAndId.push([id, imgEle.src.split(',')[1]]);
-            }            
+            }                        
         });
         
         let sendData = {};
-        imgEleAndId.forEach(function(item) {
-            sendData[item[0]] = item[1];
-        });
+        for(let i = 0; i < imgEleAndId.length; i++) {
+            let id = imgEleAndId[i][0];
+            let imgSrc = imgEleAndId[i][1];
+            // sendData[id] = imgSrc;
+            sendData[id] = [imgSrc, changedOrder[i]];
+        }
 
         let jsonString = JSON.stringify(sendData);
 

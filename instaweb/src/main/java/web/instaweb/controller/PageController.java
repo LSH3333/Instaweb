@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -214,34 +215,64 @@ public class PageController {
      * updatePageForm.html 에서 submit 누를시 XmlHttpRequest 가 보내온 수정된 이미지들 정보
      * 디비에 반영
      */
-    @ResponseBody
+//    @ResponseBody
+//    @PostMapping("/pages/editImages")
+//    public void editImages(@RequestBody String data) throws JsonProcessingException {
+//
+//        // JsonString 으로 온 data 를 iterate 하면서 key, value 처리
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        // data 는 JSON 형식으로 전달 받았음 {id : imgSrc}
+//        JsonNode jsonNode = objectMapper.readTree(data);
+//
+//        if (jsonNode.isObject()) {
+//            Iterator<Map.Entry<String, JsonNode>> fields = jsonNode.fields();
+//            while (fields.hasNext()) {
+//                Map.Entry<String, JsonNode> entry = fields.next();
+//                String id = entry.getKey(); // key
+//                String image = entry.getValue().asText(); // value
+//
+//                // 수정폼에서 이미지가 제거된 상태라면 image src = 'deleted' 로 받음
+//                System.out.println("id = " + id + "," + "image src = " + image);
+//                if (image.equals("deleted")) {
+//                    imageService.deleteImage(Long.parseLong(id));
+//                }
+//                else {
+//                    imageService.updateImage(Long.parseLong(id), image);
+//                }
+//            }
+//        }
+//    }
+
     @PostMapping("/pages/editImages")
-    public void editImages(@RequestBody String data) throws JsonProcessingException {
-
-        // JsonString 으로 온 data 를 iterate 하면서 key, value 처리
-        ObjectMapper objectMapper = new ObjectMapper();
-        // data 는 JSON 형식으로 전달 받았음 {id : imgSrc}
-        JsonNode jsonNode = objectMapper.readTree(data);
-
-        if (jsonNode.isObject()) {
-            Iterator<Map.Entry<String, JsonNode>> fields = jsonNode.fields();
-            while (fields.hasNext()) {
-                Map.Entry<String, JsonNode> entry = fields.next();
-                String id = entry.getKey(); // key
-                String image = entry.getValue().asText(); // value
-
-                // 수정폼에서 이미지가 제거된 상태라면 image src = 'deleted' 로 받음
-                System.out.println("id = " + id + "," + "image src = " + image);
-                if (image.equals("deleted")) {
-                    imageService.deleteImage(Long.parseLong(id));
+    public ResponseEntity<String> handleEditImagesRequest(@RequestBody Map<String, Object> jsonData) {
+        // Do something with the received JSON data
+        for (Map.Entry<String, Object> entry : jsonData.entrySet()) {
+            String imageId = entry.getKey();
+            Object imageDataObj = entry.getValue();
+            // Check if the image data is an array
+            if (imageDataObj instanceof List) {
+                List<Object> imageDataList = (List<Object>) imageDataObj;
+                // Extract the image data and order from the array
+                String imageData = (String) imageDataList.get(0);
+                String order = (String) imageDataList.get(1);
+                System.out.println("handleEditImagesRequest \n" + imageId + '\n' + imageData + '\n' + order);
+                // Handle the image data based on whether it is deleted or not
+                if (imageData.equals("deleted")) {
+                    // Handle the case where the image is deleted
+                    // ...
+                } else {
+                    // Handle the case where the image is not deleted and also contains order information
+                    // ...
                 }
-                else {
-                    imageService.updateImage(Long.parseLong(id), image);
-                }
+            } else {
+                // Handle the case where the image data is not an array
+                // ...
             }
         }
-
+        // Return a response indicating success
+        return ResponseEntity.ok("Edit Images Request Handled Successfully");
     }
+
 
     /**
      * 글 수정 폼(updatePageForm.html) 에서  요청
