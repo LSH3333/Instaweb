@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -99,6 +100,45 @@ public class PageController {
         }
 
         return "redirect:/";
+    }
+
+//    @PostMapping("/upload")
+//    public String uploadFiles(@RequestParam("files") MultipartFile[] files) {
+//        System.out.println("upload here");
+//        // handle the files here
+//        // ...
+//        return "/pages/pageList";
+//    }
+
+
+    /**
+     *
+     * @param files : 글 작성폼에서 보낸 유저가 선택한 파일들, 유저가 선택한 순서대로 담겨서 오기 때문에 그냥 순서대로 imgIdx 부여 하면됨
+     * @return
+     */
+    @PostMapping("/pages/uploadImages")
+    public ResponseEntity<String> handleFileUpload(@RequestBody MultipartFile[] files) {
+        System.out.println("handleFileUpload");
+        String message = "";
+        try {
+
+            long imgIdx = 0;
+            for (MultipartFile file : files) {
+                // Get file bytes
+//                byte[] bytes = file.getBytes();
+                // Do something with the bytes (e.g. save to database or disk)
+                Image image = new Image(file);
+                image.setImgIdx(imgIdx++);
+                image.setPage(); // 페이지 정보 전달받아야할듯 
+                imageService.saveImage(image);
+            }
+
+            message = "Files uploaded successfully!";
+            return ResponseEntity.status(HttpStatus.OK).body(message);
+        } catch (IOException e) {
+            message = "Failed to upload files: " + e.getMessage();
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(message);
+        }
     }
 
 

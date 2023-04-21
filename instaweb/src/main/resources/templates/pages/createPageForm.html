@@ -79,6 +79,7 @@
         var fileList = [];
 
         // JQuery sortable <ul id="imgContainer"> 내 의 리스트 드래그로 이동 가능하도록함 
+        // 순서가 변경됐다면 fileList 의 순서도 그에 맞춰 변경되도록함 
         $(function () {
             $("#selectedImgContainer").sortable({
                 update: function (event, ui) {
@@ -99,13 +100,7 @@
                     for (let i = 0; i < changedOrderFileList.length; i++) {
                         fileList.push(changedOrderFileList[i]);
                     }
-
-                    // print 
-                    for (let i = 0; i < fileList.length; i++) {
-                        let file = fileList[i];
-                        console.log("file = " + file.name);
-                    }
-
+                    // <ul> 의 자식노드 돌면서 <li> 의 imgOrder 를 다시 위에서 부터 아래로 0부터 증가하면서 바꾼다  
                     let ulEle = document.getElementById('selectedImgContainer');
                     for (let i = 0; i < ulEle.childNodes.length; i++) {
                         let liEle = ulEle.childNodes[i];
@@ -147,19 +142,33 @@
             // Prevent the default form submission behavior (버튼 클릭시 서버로 폼 전송 방지)
             event.preventDefault();
 
-            sendImgDataToServer();
+            // 이미지 정보 먼저 ajax로 보내고 폼 데이터 이후 보냄 
+            uploadImgs(fileList);
         });
 
-        function sendImgDataToServer() {
-            let ulEle = document.getElementById('selectedImgContainer');
-            for (let i = 0; i < ulEle.childNodes.length; i++) {
-                let liEle = ulEle.childNodes[i];
-                let imgEle = liEle.childNodes[0];
+        // files 에 담긴 파일들 formData 에 담아 서버에 ajax request 보냄 
+        function uploadImgs(files) {
+            const formData = new FormData();
 
-                console.log('imgIdx = ' + liEle.getAttribute('imgIdx'));
+            for (let i = 0; i < files.length; i++) {
+                formData.append('files', files[i]);
             }
 
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', '/pages/uploadImages', true);
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    console.log('Files uploaded successfully');
+                    const form = document.querySelector('form');
+                    form.submit(); // ajax 완료 후 form 전송 
+                } else {
+                    console.error('Error uploading files');
+                }
+            };
+            xhr.send(formData);
         }
+
+
 
 
     </script>
