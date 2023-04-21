@@ -76,8 +76,10 @@
 
     <script type="text/javascript">
 
-        var changedOrder = [];
-        var fileList = [];
+        var imageInput = document.getElementById('images');
+        var selectedImgContainer = document.getElementById('selectedImgContainer');
+        var changedOrder = []; // 유저가 이미지 순서 변경시 update 됨 
+        var fileList = []; // 유저가 선택한 file 이 담김 
 
         // JQuery sortable <ul id="imgContainer"> 내 의 리스트 드래그로 이동 가능하도록함 
         // 순서가 변경됐다면 fileList 의 순서도 그에 맞춰 변경되도록함 
@@ -85,8 +87,7 @@
             $("#selectedImgContainer").sortable({
                 update: function (event, ui) {
                     changedOrder = $(this).sortable('toArray', { attribute: 'imgOrder' }); // Get the updated order as an array
-                    // 변경된 순서대로 imgIdx 출력 
-                    console.log(changedOrder);
+              
 
                     // li 순서 변경된대로 fileList 도 순서 변경함 
                     let changedOrderFileList = new Array(changedOrder.length).fill(0);
@@ -112,10 +113,10 @@
         });
 
         window.onload = function () {
-            var imageInput = document.getElementById('images');
-            var selectedImgContainer = document.getElementById('selectedImgContainer');
 
 
+            // <input> event listener 
+            // 사용자가 이미지들 선택하면 fileList 에 담고 디스플레이 위한 element 도 만듦 
             imageInput.addEventListener('change', function (event) {
                 // 이미지 다시 선택시 초기화
                 selectedImgContainer.innerHTML = "";
@@ -130,7 +131,15 @@
                     liEle.setAttribute('imgOrder', i);
                     let imgEle = document.createElement('img');
                     imgEle.src = URL.createObjectURL(file);
+
+                    // 이미지 삭제 <button>     
+                    let btnEle = document.createElement('button');
+                    btnEle.innerText = "DELETE";
+                    btnEle.type = "button";
+                    btnEle.classList.add('added-btn');
+
                     liEle.appendChild(imgEle);
+                    liEle.appendChild(btnEle);
                     selectedImgContainer.appendChild(liEle);
                 }
             });
@@ -174,7 +183,16 @@
         }
 
 
-
+        // 이미지에 대한 삭제 버튼 눌렀을시 이미지 삭제 (이미지가 속한 <li> 를 제거함)
+        selectedImgContainer.addEventListener('click', function (e) {
+            if (e.target.classList.contains('added-btn')) {
+                let btnEle = e.target;
+                let liEle = btnEle.parentNode;
+                let imgOrder = parseInt(liEle.getAttribute('imgOrder'));
+                fileList.splice(imgOrder, 1);
+                liEle.remove();
+            }
+        });
 
     </script>
 
