@@ -7,117 +7,162 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-    
+
     <style>
-        #sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
-        #sortable li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; height: 18px; }
-        #sortable li span { position: absolute; margin-left: -1.3em; }
+        #sortable {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            width: 60%;
+        }
+
+        #sortable li {
+            margin: 0 3px 3px 3px;
+            padding: 0.4em;
+            padding-left: 1.5em;
+            font-size: 1.4em;
+            height: 18px;
+        }
+
+        #sortable li span {
+            position: absolute;
+            margin-left: -1.3em;
+        }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 
-    <script>
-        
-    // let changedOrder = [];
-    // JQuery sortable <ul id="imgContainer"> 내 의 리스트 드래그로 이동 가능하도록함 
-    // $(function() {
-    //   $("#selectedImgContainer").sortable({
-    //     update: function(event, ui) {
-    //     //   changedOrder = $(this).sortable('toArray', {attribute: 'imgIdx'}); // Get the updated order as an array
-    //       // 변경된 순서대로 imgIdx 출력 
-    //     //   console.log(changedOrder);
-    //     }
-    //   });
-    // });
-
-    $(function() {
-        $("#selectedImgContainer").sortable({
-            update: function(event, ui) {
-                var imageOrder = [];
-                $("#selectedImgContainer li").each(function() {
-                    var imgSrc = $(this).find("img").attr("src");
-                    imageOrder.push(imgSrc);
-                });
-                $("#imageOrder").val(JSON.stringify(imageOrder));
-            }
-        });
-});
 
 
-    </script>
-    
-    
+
+</head>
+
+<body>
+    <div>
+        <form th:action="@{/pages/new}" th:object="${form}" method="post" enctype="multipart/form-data">
+            <!-- title -->
+            <div>
+                <label th:for="title">제목</label>
+                <input type="text" th:field="*{title}" placeholder="제목을 입력하세요">
+            </div>
+
+            <!-- content -->
+            <div>
+                <div style="display: flex; align-items: center;">
+                    <label th:for="content">내용</label>
+                    <textarea cols="50" rows="10" th:field="*{content}" placeholder="내용을 입력하세요"></textarea>
+                </div>
+            </div>
+
+            <!-- images upload  -->
+            <!-- 이미지 선택시 imageInput.eventListener 에 의해 선택한 이미지 디스플레이됨        -->
+            <div>
+                <label th:for="images">이미지 파일들</label>
+                <input id="images" name="images" type="file" multiple="multiple">
+            </div>
+
+            <ul id="selectedImgContainer" style="list-style:none;">
+            </ul>
+
+            <input type="hidden" name="imageOrder" id="imageOrder" value="">
+            <button id="submitBtn" type="submit">Submit</button>
+        </form>
+
+
+    </div>
+
+
+
     <script type="text/javascript">
-              
-        window.onload = function() {
+
+        var changedOrder = [];
+        var fileList = [];
+
+        // JQuery sortable <ul id="imgContainer"> 내 의 리스트 드래그로 이동 가능하도록함 
+        $(function () {
+            $("#selectedImgContainer").sortable({
+                update: function (event, ui) {
+                    changedOrder = $(this).sortable('toArray', { attribute: 'imgOrder' }); // Get the updated order as an array
+                    // 변경된 순서대로 imgIdx 출력 
+                    console.log(changedOrder);
+
+                    // li 순서 변경된대로 fileList 도 순서 변경함 
+                    let changedOrderFileList = new Array(changedOrder.length).fill(0);
+                    for (let i = 0; i < changedOrder.length; i++) {
+                        let o = parseInt(changedOrder[i]);
+                        changedOrderFileList[i] = fileList[o];
+                        console.log("changed = " + changedOrderFileList[i]);
+                    }
+                    fileList = [];
+
+                    // update fileList with the new order of elements
+                    for (let i = 0; i < changedOrderFileList.length; i++) {
+                        fileList.push(changedOrderFileList[i]);
+                    }
+
+                    // print 
+                    for (let i = 0; i < fileList.length; i++) {
+                        let file = fileList[i];
+                        console.log("file = " + file.name);
+                    }
+
+                    let ulEle = document.getElementById('selectedImgContainer');
+                    for (let i = 0; i < ulEle.childNodes.length; i++) {
+                        let liEle = ulEle.childNodes[i];
+                        liEle.setAttribute('imgOrder', i);
+                    }
+                }
+            });
+        });
+
+        window.onload = function () {
             var imageInput = document.getElementById('images');
             var selectedImgContainer = document.getElementById('selectedImgContainer');
 
-            // 유저가 이미지 선택시 선택한 이미지들 디스플레이 
+
             imageInput.addEventListener('change', function (event) {
                 // 이미지 다시 선택시 초기화
                 selectedImgContainer.innerHTML = "";
-                var files = event.target.files;
+                let files = event.target.files;
+                fileList.length = 0;
 
-                // 이미지 URL 저장
-                var imgList = [];
+                for (let i = 0; i < files.length; i++) {
+                    let file = files[i];
+                    fileList.push(file);
 
-                // 파일의 URL 생성, 이용해서 디스플레이 
-                for (var i = 0; i < files.length; i++) {
-                    var file = files[i];
-                    imgList.push(URL.createObjectURL(file));
+                    let liEle = document.createElement('li');
+                    liEle.setAttribute('imgOrder', i);
+                    let imgEle = document.createElement('img');
+                    imgEle.src = URL.createObjectURL(file);
+                    liEle.appendChild(imgEle);
+                    selectedImgContainer.appendChild(liEle);
                 }
-
-                // selectedImgContainer 에 <img> append
-                imgList.map((imgURL) => {
-                    var li = document.createElement('li')
-                    var image = document.createElement('img');
-                    image.src = imgURL;
-                    li.appendChild(image);
-                    selectedImgContainer.appendChild(li);
-                });
-
             });
 
         };
 
+        // button event listener 
+        let button = document.getElementById('submitBtn');
+        button.addEventListener('click', function (event) {
+            // Prevent the default form submission behavior (버튼 클릭시 서버로 폼 전송 방지)
+            event.preventDefault();
+
+            sendImgDataToServer();
+        });
+
+        function sendImgDataToServer() {
+            let ulEle = document.getElementById('selectedImgContainer');
+            for (let i = 0; i < ulEle.childNodes.length; i++) {
+                let liEle = ulEle.childNodes[i];
+                let imgEle = liEle.childNodes[0];
+
+                console.log('imgIdx = ' + liEle.getAttribute('imgIdx'));
+            }
+
+        }
+
 
     </script>
-</head>
-
-<body>
-<div>
-    <form th:action="@{/pages/new}" th:object="${form}" method="post" enctype="multipart/form-data">
-        <!-- title -->
-        <div>
-            <label th:for="title">제목</label>
-            <input type="text" th:field="*{title}" placeholder="제목을 입력하세요">
-        </div>
-
-        <!-- content -->
-        <div>
-            <div style="display: flex; align-items: center;">
-                <label th:for="content">내용</label>
-                <textarea cols="50" rows="10" th:field="*{content}" placeholder="내용을 입력하세요"></textarea>
-            </div>
-        </div>
-
-        <!-- images upload  -->
-        <!-- 이미지 선택시 imageInput.eventListener 에 의해 선택한 이미지 디스플레이됨        -->
-        <div>
-            <label th:for="images">이미지 파일들</label>
-            <input id="images" name="images" type="file" multiple="multiple">        
-        </div>
-
-        <ul id="selectedImgContainer" style="list-style:none;">                
-        </ul>
-
-        <input type="hidden" name="imageOrder" id="imageOrder" value="">
-        <button id="submitBtn" type="submit">Submit</button>
-    </form>
-
-
-</div>
 
 </body>
 
