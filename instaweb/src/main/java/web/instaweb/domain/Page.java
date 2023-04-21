@@ -45,6 +45,7 @@ public class Page {
         this.createdTime = createdTime;
     }
 
+
     public void changeAll(Long id, String title, String content, LocalDateTime createdTime) {
         this.id = id;
         this.title = title;

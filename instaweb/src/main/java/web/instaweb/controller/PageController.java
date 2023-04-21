@@ -44,10 +44,18 @@ public class PageController {
 
     /**
      * 글 작성 폼
+     * createPageForm.html 에서 사용자가 선택, 변경한 이미지의 순서를 기억하려면 form 이 서버로 전달되기 전에 ajax request 로 Image 객체 만들어야 하기 때문에
+     * createPageForm 으로 넘어가기 전에 Page 객체 미리 만들어서 id 생성해놓고, 생성된 id 값도 PageForm 에 포함시켜서 전달
      */
     @GetMapping("/pages/new")
     public String createForm(Model model) {
-        model.addAttribute("form", new PageForm());
+        // 글 작성폼에서 ajax request 로 이미지 저장할때 id 가 필요하기 때문에, 아무것도 없는 Page 를 여기서 미리 만든다
+        PageForm pageForm = new PageForm();
+        Page page = new Page();
+        pageService.savePage(page);
+        pageForm.setId(page.getId());
+
+        model.addAttribute("form", pageForm);
         return "pages/createPageForm";
     }
 
@@ -62,11 +70,6 @@ public class PageController {
             return "pages/createPageForm";
         }
 
-        List<String> imageOrder = form.getImageOrder();
-        System.out.println("imageOrder :");
-        for (String s : imageOrder) {
-            System.out.println(s);
-        }
 
         // 이미지 객체들 먼저 만들고
         /**
@@ -75,61 +78,49 @@ public class PageController {
          * "application/octet-stream" 은 8 비트 단위 binary 라는 의미
          */
         // 생성폼에서 이미지 1개 이상 선택했다면 Image 객체 만듦
-        List<Image> images = new ArrayList<>();
-        if(!form.getImages().get(0).getContentType().equals("application/octet-stream")){
-            List<MultipartFile> files = form.getImages();
-            for (MultipartFile file : files) {
-                Image image = new Image(file);
-                images.add(image);
-            }
-        }
+//        List<Image> images = new ArrayList<>();
+//        if(!form.getImages().get(0).getContentType().equals("application/octet-stream")){
+//            List<MultipartFile> files = form.getImages();
+//            for (MultipartFile file : files) {
+//                Image image = new Image(file);
+//                images.add(image);
+//            }
+//        }
 
-        // 페이지 객체 만들고
-        // id 는 jpa 가 생성하도록함
-        Page page = new Page(form.getTitle(), form.getContent(), LocalDateTime.now());
-        // 페이지 객체 먼저 영속성 객체로 만든 후 이미지 객체와 연결 (그렇지 않으면 이미지 객체가 페이지 객체의 pk 값 모르는 문제 발생)
-        pageService.savePage(page);
 
-        // 페이지와 이미지들 연결 후 레포지토리에 저장
-        long imgIdx = 0L; // 선택한 이미지의 순서 저장
-        for (Image image : images) {
-            image.setPage(page);
-            image.setImgIdx(imgIdx++);
-            page.addImage(image);
-            imageService.saveImage(image);
-        }
+        System.out.println("created page");
+        System.out.println(form.getId() + " " + form.getTitle() + " " + form.getContent() + " " + LocalDateTime.now());
+        pageService.updatePage(form.getId(), form.getTitle(), form.getContent(), LocalDateTime.now());
+
+
 
         return "redirect:/";
     }
 
-//    @PostMapping("/upload")
-//    public String uploadFiles(@RequestParam("files") MultipartFile[] files) {
-//        System.out.println("upload here");
-//        // handle the files here
-//        // ...
-//        return "/pages/pageList";
-//    }
-
 
     /**
-     *
+     * createPageForm.html 에서 보낸 ajax request
+     * 전달받은 file 로 Image 객체 만들고 Page 와 연관관계 맺음
+     * 전달받은 file 은 유저가 선택한 순서 대로 담겨오게끔 클라이언트에서 전달하기 때문에 순서대로 imgIdx 부여 한다
+     * @param pageId : page 의 Id
      * @param files : 글 작성폼에서 보낸 유저가 선택한 파일들, 유저가 선택한 순서대로 담겨서 오기 때문에 그냥 순서대로 imgIdx 부여 하면됨
-     * @return
      */
     @PostMapping("/pages/uploadImages")
-    public ResponseEntity<String> handleFileUpload(@RequestBody MultipartFile[] files) {
+    public ResponseEntity<String> handleFileUpload(@RequestParam("pageId") String pageId, @RequestParam MultipartFile[] files) {
         System.out.println("handleFileUpload");
         String message = "";
-        try {
 
+        Page page = pageService.findOne(Long.parseLong(pageId));
+
+        try {
             long imgIdx = 0;
             for (MultipartFile file : files) {
                 // Get file bytes
 //                byte[] bytes = file.getBytes();
-                // Do something with the bytes (e.g. save to database or disk)
                 Image image = new Image(file);
                 image.setImgIdx(imgIdx++);
-                image.setPage(); // 페이지 정보 전달받아야할듯 
+                page.addImage(image);
+                image.setPage(page); // image - page 연결
                 imageService.saveImage(image);
             }
 
@@ -141,7 +132,8 @@ public class PageController {
         }
     }
 
-
+    // 글 작성 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * 글 목록
