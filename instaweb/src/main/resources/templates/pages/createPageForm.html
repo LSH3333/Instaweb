@@ -28,6 +28,29 @@
             position: absolute;
             margin-left: -1.3em;
         }
+
+        /* <input> button */
+        .custom-file-upload {
+            display: inline-block;
+            padding: 6px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+            background-color: #f2f2f2;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .custom-file-upload:hover {
+            background-color: #e6e6e6;
+        }
+
+        .custom-file-upload:active {
+            background-color: #d9d9d9;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
@@ -57,7 +80,7 @@
             <!-- images upload  -->
             <!-- 이미지 선택시 imageInput.eventListener 에 의해 선택한 이미지 디스플레이됨        -->
             <div>
-                <label th:for="images">이미지 파일들</label>
+                <label id="images-input-label" th:for="images" class="custom-file-upload">Choose Images</label>
                 <input id="images" name="images" type="file" multiple="multiple">
             </div>
 
@@ -80,6 +103,8 @@
         var selectedImgContainer = document.getElementById('selectedImgContainer');
         var changedOrder = []; // 유저가 이미지 순서 변경시 update 됨 
         var fileList = []; // 유저가 선택한 file 이 담김 
+        let labelEle = document.getElementById('images-input-label');
+
 
         // JQuery sortable <ul id="imgContainer"> 내 의 리스트 드래그로 이동 가능하도록함 
         // 순서가 변경됐다면 fileList 의 순서도 그에 맞춰 변경되도록함 
@@ -117,11 +142,17 @@
 
             // <input> event listener 
             // 사용자가 이미지들 선택하면 fileList 에 담고 디스플레이 위한 element 도 만듦 
-            imageInput.addEventListener('change', function (event) {
-                // 이미지 다시 선택시 초기화
-                selectedImgContainer.innerHTML = "";
+            imageInput.addEventListener('change', function (event) { // cancel 시 trigger 되지 않음 
                 let files = event.target.files;
-                fileList.length = 0;
+
+                // 최초 이미지 선택하는 경우 
+                if (labelEle.textContent === "Choose Images") {
+                    selectedImgContainer.innerHTML = "";
+                    // fileList 도 비움 
+                    fileList.length = 0;
+                    // 이미지 선택 이후에 디스플레이 텍스트 "Add More Images" 로 변경 
+                    labelEle.textContent = "Add More Images";
+                }
 
                 for (let i = 0; i < files.length; i++) {
                     let file = files[i];
@@ -142,6 +173,7 @@
                     liEle.appendChild(btnEle);
                     selectedImgContainer.appendChild(liEle);
                 }
+
             });
 
         };
