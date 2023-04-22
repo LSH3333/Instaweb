@@ -108,8 +108,8 @@ public class PageController {
     @PostMapping("/pages/uploadImages")
     public ResponseEntity<String> handleFileUpload(@RequestParam("pageId") String pageId, @RequestParam MultipartFile[] files) {
         System.out.println("handleFileUpload");
-        String message = "";
 
+        String message = "";
         Page page = pageService.findOne(Long.parseLong(pageId));
 
         try {
@@ -144,7 +144,6 @@ public class PageController {
         model.addAttribute("pages", pages);
         return "/pages/pageList";
     }
-
 
     /**
      *
@@ -204,6 +203,8 @@ public class PageController {
         return "pages/pageView";
     }
 
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * 글 수정 폼
