@@ -27,6 +27,29 @@
             position: absolute;
             margin-left: -1.3em;
         }
+
+        /* <input> button */
+        .custom-file-upload {
+            display: inline-block;
+            padding: 6px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+            background-color: #f2f2f2;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .custom-file-upload:hover {
+            background-color: #e6e6e6;
+        }
+
+        .custom-file-upload:active {
+            background-color: #d9d9d9;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
@@ -68,6 +91,12 @@
                 <textarea cols="50" rows="10" th:field="*{content}" placeholder="내용을 입력하세요"></textarea>
             </div>
 
+            <!-- 이미지 추가 input  -->
+            <div>
+                <label id="images-input-label" th:for="images" class="custom-file-upload">Add More Images</label>
+                <input id="images" name="images" type="file" multiple="multiple">
+            </div>
+
             <!-- 이미지, byte 배열 형의 이미지를 generateBase64Image() 로 변환 후 디스플레이  -->
             <ul id="imgContainer">
             </ul>
@@ -82,6 +111,10 @@
         var idAndImagesrc = new Map();
         var pageID = "[[${form.id}]]";
         var imgContainer = document.getElementById("imgContainer");
+        // 이미지 추가 
+        let labelEle = document.getElementById('images-input-label');
+        var imageInput = document.getElementById('images');
+
 
 
         window.onload = function () {
@@ -151,6 +184,8 @@
                 }
             }
         }
+
+    
 
         // imgContainer 하위 <img> eventListener, 이미지 누르면 파일 선택창 뜨도록   
         imgContainer.addEventListener('click', function (e) {
