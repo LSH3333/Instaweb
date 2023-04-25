@@ -107,7 +107,6 @@
 
 
     <script type="text/javascript">
-        var xhr = new XMLHttpRequest();
         var idAndImagesrc = new Map();
         var pageID = "[[${form.id}]]";
         var imgContainer = document.getElementById("imgContainer");
@@ -116,76 +115,73 @@
         var imageInput = document.getElementById('images');
 
 
+        var GetStoredImgXhr = new XMLHttpRequest(); // 최초 페이지 로드시, 저장된 이미지들 가져온다 
 
         window.onload = function () {
             // 페이지에 저장되어 있는 모든 이미지들 요청 
-            xhr.open('GET', '/pages/requestImages?id=' + pageID.toString(), true);
+            GetStoredImgXhr.open('GET', '/pages/requestImages?id=' + pageID.toString(), true);
             // 순환참조 에러 발생, dto 사용 or 
             /**
              * 발생하게된 주원인은 '양방향 매핑'이기도 하지만, 더 정확하게는 Entity 자체를 response로 리턴한데에 있다. 
              * entity 자체를 return 하지 말고, DTO 객체를 만들어 필요한 데이터만 옮겨담아 Client로 리턴하면 순환 참조 관련 문제는 애초에 방지 할 수 있다.
              * 
              * */
-            xhr.send();
+            GetStoredImgXhr.send();
         };
 
         // ajax response 로 가져온 이미지들 엘레먼트로 만들어서 디스플레이 
         // [imgEle, inputEle, db에 저장된 이미지의 id]
         var imgInputEleList = []
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState == XMLHttpRequest.DONE) {
-                if (xhr.status == 200) {
-                    // data is from GetImageDto  
-                    let data = JSON.parse(xhr.responseText);
-                    let imgIdx = 0;
+        GetStoredImgXhr.onload = function () {
+            if (GetStoredImgXhr.status === 200) {
+                // data is from GetImageDto  
+                let data = JSON.parse(GetStoredImgXhr.responseText);
+                let imgIdx = 0;
 
-                    for (imgIdx = 0; imgIdx < data.length; imgIdx++) {
-                        changedOrder.push(data[imgIdx].imgIdx); // changedOrder 리스트에 현재 이미지들의 imgIdx(순서) 저장해놓음 
+                for (imgIdx = 0; imgIdx < data.length; imgIdx++) {
+                    changedOrder.push(data[imgIdx].imgIdx); // changedOrder 리스트에 현재 이미지들의 imgIdx(순서) 저장해놓음 
 
-                        let liEle = document.createElement('li');
-                        liEle.setAttribute('imgIdx', data[imgIdx].imgIdx);
-                        // <p>
-                        let pEle = document.createElement('p');
-                        pEle.innerHTML = data[imgIdx].id.toString();
-                        // <img> 
-                        let imgEle = document.createElement('img');
-                        imgEle.id = imgIdx;
-                        imgEle.src = 'data:image/jpeg;charset=utf-8;base64,' + data[imgIdx].image;
-                        imgEle.classList.add('added-img');
-                        // <input> 이미지 클릭 시 파일 선택하도록 
-                        let inputEle = document.createElement('input');
-                        inputEle.id = imgIdx;
-                        inputEle.type = "file";
-                        inputEle.style = "display:none;";
-                        inputEle.classList.add('added-input')
-                        // 이미지 삭제 <button>     
-                        let btnEle = document.createElement('button');
-                        btnEle.innerText = "DELETE";
-                        btnEle.type = "button";
-                        btnEle.classList.add('added-btn');
-                        /**
-                         * <div id="imgContainer">
-                         *  <li>
-                         *   <p>
-                         *   <img>
-                         *   <input> 
-                         *   <button>   
-                         *  </li>
-                         * </div>
-                         * */
-                        liEle.appendChild(pEle);
-                        liEle.appendChild(imgEle);
-                        liEle.appendChild(inputEle);
-                        liEle.appendChild(btnEle);
-                        imgContainer.appendChild(liEle);
-                        imgInputEleList.push([imgEle, inputEle, data[imgIdx].id])
-                    }
-
+                    let liEle = document.createElement('li');
+                    liEle.setAttribute('imgIdx', data[imgIdx].imgIdx);
+                    // <p>
+                    let pEle = document.createElement('p');
+                    pEle.innerHTML = data[imgIdx].id.toString();
+                    // <img> 
+                    let imgEle = document.createElement('img');
+                    imgEle.id = imgIdx;
+                    imgEle.src = 'data:image/jpeg;charset=utf-8;base64,' + data[imgIdx].image;
+                    imgEle.classList.add('added-img');
+                    // <input> 이미지 클릭 시 파일 선택하도록 
+                    let inputEle = document.createElement('input');
+                    inputEle.id = imgIdx;
+                    inputEle.type = "file";
+                    inputEle.style = "display:none;";
+                    inputEle.classList.add('added-input')
+                    // 이미지 삭제 <button>     
+                    let btnEle = document.createElement('button');
+                    btnEle.innerText = "DELETE";
+                    btnEle.type = "button";
+                    btnEle.classList.add('added-btn');
+                    /**
+                     * <div id="imgContainer">
+                     *  <li>
+                     *   <p>
+                     *   <img>
+                     *   <input> 
+                     *   <button>   
+                     *  </li>
+                     * </div>
+                     * */
+                    liEle.appendChild(pEle);
+                    liEle.appendChild(imgEle);
+                    liEle.appendChild(inputEle);
+                    liEle.appendChild(btnEle);
+                    imgContainer.appendChild(liEle);
+                    imgInputEleList.push([imgEle, inputEle, data[imgIdx].id])
                 }
             }
-        }
+        };
 
-    
 
         // imgContainer 하위 <img> eventListener, 이미지 누르면 파일 선택창 뜨도록   
         imgContainer.addEventListener('click', function (e) {
@@ -246,10 +242,12 @@
         }
 
 
+        var uploadImgXhr = new XMLHttpRequest();
         // submit 버튼 클릭 시 imgInputEleList 에 저장된 imgEle를 기반으로 
         // {id : [이미지 src, imgIdx]} JSON 형식으로 서버로 보냄 
         // 이미지가 제거된 상태라면 src 대신 'deleted' 보냄 
-        document.getElementById("submitBtn").addEventListener('click', function () {
+        document.getElementById("submitBtn").addEventListener('click', function (event) {
+            event.preventDefault();
 
             // {db에 저장된 이미지 id : [이미지 src(제거됐다면 'deleted'), imgIdx(순서) ]}
             let imgEleAndId = [];
@@ -285,10 +283,18 @@
 
             let jsonString = JSON.stringify(sendData);
 
-            xhr.open('POST', '/pages/editImages', true);
-            xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-            xhr.send(jsonString);
+            uploadImgXhr.open('POST', '/pages/editImages', true);
+            uploadImgXhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+            uploadImgXhr.send(jsonString);
         });
+
+        uploadImgXhr.onload = function() {
+            if(uploadImgXhr.status === 200) {
+                const form = document.querySelector('form');
+                console.log('submit complete')
+                form.submit();
+            }
+        };
 
 
         function byteArrayToBase64String(bytes) {

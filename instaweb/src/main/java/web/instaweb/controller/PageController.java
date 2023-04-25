@@ -233,9 +233,9 @@ public class PageController {
 
     /**
      * 글 수정
-     * 전달받은 폼을 기반으로 새로운 Page 객체를 만들고 db 에 저장한다
+     * 전달받은 폼을 기반으로 Page update
      * 이 과정에서 변경 감지 후 update 된다
-     * Image 는 editImages() 에서 업데이트 된다
+     * Image handleEditImagesRequest() 에서 업데이트 된다
      */
     @PostMapping("/pages/{id}/edit")
     public String updatePage(@PathVariable("id") Long id, @ModelAttribute("form") PageForm form) {
@@ -249,8 +249,8 @@ public class PageController {
     }
 
     /**
-     * updatePageForm.html 에서 submit 누를시 XmlHttpRequest 가 보내온 수정된 이미지들 정보
-     * 디비에 반영
+     * updatePageForm.html 에서 submit 누를시 XmlHttpRequest 가 보내온 수정된 이미지들 정보 디비에 반영
+     * @param jsonData :  {Image id : [Image src, Image idx]}
      */
     @PostMapping("/pages/editImages")
     public ResponseEntity<String> handleEditImagesRequest(@RequestBody Map<String, Object> jsonData) {
@@ -265,7 +265,8 @@ public class PageController {
                 // Extract the image data and order from the array
                 String imageData = (String) imageDataList.get(0);
                 String imgIdx = (String) imageDataList.get(1);
-                System.out.println("handleEditImagesRequest \n" + id + '\n' + imageData + '\n' + imgIdx);
+//                System.out.println("handleEditImagesRequest \n" + id + '\n' + imageData + '\n' + imgIdx);
+                System.out.println("handleEditImagesRequest \n" + id +  '\n' + imgIdx);
 
                 // 삭제된 이미지
                 if (imageData.equals("deleted")) {
@@ -278,6 +279,8 @@ public class PageController {
                 System.out.println("not instance of List");
             }
         }
+
+        System.out.println("Edit Images Request Handled Successfully");
         // Return a response indicating success
         return ResponseEntity.ok("Edit Images Request Handled Successfully");
     }
