@@ -226,7 +226,7 @@ public class PageController {
         // 수정을 위해서 PageForm 에는 Image 형으로도 저장 가능
         form.setByteImages(page.getImages());
 
-
+        System.out.println("updatePageForm");
         model.addAttribute("form", form);
         return "pages/updatePageForm";
     }
@@ -239,6 +239,7 @@ public class PageController {
      */
     @PostMapping("/pages/{id}/edit")
     public String updatePage(@PathVariable("id") Long id, @ModelAttribute("form") PageForm form) {
+        System.out.println("updatePage");
 
         // 여기서 createdTime 의 second 부분 소실됨 
         System.out.println("PageController.updatePage : " + form.getCreatedTime());
