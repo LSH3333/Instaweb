@@ -55,9 +55,6 @@
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 
-
-
-
 </head>
 
 <body>
@@ -82,7 +79,7 @@
             <div>
                 <label id="images-input-label" th:for="images" class="custom-file-upload">Choose Images</label>
                 <input id="images" name="images" type="file" multiple="multiple">
-            </div>  
+            </div>
 
             <ul id="selectedImgContainer" style="list-style:none;">
             </ul>
@@ -106,20 +103,18 @@
         let labelEle = document.getElementById('images-input-label');
 
 
-        // JQuery sortable <ul id="imgContainer"> 내 의 리스트 드래그로 이동 가능하도록함 
+        // JQuery sortable <ul id="imgContainer"> 내 의 <li> 드래그로 이동 가능하도록함 
         // 순서가 변경됐다면 fileList 의 순서도 그에 맞춰 변경되도록함 
         $(function () {
             $("#selectedImgContainer").sortable({
                 update: function (event, ui) {
                     changedOrder = $(this).sortable('toArray', { attribute: 'imgOrder' }); // Get the updated order as an array
 
-
                     // li 순서 변경된대로 fileList 도 순서 변경함 
                     let changedOrderFileList = new Array(changedOrder.length).fill(0);
                     for (let i = 0; i < changedOrder.length; i++) {
                         let o = parseInt(changedOrder[i]);
                         changedOrderFileList[i] = fileList[o];
-                        console.log("changed = " + changedOrderFileList[i]);
                     }
                     fileList = [];
 
@@ -133,13 +128,12 @@
                         let liEle = ulEle.childNodes[i];
                         liEle.setAttribute('imgOrder', i);
                     }
+                    
                 }
             });
         });
 
         window.onload = function () {
-
-
             // <input> event listener 
             // 사용자가 이미지들 선택하면 fileList 에 담고 디스플레이 위한 element 도 만듦 
             imageInput.addEventListener('change', function (event) { // cancel 시 trigger 되지 않음 
@@ -154,12 +148,15 @@
                     labelEle.textContent = "Add More Images";
                 }
 
+                // 추가된 이미지들 fileList 에 푸쉬 
+                // imgOrder 어트리뷰트 값도 fileList 크기에 맞게 할당 
+                let appendIdx = fileList.length;
                 for (let i = 0; i < files.length; i++) {
                     let file = files[i];
                     fileList.push(file);
 
                     let liEle = document.createElement('li');
-                    liEle.setAttribute('imgOrder', i);
+                    liEle.setAttribute('imgOrder', appendIdx + i);
                     let imgEle = document.createElement('img');
                     imgEle.src = URL.createObjectURL(file);
 
@@ -173,7 +170,7 @@
                     liEle.appendChild(btnEle);
                     selectedImgContainer.appendChild(liEle);
                 }
-
+                
             });
 
         };
