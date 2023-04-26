@@ -248,7 +248,7 @@
 
             // pageId, imgId List, imgSrc List 
             let formData = new FormData();
-            
+
             formData.append('pageId', pageID);
 
             for (let i = 0; i < imgContainer.childNodes.length; i++) {
@@ -266,7 +266,7 @@
             uploadImgXhr.onload = function () {
                 if (uploadImgXhr.status === 200) {
                     console.log('Files uploaded successfully');
-                    //form.submit(); // ajax 완료 후 form 전송 
+                    form.submit(); // ajax 완료 후 form 전송 
                 } else {
                     console.error('Error uploading files');
                 }

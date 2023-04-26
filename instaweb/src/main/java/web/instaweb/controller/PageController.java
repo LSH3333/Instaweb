@@ -291,17 +291,8 @@ public class PageController {
                                              @RequestParam("imgId") List<String> imgIdList,
                                              @RequestParam("imgSrc") List<String> imgSrcList) {
 
-        System.out.println("pageId = " + pageId);
-        for (String s : imgIdList) {
-            System.out.println("imgId = " + s);
-        }
-        for (String s : imgSrcList) {
-            System.out.println("imgSrc = " + s);
-        }
-
         Page page = pageService.findOne(Long.parseLong(pageId));
         List<Image> images = page.getImages();
-
 
         int imgIdx = 0;
         for(int i = 0; i < imgIdList.size(); i++) {
@@ -323,6 +314,15 @@ public class PageController {
             }
         }
 
+        // 수정폼에서 삭제한 이미지 삭제 처리
+        List<String> deletedImgList = new ArrayList<>();
+        for (Image image : images) {
+            if(isImgDeleted(imgIdList, image)) {
+                imageService.deleteImage(image.getId());
+            }
+        }
+
+
         String message = "Files uploaded successfully!";
         return ResponseEntity.status(HttpStatus.OK).body(message);
     }
@@ -334,6 +334,16 @@ public class PageController {
             if(imgId == image.getId()) return true;
         }
         return false;
+    }
+
+    // return true : deleted
+    private boolean isImgDeleted(List<String> imgIdList, Image image) {
+        for (String editImgId : imgIdList) {
+            if(Long.parseLong(editImgId) == image.getId()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
