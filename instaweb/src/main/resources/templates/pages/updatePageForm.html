@@ -69,7 +69,7 @@
 <body>
 
     <div>
-        <form th:object="${form}" method="post">
+        <form th:object="${form}" method="post" enctype="multipart/form-data">
             <!-- type="hidden" 으로 안넘겨주면 null 됨 -->
             <input type="hidden" th:field="*{id}" />
             <input type="hidden" th:field="*{createdTime}" />
@@ -86,10 +86,10 @@
             </div>
 
             <!-- 이미지 추가 input  -->
-            <!-- <div>
+            <div>
                 <label id="images-input-label" th:for="images" class="custom-file-upload">Add More Images</label>
                 <input id="images" name="images" type="file" multiple="multiple">
-            </div> -->
+            </div>
 
             <!-- 이미지, byte 배열 형의 이미지를 generateBase64Image() 로 변환 후 디스플레이  -->
             <ul id="imgContainer"></ul>
@@ -134,6 +134,7 @@
                     // <img> 
                     let imgEle = document.createElement('img');
                     imgEle.id = imgIdx;
+                    // GetImageDto.image 는 byte[] 이지만 서버에서 클라이언트로 전송되면서 base 64 string 으로 인코딩되서옴 
                     imgEle.src = 'data:image/jpeg;charset=utf-8;base64,' + data[imgIdx].image;
                     imgEle.classList.add('added-img');
                     // <input> 이미지 클릭 시 파일 선택하도록 
@@ -166,6 +167,7 @@
             }
         };
 
+
         // imgContainer 하위 <img> eventListener, 이미지 누르면 파일 선택창 뜨도록   
         imgContainer.addEventListener('click', function (e) {
             if (e.target.classList.contains('added-img')) {
@@ -192,7 +194,6 @@
                         var byteArray = new Uint8Array(event.target.result);
                         // Convert the byteArray to a base64 string
                         var base64String = byteArrayToBase64String(byteArray);
-
                         imgEle.src = 'data:image/jpeg;charset=utf-8;base64,' + base64String;
                     }
                     // Read the file as an ArrayBuffer
@@ -233,7 +234,6 @@
 
 
         // 이미지 파일들 ajax 로 전송 
-
         document.getElementById('submitBtn').addEventListener('click', function (event) {
             // Prevent the default form submission behavior (버튼 클릭시 서버로 폼 전송 방지)
             event.preventDefault();
@@ -253,13 +253,15 @@
 
             for (let i = 0; i < imgContainer.childNodes.length; i++) {
                 let liEle = imgContainer.childNodes[i];
+
                 // formData 에 imgId 추가 
                 formData.append('imgId', liEle.getAttribute('imgId'));
+
                 // formData 에 imgSrc 추가 
                 // imgEle.src = 'data:image/jpeg;charset=utf-8;base64,' + data[imgIdx].image;
                 let imgSrc = getChildNodeWithTag(liEle, 'IMG').src;
-                let byteSrc = imgSrc.split(',')[1];
-                formData.append('imgSrc', byteSrc);
+                let base64StringSrc = imgSrc.split(',')[1];
+                formData.append('imgSrc', base64StringSrc);
             }
 
             uploadImgXhr.open('POST', '/pages/editImages')
@@ -283,6 +285,48 @@
             }
         }
 
+
+        // add more images 
+        document.getElementById('images').addEventListener('change', function (event) { // <input> 
+            let files = event.target.files;
+
+            for (let i = 0; i < files.length; i++) {
+                let file = files[i];
+
+                // <li> 
+                let liEle = document.createElement('li');
+                liEle.setAttribute('imgId', 'added-img'); // 추가된 이미지인 경우 imgId = added-img 
+                // <img> 
+                let imgEle = document.createElement('img');
+
+                let reader = new FileReader();
+                reader.onload = function (event) {
+                    let byteArray = new Uint8Array(event.target.result);
+                    let base64String = byteArrayToBase64String(byteArray);
+                    imgEle.src = 'data:image/jpeg;charset=utf-8;base64,' + base64String;
+                    imgEle.classList.add('added-img');
+                }
+                // Read the file as an ArrayBuffer
+                reader.readAsArrayBuffer(file);
+
+                // <input> 이미지 클릭 시 파일 선택하도록 
+                let inputEle = document.createElement('input');
+                inputEle.type = "file";
+                inputEle.style = "display:none;";
+                inputEle.classList.add('added-input')
+
+                // 이미지 삭제 <button>     
+                let btnEle = document.createElement('button');
+                btnEle.innerText = "DELETE";
+                btnEle.type = "button";
+                btnEle.classList.add('added-btn');
+
+                liEle.appendChild(imgEle);
+                liEle.appendChild(inputEle);
+                liEle.appendChild(btnEle);
+                imgContainer.appendChild(liEle);
+            }
+        });
 
     </script>
 

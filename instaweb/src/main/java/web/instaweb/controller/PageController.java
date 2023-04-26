@@ -226,7 +226,6 @@ public class PageController {
         // 수정을 위해서 PageForm 에는 Image 형으로도 저장 가능
         form.setByteImages(page.getImages());
 
-        System.out.println("updatePageForm");
         model.addAttribute("form", form);
         return "pages/updatePageForm";
     }
@@ -254,73 +253,79 @@ public class PageController {
      * @param jsonData :  {Image id : [Image src, Image idx]}
      */
 //    @PostMapping("/pages/editImages")
-    public ResponseEntity<String> handleEditImagesRequest(@RequestBody Map<String, Object> jsonData) {
-        // Do something with the received JSON data
-        for (Map.Entry<String, Object> entry : jsonData.entrySet()) {
-            String id = entry.getKey();
-            Object imageDataObj = entry.getValue();
-            // Check if the image data is an array
-            if (imageDataObj instanceof List) {
-                List<Object> imageDataList = (List<Object>) imageDataObj;
-                System.out.println("imageDataList.size() = " + imageDataList.size());
-                // Extract the image data and order from the array
-                String imageData = (String) imageDataList.get(0);
-                String imgIdx = (String) imageDataList.get(1);
-//                System.out.println("handleEditImagesRequest \n" + id + '\n' + imageData + '\n' + imgIdx);
-                System.out.println("handleEditImagesRequest \n" + id +  '\n' + imgIdx);
-
-                // 삭제된 이미지
-                if (imageData.equals("deleted")) {
-                    imageService.deleteImage(Long.parseLong(id));
-                }
-                else {
-                    imageService.updateImage(Long.parseLong(id), imageData, Long.parseLong(imgIdx));
-                }
-            } else {
-                System.out.println("not instance of List");
-            }
-        }
-
-        System.out.println("Edit Images Request Handled Successfully");
-        // Return a response indicating success
-        return ResponseEntity.ok("Edit Images Request Handled Successfully");
-    }
+//    public ResponseEntity<String> handleEditImagesRequest(@RequestBody Map<String, Object> jsonData) {
+//        // Do something with the received JSON data
+//        for (Map.Entry<String, Object> entry : jsonData.entrySet()) {
+//            String id = entry.getKey();
+//            Object imageDataObj = entry.getValue();
+//            // Check if the image data is an array
+//            if (imageDataObj instanceof List) {
+//                List<Object> imageDataList = (List<Object>) imageDataObj;
+//                System.out.println("imageDataList.size() = " + imageDataList.size());
+//                // Extract the image data and order from the array
+//                String imageData = (String) imageDataList.get(0);
+//                String imgIdx = (String) imageDataList.get(1);
+////                System.out.println("handleEditImagesRequest \n" + id + '\n' + imageData + '\n' + imgIdx);
+//                System.out.println("handleEditImagesRequest \n" + id +  '\n' + imgIdx);
+//
+//                // 삭제된 이미지
+//                if (imageData.equals("deleted")) {
+//                    imageService.deleteImage(Long.parseLong(id));
+//                }
+//                else {
+//                    imageService.updateImage(Long.parseLong(id), imageData, Long.parseLong(imgIdx));
+//                }
+//            } else {
+//                System.out.println("not instance of List");
+//            }
+//        }
+//
+//        System.out.println("Edit Images Request Handled Successfully");
+//        // Return a response indicating success
+//        return ResponseEntity.ok("Edit Images Request Handled Successfully");
+//    }
 
     @PostMapping("/pages/editImages")
     public ResponseEntity<String> editImages(@RequestParam String pageId,
                                              @RequestParam("imgId") List<String> imgIdList,
                                              @RequestParam("imgSrc") List<String> imgSrcList) {
 
+        System.out.println("editImages");
+        for(int i = 0; i < imgIdList.size(); i++) {
+            System.out.println("imgId = " + imgIdList.get(i));
+            System.out.println("imgSrc = " + imgSrcList.get(i));
+        }
+
         Page page = pageService.findOne(Long.parseLong(pageId));
         List<Image> images = page.getImages();
 
         int imgIdx = 0;
         for(int i = 0; i < imgIdList.size(); i++) {
-            long imgId = Long.parseLong(imgIdList.get(i));
-            String imgSrc = imgSrcList.get(i);
+            String imgId = imgIdList.get(i);
+            String imgSrc = imgSrcList.get(i); // imgSrc 는 base64String
 
-            // 수정 전에도 페이지에 있던 이미지
-            if (existOnPageImages(images, imgId)) {
-                imageService.updateImage(imgId, imgSrc, imgIdx++);
-            }
             // 수정 전에는 페이지에 없던 이미지, 새로 생긴 이미지
-            else {
+            if(imgId.equals("added-img")) {
+                System.out.println("added-img");
                 Image image = new Image();
-                image.setImage(imgSrc.getBytes());
+                image.setImage(java.util.Base64.getDecoder().decode(imgSrc));
                 image.setImgIdx(imgIdx++);
                 page.addImage(image);
                 image.setPage(page);
                 imageService.saveImage(image);
             }
+            // 수정 전에도 페이지에 있던 이미지
+            else {
+                imageService.updateImage(Long.parseLong((imgId)), imgSrc, imgIdx++);
+            }
         }
 
         // 수정폼에서 삭제한 이미지 삭제 처리
-        List<String> deletedImgList = new ArrayList<>();
-        for (Image image : images) {
-            if(isImgDeleted(imgIdList, image)) {
-                imageService.deleteImage(image.getId());
-            }
-        }
+//        for (Image image : images) {
+//            if(isImgDeleted(imgIdList, image)) {
+//                imageService.deleteImage(image.getId());
+//            }
+//        }
 
 
         String message = "Files uploaded successfully!";
@@ -339,6 +344,7 @@ public class PageController {
     // return true : deleted
     private boolean isImgDeleted(List<String> imgIdList, Image image) {
         for (String editImgId : imgIdList) {
+            if(editImgId.equals("added-img")) continue;
             if(Long.parseLong(editImgId) == image.getId()) {
                 return false;
             }

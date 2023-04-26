@@ -157,6 +157,7 @@
 
                     let liEle = document.createElement('li');
                     liEle.setAttribute('imgOrder', appendIdx + i);
+                    
                     let imgEle = document.createElement('img');
                     imgEle.src = URL.createObjectURL(file);
 
@@ -194,7 +195,7 @@
                 form.submit();
                 return;
             }
-            
+
             const formData = new FormData();
             // key:pageId, pageId formData 에 추가 
             let pageId = "[[${form.id}]]";

@@ -15,6 +15,7 @@ public class ImageRepository {
     private final EntityManager em;
 
     public void save(Image image) {
+        System.out.println("img saved");
         em.persist(image);
     }
 
