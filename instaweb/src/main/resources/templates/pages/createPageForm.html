@@ -103,7 +103,7 @@
         let labelEle = document.getElementById('images-input-label');
 
 
-        // JQuery sortable <ul id="imgContainer"> 내 의 <li> 드래그로 이동 가능하도록함 
+        // JQuery sortable <ul id="selectedImgContainer"> 내 의 <li> 드래그로 이동 가능하도록함 
         // 순서가 변경됐다면 fileList 의 순서도 그에 맞춰 변경되도록함 
         $(function () {
             $("#selectedImgContainer").sortable({
@@ -194,10 +194,12 @@
                 form.submit();
                 return;
             }
+            
             const formData = new FormData();
             // key:pageId, pageId formData 에 추가 
             let pageId = "[[${form.id}]]";
             formData.append('pageId', pageId);
+
             // key:files, files formData 에 추가 
             for (let i = 0; i < files.length; i++) {
                 formData.append('files', files[i]);
