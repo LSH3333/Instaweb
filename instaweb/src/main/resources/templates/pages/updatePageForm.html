@@ -246,26 +246,38 @@
             let form = document.querySelector('form');
             let uploadImgXhr = new XMLHttpRequest();
 
+            // pageId, imgId List, imgSrc List 
             let formData = new FormData();
             
-            for(let i = 0; i < imgContainer.childNodes.length; i++) {
-                let liEle = imgContainer.childNodes[i];           
-                console.log("liEle = " + liEle);
+            formData.append('pageId', pageID);
+
+            for (let i = 0; i < imgContainer.childNodes.length; i++) {
+                let liEle = imgContainer.childNodes[i];
                 // formData 에 imgId 추가 
                 formData.append('imgId', liEle.getAttribute('imgId'));
                 // formData 에 imgSrc 추가 
                 // imgEle.src = 'data:image/jpeg;charset=utf-8;base64,' + data[imgIdx].image;
                 let imgSrc = getChildNodeWithTag(liEle, 'IMG').src;
                 let byteSrc = imgSrc.split(',')[1];
-                console.log(byteSrc);
+                formData.append('imgSrc', byteSrc);
             }
 
+            uploadImgXhr.open('POST', '/pages/editImages')
+            uploadImgXhr.onload = function () {
+                if (uploadImgXhr.status === 200) {
+                    console.log('Files uploaded successfully');
+                    //form.submit(); // ajax 완료 후 form 전송 
+                } else {
+                    console.error('Error uploading files');
+                }
+            };
+            uploadImgXhr.send(formData);
         }
 
         // parentNode 의 child 중 tag ('IMG', 'INPUT' ... ) 일치하는 자식 리턴 
         function getChildNodeWithTag(parent, tag) {
-            for(let i = 0; i < parent.childNodes.length; i++) {
-                if(parent.childNodes[i].tagName === tag) {
+            for (let i = 0; i < parent.childNodes.length; i++) {
+                if (parent.childNodes[i].tagName === tag) {
                     return parent.childNodes[i];
                 }
             }

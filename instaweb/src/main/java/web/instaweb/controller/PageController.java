@@ -20,6 +20,7 @@ import web.instaweb.service.PageService;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Array;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -209,7 +210,6 @@ public class PageController {
     /**
      * 글 수정 폼
      * 새로운 폼을 만들어서 "updatePageForm" 에 전달
-     *
      */
     @GetMapping("/pages/{id}/edit")
     public String updatePageForm(@PathVariable("id") Long id, Model model) {
@@ -253,7 +253,7 @@ public class PageController {
      * updatePageForm.html 에서 submit 누를시 XmlHttpRequest 가 보내온 수정된 이미지들 정보 디비에 반영
      * @param jsonData :  {Image id : [Image src, Image idx]}
      */
-    @PostMapping("/pages/editImages")
+//    @PostMapping("/pages/editImages")
     public ResponseEntity<String> handleEditImagesRequest(@RequestBody Map<String, Object> jsonData) {
         // Do something with the received JSON data
         for (Map.Entry<String, Object> entry : jsonData.entrySet()) {
@@ -286,6 +286,55 @@ public class PageController {
         return ResponseEntity.ok("Edit Images Request Handled Successfully");
     }
 
+    @PostMapping("/pages/editImages")
+    public ResponseEntity<String> editImages(@RequestParam String pageId,
+                                             @RequestParam("imgId") List<String> imgIdList,
+                                             @RequestParam("imgSrc") List<String> imgSrcList) {
+
+        System.out.println("pageId = " + pageId);
+        for (String s : imgIdList) {
+            System.out.println("imgId = " + s);
+        }
+        for (String s : imgSrcList) {
+            System.out.println("imgSrc = " + s);
+        }
+
+        Page page = pageService.findOne(Long.parseLong(pageId));
+        List<Image> images = page.getImages();
+
+
+        int imgIdx = 0;
+        for(int i = 0; i < imgIdList.size(); i++) {
+            long imgId = Long.parseLong(imgIdList.get(i));
+            String imgSrc = imgSrcList.get(i);
+
+            // 수정 전에도 페이지에 있던 이미지
+            if (existOnPageImages(images, imgId)) {
+                imageService.updateImage(imgId, imgSrc, imgIdx++);
+            }
+            // 수정 전에는 페이지에 없던 이미지, 새로 생긴 이미지
+            else {
+                Image image = new Image();
+                image.setImage(imgSrc.getBytes());
+                image.setImgIdx(imgIdx++);
+                page.addImage(image);
+                image.setPage(page);
+                imageService.saveImage(image);
+            }
+        }
+
+        String message = "Files uploaded successfully!";
+        return ResponseEntity.status(HttpStatus.OK).body(message);
+    }
+
+    // 페이지에 속한 이미지들 리스트에 수정전에도 있었는지 여부 확인
+    // 있었다면 true 리턴, 없었다면 (수정폼에서 새로 생긴 이미지) false 리턴
+    private boolean existOnPageImages(List<Image> images, long imgId) {
+        for (Image image : images) {
+            if(imgId == image.getId()) return true;
+        }
+        return false;
+    }
 
     /**
      * 글 수정 폼(updatePageForm.html) 에서  요청
