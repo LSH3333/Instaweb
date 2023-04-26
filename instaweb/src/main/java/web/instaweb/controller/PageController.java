@@ -332,15 +332,6 @@ public class PageController {
         return ResponseEntity.status(HttpStatus.OK).body(message);
     }
 
-    // 페이지에 속한 이미지들 리스트에 수정전에도 있었는지 여부 확인
-    // 있었다면 true 리턴, 없었다면 (수정폼에서 새로 생긴 이미지) false 리턴
-    private boolean existOnPageImages(List<Image> images, long imgId) {
-        for (Image image : images) {
-            if(imgId == image.getId()) return true;
-        }
-        return false;
-    }
-
     // return true : deleted
     private boolean isImgDeleted(List<String> imgIdList, Image image) {
         for (String editImgId : imgIdList) {
