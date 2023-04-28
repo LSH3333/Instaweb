@@ -225,7 +225,10 @@ public class PageController {
      * Image handleEditImagesRequest() 에서 업데이트 된다
      */
     @PostMapping("/pages/{id}/edit")
-    public String updatePage(@PathVariable("id") Long id, @ModelAttribute("form") PageForm form) {
+    public String updatePage(@PathVariable("id") Long id, @Valid @ModelAttribute("form") PageForm form, BindingResult result) {
+        if (result.hasErrors()) {
+            return "pages/updatePageForm";
+        }
         System.out.println("updatePage");
 
         // 여기서 createdTime 의 second 부분 소실됨 
