@@ -23,7 +23,6 @@ public class ImageService {
 
     @Transactional
     public void saveImage(Image image) {
-        System.out.println("saveImage");
         imageRepository.save(image);
     }
 
