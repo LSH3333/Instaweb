@@ -65,12 +65,11 @@ public class PageController {
      * 페이지폼에서 작성 후 submit 버튼
      */
     @PostMapping("/pages/new")
-    public String create(@Valid PageForm form, BindingResult result) throws IOException {
+    public String create(@Valid @ModelAttribute("form") PageForm form, BindingResult result)  {
         // 오류 발생 시 글 작성 폼으로 되돌아감
         if (result.hasErrors()) {
             return "pages/createPageForm";
         }
-
 
         // 이미지 객체들 먼저 만들고
         /**
@@ -78,22 +77,11 @@ public class PageController {
          * 이미지 파일이라면 "image/png" 이런식으로 온다
          * "application/octet-stream" 은 8 비트 단위 binary 라는 의미
          */
-        // 생성폼에서 이미지 1개 이상 선택했다면 Image 객체 만듦
-//        List<Image> images = new ArrayList<>();
-//        if(!form.getImages().get(0).getContentType().equals("application/octet-stream")){
-//            List<MultipartFile> files = form.getImages();
-//            for (MultipartFile file : files) {
-//                Image image = new Image(file);
-//                images.add(image);
-//            }
-//        }
 
 
         System.out.println("created page");
         System.out.println(form.getId() + " " + form.getTitle() + " " + form.getContent() + " " + LocalDateTime.now());
         pageService.updatePage(form.getId(), form.getTitle(), form.getContent(), LocalDateTime.now());
-
-
 
         return "redirect:/";
     }
