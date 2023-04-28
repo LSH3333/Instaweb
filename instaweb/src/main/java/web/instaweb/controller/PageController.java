@@ -285,58 +285,80 @@ public class PageController {
 //        return ResponseEntity.ok("Edit Images Request Handled Successfully");
 //    }
 
+    /**
+     * updatePageForm.html 에서 전달 받은 요청, Page 에 속한 Image 들을 추가, 수정, 제거 한다
+     * @param pageId
+     * @param editedImgIdList : Page 에 속한 Image 의 id 리스트
+     * @param editedImgSrcList : Image 들의 src, Base64 String 형식으로 전달 받음
+     * @return : response entity
+     */
     @PostMapping("/pages/editImages")
     public ResponseEntity<String> editImages(@RequestParam String pageId,
-                                             @RequestParam("imgId") List<String> imgIdList,
-                                             @RequestParam("imgSrc") List<String> imgSrcList) {
+                                             @RequestParam("imgId") List<String> editedImgIdList,
+                                             @RequestParam("imgSrc") List<String> editedImgSrcList) {
 
         System.out.println("editImages");
-        for(int i = 0; i < imgIdList.size(); i++) {
-            System.out.println("imgId = " + imgIdList.get(i));
-            System.out.println("imgSrc = " + imgSrcList.get(i));
+        for(int i = 0; i < editedImgIdList.size(); i++) {
+            System.out.println("imgId = " + editedImgIdList.get(i));
+            System.out.println("imgSrc = " + editedImgSrcList.get(i));
         }
 
         Page page = pageService.findOne(Long.parseLong(pageId));
-        List<Image> images = page.getImages();
+        List<Image> existedImages = page.getImages(); // 수정폼 이전 Page 에 존재하던 Image 들
 
-        int imgIdx = 0;
-        for(int i = 0; i < imgIdList.size(); i++) {
-            String imgId = imgIdList.get(i);
-            String imgSrc = imgSrcList.get(i); // imgSrc 는 base64String
-
-            // 수정 전에는 페이지에 없던 이미지, 새로 생긴 이미지
-            if(imgId.equals("added-img")) {
-                System.out.println("added-img");
-                Image image = new Image();
-                image.setImage(java.util.Base64.getDecoder().decode(imgSrc));
-                image.setImgIdx(imgIdx++);
-                page.addImage(image);
-                image.setPage(page);
-                imageService.saveImage(image);
-            }
-            // 수정 전에도 페이지에 있던 이미지
-            else {
-                imageService.updateImage(Long.parseLong((imgId)), imgSrc, imgIdx++);
+        // 수정폼에 Image 가 하나도 없는 경우
+        if(editedImgIdList.get(0).equals("empty")) {
+            // 기존에 Page 에 존재하던 모든 이미지들 제거
+            for (Image existedImage : existedImages) {
+                imageService.deleteImage(existedImage.getId());
             }
         }
+        else {
+            // 수정폼에서 삭제한 이미지 삭제 처리
+            // 수정폼 이전의 이미지들과, 수정폼에서 수정된 이미지들 비교해서, 수정폼 이전의 이미지가 삭제됐는지 판단
+            for (Image existedImage : existedImages) {
+                // 기존에 존재하던 Image 가 삭제된 경우
+                if (isImgDeleted(editedImgIdList, existedImage)) {
+                    imageService.deleteImage(existedImage.getId());
+                }
+            }
 
-        // 수정폼에서 삭제한 이미지 삭제 처리
-//        for (Image image : images) {
-//            if(isImgDeleted(imgIdList, image)) {
-//                imageService.deleteImage(image.getId());
-//            }
-//        }
+            // Page 에 속한 Image 추가, 수정
+            int imgIdx = 0;
+            for(int i = 0; i < editedImgIdList.size(); i++) {
+                String imgId = editedImgIdList.get(i);
+                String imgSrc = editedImgSrcList.get(i); // imgSrc 는 base64String
 
+                // 수정 전에는 페이지에 없던 이미지, 새로 생긴 이미지
+                if(imgId.equals("added-img")) {
+                    System.out.println("added-img");
+                    Image image = new Image();
+                    image.setImage(java.util.Base64.getDecoder().decode(imgSrc));
+                    image.setImgIdx(imgIdx++);
+                    page.addImage(image);
+                    image.setPage(page);
+                    imageService.saveImage(image);
+                }
+                // 수정 전에도 페이지에 있던 이미지
+                else {
+                    imageService.updateImage(Long.parseLong((imgId)), imgSrc, imgIdx++);
+                }
+            }
+        }
 
         String message = "Files uploaded successfully!";
         return ResponseEntity.status(HttpStatus.OK).body(message);
     }
 
-    // return true : deleted
-    private boolean isImgDeleted(List<String> imgIdList, Image image) {
-        for (String editImgId : imgIdList) {
+    /**
+     * @param editedImgIdList : 수정폼에 존재하는 Image 들의 id 리스트
+     * @param existedImg : 수정폼 이전에 Page 에 존재한 Image 중 한 개
+     * @return : true = existedImg 가 제거됨
+     */
+    private boolean isImgDeleted(List<String> editedImgIdList, Image existedImg) {
+        for (String editImgId : editedImgIdList) {
             if(editImgId.equals("added-img")) continue;
-            if(Long.parseLong(editImgId) == image.getId()) {
+            if(Long.parseLong(editImgId) == existedImg.getId()) {
                 return false;
             }
         }

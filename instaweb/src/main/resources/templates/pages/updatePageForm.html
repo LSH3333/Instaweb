@@ -246,24 +246,33 @@
             let form = document.querySelector('form');
             let uploadImgXhr = new XMLHttpRequest();
 
-            // pageId, imgId List, imgSrc List 
+            // pageId, imgId List, imgSrc List 를 폼데이터로 전송 
             let formData = new FormData();
 
             formData.append('pageId', pageID);
 
-            for (let i = 0; i < imgContainer.childNodes.length; i++) {
-                let liEle = imgContainer.childNodes[i];
-
-                // formData 에 imgId 추가 
-                formData.append('imgId', liEle.getAttribute('imgId'));
-
-                // formData 에 imgSrc 추가 
-                // imgEle.src = 'data:image/jpeg;charset=utf-8;base64,' + data[imgIdx].image;
-                let imgSrc = getChildNodeWithTag(liEle, 'IMG').src;
-                let base64StringSrc = imgSrc.split(',')[1];
-                formData.append('imgSrc', base64StringSrc);
+            // Image 가 하나도 없을 경우 'empty' 를 FormData 에 채워서 보낸다
+            // 서버에서 맞는 파라미터가 없을 경우 경로 못찾기 때문에  
+            if (imgContainer.childNodes.length === 0) {
+                formData.append('imgId', 'empty');
+                formData.append('imgSrc', 'empty');
             }
+            else {
+                for (let i = 0; i < imgContainer.childNodes.length; i++) {
+                    let liEle = imgContainer.childNodes[i];
 
+                    // formData 에 imgId 추가 
+                    formData.append('imgId', liEle.getAttribute('imgId'));
+
+                    // formData 에 imgSrc 추가 
+                    // imgEle.src = 'data:image/jpeg;charset=utf-8;base64,' + data[imgIdx].image;
+                    let imgSrc = getChildNodeWithTag(liEle, 'IMG').src;
+                    let base64StringSrc = imgSrc.split(',')[1];
+                    formData.append('imgSrc', base64StringSrc);
+                }
+
+            }
+            
             uploadImgXhr.open('POST', '/pages/editImages')
             uploadImgXhr.onload = function () {
                 if (uploadImgXhr.status === 200) {
@@ -287,6 +296,7 @@
 
 
         // add more images 
+        // button event listener 
         document.getElementById('images').addEventListener('change', function (event) { // <input> 
             let files = event.target.files;
 
