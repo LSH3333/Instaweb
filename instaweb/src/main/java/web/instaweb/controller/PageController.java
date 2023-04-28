@@ -249,43 +249,6 @@ public class PageController {
     }
 
     /**
-     * updatePageForm.html 에서 submit 누를시 XmlHttpRequest 가 보내온 수정된 이미지들 정보 디비에 반영
-     * @param jsonData :  {Image id : [Image src, Image idx]}
-     */
-//    @PostMapping("/pages/editImages")
-//    public ResponseEntity<String> handleEditImagesRequest(@RequestBody Map<String, Object> jsonData) {
-//        // Do something with the received JSON data
-//        for (Map.Entry<String, Object> entry : jsonData.entrySet()) {
-//            String id = entry.getKey();
-//            Object imageDataObj = entry.getValue();
-//            // Check if the image data is an array
-//            if (imageDataObj instanceof List) {
-//                List<Object> imageDataList = (List<Object>) imageDataObj;
-//                System.out.println("imageDataList.size() = " + imageDataList.size());
-//                // Extract the image data and order from the array
-//                String imageData = (String) imageDataList.get(0);
-//                String imgIdx = (String) imageDataList.get(1);
-////                System.out.println("handleEditImagesRequest \n" + id + '\n' + imageData + '\n' + imgIdx);
-//                System.out.println("handleEditImagesRequest \n" + id +  '\n' + imgIdx);
-//
-//                // 삭제된 이미지
-//                if (imageData.equals("deleted")) {
-//                    imageService.deleteImage(Long.parseLong(id));
-//                }
-//                else {
-//                    imageService.updateImage(Long.parseLong(id), imageData, Long.parseLong(imgIdx));
-//                }
-//            } else {
-//                System.out.println("not instance of List");
-//            }
-//        }
-//
-//        System.out.println("Edit Images Request Handled Successfully");
-//        // Return a response indicating success
-//        return ResponseEntity.ok("Edit Images Request Handled Successfully");
-//    }
-
-    /**
      * updatePageForm.html 에서 전달 받은 요청, Page 에 속한 Image 들을 추가, 수정, 제거 한다
      * @param pageId
      * @param editedImgIdList : Page 에 속한 Image 의 id 리스트
