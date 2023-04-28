@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+</head>
+
+<body>
+    <div>
+
+        <form th:object="${member}" method="post">
+            <!-- ID -->
+            <div>
+                <label th:for="loginId">제목</label>
+                <input type="text" th:field="*{loginId}" placeholder="loginId 입력하세요">
+                <p th:if="${#fields.hasErrors('loginId')}" th:errors="*{loginId}">에러 발생</p>
+            </div>
+
+            <!-- password -->
+            <div>
+                <label th:for="password">비밀번호</label>
+                <input type="text" th:field="*{password}" placeholder="password 입력하세요">
+                <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}">에러 발생</p>
+            </div>
+
+            <!-- name -->
+            <div>
+                <label th:for="name">이름</label>
+                <input type="text" th:field="*{name}" placeholder="name 입력하세요">
+                <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}">에러 발생</p>
+            </div>
+
+
+            <button id="submitBtn" type="submit">Submit</button>
+        </form>
+
+    </div>
+</body>
+
+</html>

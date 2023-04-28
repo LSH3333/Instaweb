@@ -11,9 +11,4 @@ public class HomeController {
         return "home";
     }
 
-
-    @RequestMapping("/pages/jq")
-    public String jquery() {
-        return "pages/testSort";
-    }
 }

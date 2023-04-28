@@ -7,6 +7,7 @@ import web.instaweb.domain.Member;
 import web.instaweb.repository.MemberRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = false)
@@ -31,5 +32,9 @@ public class MemberService {
     public void deleteMember(Long id) {
         memberRepository.delete(id);
     }
+
+//    public Optional<Member> findByLoginId(String loginId) {
+//
+//    }
 
 }

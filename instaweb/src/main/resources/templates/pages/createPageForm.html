@@ -64,7 +64,7 @@
             <div>
                 <label th:for="title">제목</label>
                 <input type="text" th:field="*{title}" placeholder="제목을 입력하세요">
-                <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}">에러 발생</p>
+                <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}">에러</p>
             </div>
 
             <!-- content -->
