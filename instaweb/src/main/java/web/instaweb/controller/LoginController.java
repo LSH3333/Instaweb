@@ -6,10 +6,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import web.instaweb.SessionConst;
 import web.instaweb.domain.Member;
 import web.instaweb.form.LoginForm;
 import web.instaweb.service.LoginService;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 @Controller
@@ -24,21 +28,30 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String login(@Valid @ModelAttribute("loginForm") LoginForm form, BindingResult bindingResult) {
+    public String login(@Valid @ModelAttribute("loginForm") LoginForm form,
+                        BindingResult bindingResult,
+                        @RequestParam(defaultValue = "/") String redirectURL,
+                        HttpServletRequest request) {
+
+        System.out.println("PostMapping Login = " + redirectURL);
+
         if (bindingResult.hasErrors()) {
             return "/login/loginForm";
         }
 
-        Member member = loginService.login(form.getLoginId(), form.getPassword());
+        Member loginMember = loginService.login(form.getLoginId(), form.getPassword());
 
-        if(member == null) {
+        if(loginMember == null) {
             bindingResult.reject("loginFail", "아이디 또는 비밀번호가 맞지 않습니다");
             return "/login/loginForm";
         }
 
-        // 로그인 성공 처리 todo
+        // request 에 세션 있으면 있는 세션 반환, 없으면 신규 세션 생성
+        HttpSession session = request.getSession();
+        session.setAttribute(SessionConst.LOGIN_MEMBER, loginMember);
 
-        return "redirect:/";
+        // 로그인 성공 -> request 가 온 url 로 되돌아가도록 리다이렉트 처리
+        return "redirect:" + redirectURL;
     }
 
 }

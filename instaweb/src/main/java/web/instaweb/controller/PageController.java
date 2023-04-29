@@ -81,8 +81,8 @@ public class PageController {
          */
 
 
-        System.out.println("created page");
-        System.out.println(form.getId() + " " + form.getTitle() + " " + form.getContent() + " " + LocalDateTime.now());
+//        System.out.println("created page");
+//        System.out.println(form.getId() + " " + form.getTitle() + " " + form.getContent() + " " + LocalDateTime.now());
         pageService.updatePage(form.getId(), form.getTitle(), form.getContent(), LocalDateTime.now());
 
         return "redirect:/";
@@ -253,11 +253,11 @@ public class PageController {
                                              @RequestParam("imgId") List<String> editedImgIdList,
                                              @RequestParam("imgSrc") List<String> editedImgSrcList) {
 
-        System.out.println("editImages");
-        for(int i = 0; i < editedImgIdList.size(); i++) {
-            System.out.println("imgId = " + editedImgIdList.get(i));
-            System.out.println("imgSrc = " + editedImgSrcList.get(i));
-        }
+//        System.out.println("editImages");
+//        for(int i = 0; i < editedImgIdList.size(); i++) {
+//            System.out.println("imgId = " + editedImgIdList.get(i));
+//            System.out.println("imgSrc = " + editedImgSrcList.get(i));
+//        }
 
         Page page = pageService.findOne(Long.parseLong(pageId));
         List<Image> existedImages = page.getImages(); // 수정폼 이전 Page 에 존재하던 Image 들

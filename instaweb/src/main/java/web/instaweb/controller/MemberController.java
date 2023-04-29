@@ -27,11 +27,6 @@ public class MemberController {
     @PostMapping("members/register")
     public String register(@Valid @ModelAttribute("member") Member member, BindingResult result) {
         if (result.hasErrors()) {
-            System.out.println("member hasErrors");
-            List<ObjectError> allErrors = result.getAllErrors();
-            for (ObjectError allError : allErrors) {
-                System.out.println(allError.getDefaultMessage());
-            }
             return "/members/registerForm";
         }
 
