@@ -35,6 +35,10 @@ public class Page {
     @OrderBy("imgIdx asc") // Image 의 imgIdx 기준 오름차순
     private List<Image> images = new ArrayList<>();
 
+    // 이 Page 의 주인인 Member
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     public Page() {
     }
@@ -58,8 +62,6 @@ public class Page {
     }
 
 
-    public void delete() {
-
-    }
+    public void delete() {}
 
 }

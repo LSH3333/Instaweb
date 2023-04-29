@@ -11,7 +11,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import web.instaweb.SessionConst;
 import web.instaweb.domain.Image;
+import web.instaweb.domain.Member;
 import web.instaweb.domain.Page;
 import web.instaweb.dto.GetImageDto;
 import web.instaweb.form.PageForm;
@@ -125,9 +127,13 @@ public class PageController {
 
     // 글 작성 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // 페이지 리스트
 
     /**
      * 글 목록
+     * todo : 현재 로그인한 Member 에 속한 Page 만 보여주도록 해야함
+     * todo : HomeController.home() 참고
+     *
      */
     @GetMapping("/pages")
     public String list(Model model) {
@@ -186,6 +192,7 @@ public class PageController {
 
     /**
      * 글 보기
+     * todo : /pages/{member.name}/{id}/view 로 수정해야함
      */
     @GetMapping("/pages/{id}/view")
     public String viewPage(@PathVariable("id") Long pageId, Model model) {
@@ -194,7 +201,7 @@ public class PageController {
         return "pages/pageView";
     }
 
-
+    // 페이지 리스트
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**

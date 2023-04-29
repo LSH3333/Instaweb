@@ -5,6 +5,8 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table
@@ -16,10 +18,15 @@ public class Member {
     @Column(name = "member_id")
     private Long id;
 
+    // todo : loginId, name 중복 불가능하도록
     @NotEmpty(message = "loginId 필수입니다")
     private String loginId;
     @NotEmpty(message = "name 필수입니다")
     private String name;
     @NotEmpty(message = "password 필수입니다")
     private String password;
+
+    // Member 가 갖고 있는 Page 들 리스트
+    @OneToMany(mappedBy = "member")
+    private List<Page> pages = new ArrayList<>();
 }

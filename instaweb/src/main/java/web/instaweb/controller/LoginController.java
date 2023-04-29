@@ -33,8 +33,6 @@ public class LoginController {
                         @RequestParam(defaultValue = "/") String redirectURL,
                         HttpServletRequest request) {
 
-        System.out.println("PostMapping Login = " + redirectURL);
-
         if (bindingResult.hasErrors()) {
             return "/login/loginForm";
         }
