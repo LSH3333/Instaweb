@@ -3,6 +3,7 @@ package web.instaweb.repository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import web.instaweb.domain.Member;
 import web.instaweb.domain.Page;
 
@@ -11,6 +12,7 @@ import java.util.*;
 
 @Repository
 @RequiredArgsConstructor
+@Transactional
 public class MemberRepository {
 
     private final EntityManager em;
@@ -30,6 +32,17 @@ public class MemberRepository {
     public void delete(Long id) {
         Member member = em.find(Member.class, id);
         em.remove(member);
+    }
+
+    // loginId 로 Member 찾는다
+    // 해당 없다면 null 리턴
+    public Optional<Member> findByLoginId(String loginId) {
+
+        return em.createQuery("select m from Member m where m.loginId = :loginId", Member.class)
+                .setParameter("loginId", loginId)
+                .getResultList()
+                .stream()
+                .filter(m -> m.getLoginId().equals(loginId)).findFirst();
     }
 
 }

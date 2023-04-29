@@ -14,6 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 import web.instaweb.domain.Image;
 import web.instaweb.domain.Page;
 import web.instaweb.dto.GetImageDto;
+import web.instaweb.form.PageForm;
+import web.instaweb.form.PageListForm;
 import web.instaweb.service.ImageService;
 import web.instaweb.service.PageService;
 
@@ -30,6 +32,7 @@ public class PageController {
     private final PageService pageService;
     private final ImageService imageService;
 
+    // Page 에 이미지 하나도 없는 경우 띄울 이미지
     private byte[] noImgFile;
 
     private void getNoImgFile() throws IOException {

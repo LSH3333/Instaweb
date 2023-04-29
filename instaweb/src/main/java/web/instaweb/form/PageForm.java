@@ -1,4 +1,4 @@
-package web.instaweb.controller;
+package web.instaweb.form;
 
 import lombok.Getter;
 import lombok.Setter;

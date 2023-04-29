@@ -2,14 +2,13 @@ package web.instaweb.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import web.instaweb.domain.Member;
-import web.instaweb.service.MemberService;
+import web.instaweb.repository.MemberRepository;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -18,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MemberController {
 
-    private final MemberService memberService;
+    private final MemberRepository memberRepository;
 
     @GetMapping("/members/register")
     public String registerForm(@ModelAttribute("member") Member member) {
@@ -38,7 +37,7 @@ public class MemberController {
 
         System.out.println(member.getName() + " " + member.getLoginId() + " " + member.getPassword());
 
-        memberService.saveMember(member);
+        memberRepository.save(member);
         return "redirect:/";
     }
 

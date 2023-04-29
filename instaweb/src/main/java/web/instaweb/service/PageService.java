@@ -17,13 +17,11 @@ public class PageService {
 
     private final PageRepository pageRepository;
 
-    @Transactional(readOnly = false)
     public void savePage(Page page) {
         pageRepository.save(page);
     }
 
     // 변경 감지
-    @Transactional
     public void updatePage(Long id, String title, String content, LocalDateTime createTime) {
         // 여기서 findPage 는 db에서 가져왔으므로 영속 상태
         Page findPage = pageRepository.findOne(id);
@@ -32,7 +30,6 @@ public class PageService {
     }
 
     // 제거
-    @Transactional
     public void deletePage(Long id) {
         pageRepository.deletePage(id);
     }

@@ -21,7 +21,6 @@ public class ImageService {
 
     private final ImageRepository imageRepository;
 
-    @Transactional
     public void saveImage(Image image) {
         imageRepository.save(image);
     }
@@ -34,7 +33,6 @@ public class ImageService {
         return imageRepository.findAll();
     }
 
-    @Transactional
     public void deleteImage(Long id) {
         imageRepository.deleteImage(id);
     }
@@ -46,7 +44,6 @@ public class ImageService {
      * id 에 해당하는 Image 없으면 return
      *
      */
-    @Transactional
     public void updateImage(Long id, String base64String, long imgIdx) {
         // 여기서 image 는 db에서 가져왔으므로 영속 상태
         Image image = imageRepository.findOne(id);
