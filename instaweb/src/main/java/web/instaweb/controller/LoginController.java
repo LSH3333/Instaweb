@@ -54,4 +54,15 @@ public class LoginController {
         return "redirect:" + redirectURL;
     }
 
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request) {
+        // false 시 session 없으면 null 반환
+        HttpSession session = request.getSession(false);
+        if(session != null) {
+            session.invalidate(); // 세션 파기
+        }
+
+        return "redirect:/"; // 홈 으로 리다이렉트
+    }
+
 }

@@ -12,7 +12,7 @@ import javax.servlet.http.HttpSession;
 public class LoginCheckInterceptor implements HandlerInterceptor {
 
     /**
-     * 컨트롤러 호출 전 호출됨
+     * preHandle : 컨트롤러 호출 전 호출됨
      *
      * request 에 session 존재하지 않으면 로그인 안된 상태 -> request 가 온 uri 이용해서 해당 뷰로 리다이렉트함
      */
