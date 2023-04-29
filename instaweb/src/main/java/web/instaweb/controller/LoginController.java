@@ -36,7 +36,7 @@ public class LoginController {
             return "/login/loginForm";
         }
 
-        // 로그인 성공 처리 todo 
+        // 로그인 성공 처리 todo
 
         return "redirect:/";
     }
