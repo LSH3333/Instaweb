@@ -29,4 +29,9 @@ public class Member {
     // Member 가 갖고 있는 Page 들 리스트
     @OneToMany(mappedBy = "member")
     private List<Page> pages = new ArrayList<>();
+
+
+    public void addPage(Page page) {
+        pages.add(page);
+    }
 }

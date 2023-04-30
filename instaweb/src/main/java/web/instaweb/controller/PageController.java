@@ -53,12 +53,17 @@ public class PageController {
      * createPageForm 으로 넘어가기 전에 Page 객체 미리 만들어서 id 생성해놓고, 생성된 id 값도 PageForm 에 포함시켜서 전달
      */
     @GetMapping("/pages/new")
-    public String createForm(Model model) {
+    public String createForm(Model model, @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
         // 글 작성폼에서 ajax request 로 이미지 저장할때 id 가 필요하기 때문에, 아무것도 없는 Page 를 여기서 미리 만든다
         PageForm pageForm = new PageForm();
         Page page = new Page();
-        pageService.savePage(page);
         pageForm.setId(page.getId());
+
+        // Member - Page 연결
+        loginMember.addPage(page);
+        page.setMember(loginMember);
+
+        pageService.savePage(page);
 
         model.addAttribute("form", pageForm);
         return "pages/createPageForm";
@@ -82,10 +87,7 @@ public class PageController {
          * "application/octet-stream" 은 8 비트 단위 binary 라는 의미
          */
 
-
-//        System.out.println("created page");
-//        System.out.println(form.getId() + " " + form.getTitle() + " " + form.getContent() + " " + LocalDateTime.now());
-        pageService.updatePage(form.getId(), form.getTitle(), form.getContent(), LocalDateTime.now());
+        Page page = pageService.updatePage(form.getId(), form.getTitle(), form.getContent(), LocalDateTime.now());
 
         return "redirect:/";
     }
@@ -136,8 +138,9 @@ public class PageController {
      *
      */
     @GetMapping("/pages")
-    public String list(Model model) {
-        List<Page> pages = pageService.findAll();
+    public String list(Model model, @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
+        List<Page> pages = loginMember.getPages();
+//        List<Page> pages = pageService.findAll();
         model.addAttribute("pages", pages);
         return "/pages/pageList";
     }
