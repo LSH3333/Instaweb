@@ -30,6 +30,7 @@ public class MemberController {
             return "/members/registerForm";
         }
 
+        System.out.println("register");
         System.out.println(member.getName() + " " + member.getLoginId() + " " + member.getPassword());
 
         memberRepository.save(member);

@@ -2,6 +2,7 @@ package web.instaweb.domain;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -11,7 +12,7 @@ import java.util.List;
 @Entity
 @Table
 @Getter
-@Setter // validation 위해서 필요함
+@Setter // validation 위해서 필요?
 public class Member {
     @Id
     @GeneratedValue

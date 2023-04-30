@@ -19,6 +19,8 @@ import web.instaweb.dto.GetImageDto;
 import web.instaweb.form.PageForm;
 import web.instaweb.form.PageListForm;
 import web.instaweb.service.ImageService;
+import web.instaweb.service.LoginService;
+import web.instaweb.service.MemberService;
 import web.instaweb.service.PageService;
 
 import javax.validation.Valid;
@@ -33,6 +35,7 @@ public class PageController {
 
     private final PageService pageService;
     private final ImageService imageService;
+    private final MemberService memberService;
 
     // Page 에 이미지 하나도 없는 경우 띄울 이미지
     private byte[] noImgFile;
@@ -54,16 +57,18 @@ public class PageController {
      */
     @GetMapping("/pages/new")
     public String createForm(Model model, @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
+        // 영속성 Member 필요하기 때문에 조회해옴
+        Member member = memberService.findOne(loginMember.getId());
         // 글 작성폼에서 ajax request 로 이미지 저장할때 id 가 필요하기 때문에, 아무것도 없는 Page 를 여기서 미리 만든다
         PageForm pageForm = new PageForm();
         Page page = new Page();
+        // Member - Page 연결
+        page.setMember(member);
+        member.addPage(page);
+        pageService.savePage(page);
         pageForm.setId(page.getId());
 
-        // Member - Page 연결
-        loginMember.addPage(page);
-        page.setMember(loginMember);
 
-        pageService.savePage(page);
 
         model.addAttribute("form", pageForm);
         return "pages/createPageForm";
@@ -87,7 +92,7 @@ public class PageController {
          * "application/octet-stream" 은 8 비트 단위 binary 라는 의미
          */
 
-        Page page = pageService.updatePage(form.getId(), form.getTitle(), form.getContent(), LocalDateTime.now());
+        pageService.updatePage(form.getId(), form.getTitle(), form.getContent(), LocalDateTime.now());
 
         return "redirect:/";
     }
@@ -140,6 +145,8 @@ public class PageController {
     @GetMapping("/pages")
     public String list(Model model, @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
         List<Page> pages = loginMember.getPages();
+        System.out.println("list");
+        System.out.println(loginMember.getId());
 //        List<Page> pages = pageService.findAll();
         model.addAttribute("pages", pages);
         return "/pages/pageList";
