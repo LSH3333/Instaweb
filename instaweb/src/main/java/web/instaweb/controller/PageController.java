@@ -7,6 +7,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -67,8 +68,6 @@ public class PageController {
         member.addPage(page);
         pageService.savePage(page);
         pageForm.setId(page.getId());
-
-
 
         model.addAttribute("form", pageForm);
         return "pages/createPageForm";
@@ -144,9 +143,15 @@ public class PageController {
      */
     @GetMapping("/pages")
     public String list(Model model, @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
-        List<Page> pages = loginMember.getPages();
+        // 영속성 Member 필요하기 때문에 조회해옴
+        Member member = memberService.findOne(loginMember.getId());
+        List<Page> pages = member.getPages();
         System.out.println("list");
-        System.out.println(loginMember.getId());
+        System.out.println(member.getId());
+        System.out.println(pages.size());
+        for (Page page : pages) {
+            System.out.println("page = " + page);
+        }
 //        List<Page> pages = pageService.findAll();
         model.addAttribute("pages", pages);
         return "/pages/pageList";
