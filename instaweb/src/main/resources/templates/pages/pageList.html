@@ -31,7 +31,8 @@
                         var div = document.createElement('div');
 
 						var aElement = document.createElement('a');
-						aElement.href = '/' + data.pages[i].id;
+						// aElement.href = '/' + data.pages[i].id;
+                        aElement.href = data.pages[i].id;
 						var imgElement = document.createElement('img');
 						imgElement.src = 'data:image/jpeg;charset=utf-8;base64,' + data.images[i];
 						aElement.appendChild(imgElement)

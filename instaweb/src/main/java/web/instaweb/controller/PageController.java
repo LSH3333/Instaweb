@@ -211,8 +211,8 @@ public class PageController {
      * 글 보기
      * todo : /pages/{member.name}/{id}/view 로 수정해야함
      */
-    @GetMapping("/{pageId}")
-    public String viewPage(@PathVariable("pageId") Long pageId, Model model) {
+    @GetMapping("/{memberId}/{pageId}")
+    public String viewPage(@PathVariable("memberId") Long memberId, @PathVariable("pageId") Long pageId, Model model) {
         Page page = pageService.findOne(pageId);
         model.addAttribute("page", page);
         return "pages/pageView";
