@@ -31,13 +31,17 @@
                         var div = document.createElement('div');
 
 						var aElement = document.createElement('a');
-						aElement.href = 'pages/' + data.pages[i].id + '/view';
+						aElement.href = '/' + data.pages[i].id;
 						var imgElement = document.createElement('img');
 						imgElement.src = 'data:image/jpeg;charset=utf-8;base64,' + data.images[i];
 						aElement.appendChild(imgElement)
 
 						var h2Element = document.createElement('h2');
-						h2Element.innerHTML = '<a href="pages/' + data.pages[i].id + '/view">' + data.pages[i].title + '</a>'
+                        var h2InnerAEle = document.createElement('a');
+                        h2InnerAEle.innerText = data.pages[i].title;
+                        h2InnerAEle.href = '/' + data.pages[i].id;
+                        h2Element.appendChild(h2InnerAEle);
+						// h2Element.innerHTML = '<a href="pages/' + data.pages[i].id + '/view">' + data.pages[i].title + '</a>'
 						var pElement = document.createElement('p');
 						pElement.innerHTML = data.pages[i].content;
 

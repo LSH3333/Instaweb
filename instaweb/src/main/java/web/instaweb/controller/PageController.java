@@ -141,18 +141,12 @@ public class PageController {
      * todo : HomeController.home() 참고
      *
      */
-    @GetMapping("/pages")
-    public String list(Model model, @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
+    @GetMapping("{memberId}/pages")
+    public String list(Model model, @PathVariable("memberId") Long memberId) {
         // 영속성 Member 필요하기 때문에 조회해옴
-        Member member = memberService.findOne(loginMember.getId());
+        Member member = memberService.findOne(memberId);
         List<Page> pages = member.getPages();
-        System.out.println("list");
-        System.out.println(member.getId());
-        System.out.println(pages.size());
-        for (Page page : pages) {
-            System.out.println("page = " + page);
-        }
-//        List<Page> pages = pageService.findAll();
+
         model.addAttribute("pages", pages);
         return "/pages/pageList";
     }
@@ -202,6 +196,11 @@ public class PageController {
             images.add(base64Image);
         }
 
+        // member
+        List<Long> memberId = new ArrayList<>();
+        memberId.add(member.getId());
+
+        ret.put("memberId", memberId);
         ret.put("pages", pageListForms);
         ret.put("images", images);
 
@@ -212,8 +211,8 @@ public class PageController {
      * 글 보기
      * todo : /pages/{member.name}/{id}/view 로 수정해야함
      */
-    @GetMapping("/pages/{id}/view")
-    public String viewPage(@PathVariable("id") Long pageId, Model model) {
+    @GetMapping("/{pageId}")
+    public String viewPage(@PathVariable("pageId") Long pageId, Model model) {
         Page page = pageService.findOne(pageId);
         model.addAttribute("page", page);
         return "pages/pageView";

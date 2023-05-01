@@ -20,7 +20,7 @@
             <!-- password -->
             <div>
                 <label th:for="password">비밀번호</label>
-                <input type="text" th:field="*{password}" placeholder="password 입력하세요">
+                <input type="password" th:field="*{password}" placeholder="password 입력하세요">
                 <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}">에러 발생</p>
             </div>
 

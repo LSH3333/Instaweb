@@ -8,7 +8,9 @@
 
     <div>MAIN PAGE</div>
     
-    <div><a href="/pages">TO PAGES</a></div> 
+    <!-- <div><a href="/pages" th:href="@{|/pages/${member.id}|}">TO PAGES</a></div>  -->
+
+    <div><a href="/pages" th:href="@{|/${member.id}/pages|}">TO PAGES</a></div> 
 
     <div><a href="/logout">LOG OUT</a></div>
 
