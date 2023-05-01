@@ -168,15 +168,15 @@ public class PageController {
     @ResponseBody
     @GetMapping("/pages/ajaxReq")
     public Map<String, ?> loadPagesAndImages(@RequestParam int beginIdx, @RequestParam int cnt, @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) throws IOException {
+        // 로그인 되있는 Member 가 갖는 Page 들
         Member member = memberService.findOne(loginMember.getId());
         List<Page> pages = member.getCntPagesFromIdx(beginIdx, cnt);
 
         Map<String, List<?>> ret = new HashMap<>();
+
         getNoImgFile();
 
-        // todo : fix findRange
         // page
-//        List<Page> pages = pageService.findRange(beginIdx, cnt);
         List<Object> pageListForms = new ArrayList<>();
         for (Page page : pages) {
             PageListForm pageListForm = new PageListForm();
@@ -206,43 +206,6 @@ public class PageController {
         ret.put("images", images);
 
         return ret;
-
-//        Map<String, List<?>> ret = new HashMap<>();
-//        getNoImgFile();
-//
-//        // todo : fix findRange
-//        // page
-//        List<Page> pages = pageService.findRange(beginIdx, cnt);
-//        List<Object> pageListForms = new ArrayList<>();
-//        for (Page page : pages) {
-//            PageListForm pageListForm = new PageListForm();
-//            pageListForm.setId(page.getId());
-//            pageListForm.setTitle(page.getTitle());
-//            pageListForm.setContent(page.getContent());
-//            pageListForms.add(pageListForm);
-//        }
-//
-//
-//        // images
-//        // 각 페이지의 첫번째 이미지(존재한다면)를 base64 로 인코딩 후 리스트에 저장
-//        List<String> images = new ArrayList<>();
-//        for (Page page : pages) {
-//            List<Image> pageImages = page.getImages();
-//            String base64Image;
-//            if (!pageImages.isEmpty()) {
-//                base64Image = pageImages.get(0).generateBase64Image();
-//            }
-//            else {
-//                // 페이지에 이미지가 하나도 없을 경우 "no-img.png" 디스플레이 하도록함
-//                base64Image = Base64.encodeBase64String(noImgFile);
-//            }
-//            images.add(base64Image);
-//        }
-//
-//        ret.put("pages", pageListForms);
-//        ret.put("images", images);
-//
-//        return ret;
     }
 
     /**
