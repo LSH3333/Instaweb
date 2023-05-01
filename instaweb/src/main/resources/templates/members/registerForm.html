@@ -13,6 +13,7 @@
             <!-- ID -->
             <div>
                 <label th:for="loginId">아이디</label>
+                <!-- th:field 는 bindingResult 에 에러 없을시에는 그냥 loginId 값 사용, 에러 있을 시에는 FieldError의 rejectedValue 값 사용  -->
                 <input type="text" th:field="*{loginId}" placeholder="loginId 입력하세요">
                 <p th:if="${#fields.hasErrors('loginId')}" th:errors="*{loginId}">에러 발생</p>
             </div>

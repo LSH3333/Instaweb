@@ -45,5 +45,14 @@ public class MemberRepository {
                 .filter(m -> m.getLoginId().equals(loginId)).findFirst();
     }
 
+    // name 로 Member 찾는다
+    public Optional<Member> findByName(String name) {
+        return em.createQuery("select m from Member m where m.name = :name", Member.class)
+                .setParameter("name", name)
+                .getResultList()
+                .stream()
+                .filter(m -> m.getName().equals(name)).findFirst();
+    }
+
 }
 
