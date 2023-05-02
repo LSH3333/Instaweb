@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import web.instaweb.interceptor.LoginCheckInterceptor;
+import web.instaweb.interceptor.MemberCheckInterceptor;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
@@ -23,6 +24,12 @@ public class WebConfig implements WebMvcConfigurer {
                         ,"/*/pages" // pageList 볼 수 있음
                         ,"/*/pages/*" // 글 볼 수 있음
                         ,"/pages/ajaxReq"); // ajax 경로도 제외해줘야함
+
+
+        // session 에 로그인한 member 와 page 의 주인인 member 비교
+        registry.addInterceptor(new MemberCheckInterceptor())
+                .order(2)
+                .addPathPatterns("/pages/new");
     }
 
 }

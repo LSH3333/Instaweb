@@ -24,6 +24,8 @@ import web.instaweb.service.LoginService;
 import web.instaweb.service.MemberService;
 import web.instaweb.service.PageService;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.io.InputStream;
@@ -69,6 +71,7 @@ public class PageController {
         pageService.savePage(page);
         pageForm.setId(page.getId());
 
+//        model.addAttribute("member", member); // interceptor 에서 로그인한 맴버인지 체크 위해
         model.addAttribute("form", pageForm);
         return "pages/createPageForm";
     }
