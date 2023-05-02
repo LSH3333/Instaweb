@@ -140,15 +140,9 @@ public class PageController {
      */
     @GetMapping("{memberId}/pages")
     public String list(Model model, @PathVariable("memberId") Long memberId) {
-        System.out.println("list");
-        System.out.println("memberId = " + memberId);
         // 영속성 Member 필요하기 때문에 조회해옴
         Member member = memberService.findOne(memberId);
         List<Page> pages = member.getPages();
-
-        for (Page page : pages) {
-            System.out.println("page = " + page.getId());
-        }
 
         model.addAttribute("pages", pages);
         model.addAttribute("memberId", memberId);
@@ -166,9 +160,6 @@ public class PageController {
     @ResponseBody
     @GetMapping("/pages/ajaxReq")
     public Map<String, ?> loadPagesAndImages(@RequestParam int beginIdx, @RequestParam int cnt, @RequestParam Long memberId) throws IOException {
-
-        System.out.println("----------------------------");
-        System.out.println("loadPagesAndImages = " + memberId);
 
         // 로그인 되있는 Member 가 갖는 Page 들
         Member member = memberService.findOne(memberId);
@@ -212,16 +203,6 @@ public class PageController {
         ret.put("pages", pageListForms);
         ret.put("images", images);
 
-        for (Long aLong : memberIdList) {
-            System.out.println("aLong = " + aLong);
-        }
-        for (Object pageListForm : pageListForms) {
-            System.out.println("pageListForm = " + pageListForm);
-        }
-        for (String image : images) {
-            System.out.println("image = " + image);
-        }
-        System.out.println("----------------------------");
         return ret;
     }
 
