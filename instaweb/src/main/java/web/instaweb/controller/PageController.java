@@ -137,17 +137,21 @@ public class PageController {
 
     /**
      * 글 목록
-     * todo : 현재 로그인한 Member 에 속한 Page 만 보여주도록 해야함
-     * todo : HomeController.home() 참고
-     *
      */
     @GetMapping("{memberId}/pages")
     public String list(Model model, @PathVariable("memberId") Long memberId) {
+        System.out.println("list");
+        System.out.println("memberId = " + memberId);
         // 영속성 Member 필요하기 때문에 조회해옴
         Member member = memberService.findOne(memberId);
         List<Page> pages = member.getPages();
 
+        for (Page page : pages) {
+            System.out.println("page = " + page.getId());
+        }
+
         model.addAttribute("pages", pages);
+        model.addAttribute("memberId", memberId);
         return "/pages/pageList";
     }
 
@@ -161,9 +165,13 @@ public class PageController {
      */
     @ResponseBody
     @GetMapping("/pages/ajaxReq")
-    public Map<String, ?> loadPagesAndImages(@RequestParam int beginIdx, @RequestParam int cnt, @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) throws IOException {
+    public Map<String, ?> loadPagesAndImages(@RequestParam int beginIdx, @RequestParam int cnt, @RequestParam Long memberId) throws IOException {
+
+        System.out.println("----------------------------");
+        System.out.println("loadPagesAndImages = " + memberId);
+
         // 로그인 되있는 Member 가 갖는 Page 들
-        Member member = memberService.findOne(loginMember.getId());
+        Member member = memberService.findOne(memberId);
         List<Page> pages = member.getCntPagesFromIdx(beginIdx, cnt);
 
         Map<String, List<?>> ret = new HashMap<>();
@@ -197,20 +205,30 @@ public class PageController {
         }
 
         // member
-        List<Long> memberId = new ArrayList<>();
-        memberId.add(member.getId());
+        List<Long> memberIdList = new ArrayList<>();
+        memberIdList.add(member.getId());
 
-        ret.put("memberId", memberId);
+        ret.put("memberIdList", memberIdList);
         ret.put("pages", pageListForms);
         ret.put("images", images);
 
+        for (Long aLong : memberIdList) {
+            System.out.println("aLong = " + aLong);
+        }
+        for (Object pageListForm : pageListForms) {
+            System.out.println("pageListForm = " + pageListForm);
+        }
+        for (String image : images) {
+            System.out.println("image = " + image);
+        }
+        System.out.println("----------------------------");
         return ret;
     }
 
     /**
      * 글 보기
      */
-    @GetMapping("/{memberId}/{pageId}")
+    @GetMapping("/{memberId}/pages/{pageId}")
     public String viewPage(@PathVariable("memberId") Long memberId, @PathVariable("pageId") Long pageId, Model model) {
         Page page = pageService.findOne(pageId);
         model.addAttribute("page", page);
@@ -225,10 +243,18 @@ public class PageController {
      * 새로운 폼을 만들어서 "updatePageForm" 에 전달
      */
     @GetMapping("/pages/{id}/edit")
-    public String updatePageForm(@PathVariable("id") Long id, Model model) {
+    public String updatePageForm(@PathVariable("id") Long id, Model model,
+                                 @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
+
         Page page = pageService.findOne(id);
 
-        // 1. 뷰에서는 저장된 이미지를 보여줘야함
+        // Page 의 주인인 Member 와 현재 로그인된 Member 가 다르다면 글 수정 권리 없음
+        if (!Objects.equals(loginMember.getId(), page.getMember().getId())) {
+            return "/";
+        }
+
+
+            // 1. 뷰에서는 저장된 이미지를 보여줘야함
         // Page 에는 Image 형으로 저장되어있음, 폼은 MultiPartFile 형식 -> 폼에 Image 형으로도 저장할수 있도록 선언
 
         PageForm form = new PageForm();

@@ -21,12 +21,14 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
         String requestURI = request.getRequestURI();
 
         HttpSession session = request.getSession();
+
+        // 로그인 안된 경우
         if (session == null || session.getAttribute(SessionConst.LOGIN_MEMBER) == null) {
             response.sendRedirect("/login?redirectURL=" + requestURI);
-            return false;
+            return false; // request 종료
         }
 
-        return true;
+        return true; // request 계속 처리
     }
 
 
