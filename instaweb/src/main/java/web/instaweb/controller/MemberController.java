@@ -19,7 +19,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MemberController {
 
-//    private final MemberRepository memberRepository;
     private final MemberService memberService;
 
     @GetMapping("/members/register")

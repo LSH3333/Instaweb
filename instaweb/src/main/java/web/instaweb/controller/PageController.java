@@ -209,7 +209,6 @@ public class PageController {
 
     /**
      * 글 보기
-     * todo : /pages/{member.name}/{id}/view 로 수정해야함
      */
     @GetMapping("/{memberId}/{pageId}")
     public String viewPage(@PathVariable("memberId") Long memberId, @PathVariable("pageId") Long pageId, Model model) {
@@ -251,18 +250,16 @@ public class PageController {
      * Image handleEditImagesRequest() 에서 업데이트 된다
      */
     @PostMapping("/pages/{id}/edit")
-    public String updatePage(@PathVariable("id") Long id, @Valid @ModelAttribute("form") PageForm form, BindingResult result) {
+    public String updatePage(@PathVariable("id") Long id, @Valid @ModelAttribute("form") PageForm form, BindingResult result,
+                             @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
+
         if (result.hasErrors()) {
             return "pages/updatePageForm";
         }
-        System.out.println("updatePage");
-
-        // 여기서 createdTime 의 second 부분 소실됨 
-        System.out.println("PageController.updatePage : " + form.getCreatedTime());
-
+        Long memberId = loginMember.getId();
         pageService.updatePage(id, form.getTitle(), form.getContent(), form.getCreatedTime());
 
-        return "redirect:/pages";
+        return "redirect:/" + memberId + "/pages";
     }
 
     /**
@@ -369,9 +366,10 @@ public class PageController {
      * 글 삭제
      */
     @GetMapping("/pages/{id}/delete")
-    public String deletePage(@PathVariable("id") Long id) {
+    public String deletePage(@PathVariable("id") Long id, @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
+        Long memberId = memberService.findOne(loginMember.getId()).getId();
         pageService.deletePage(id);
-        return "redirect:/pages";
+        return "redirect:/" + memberId + "/pages";
     }
 
 

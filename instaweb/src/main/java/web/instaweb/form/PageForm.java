@@ -12,6 +12,7 @@ import java.util.List;
 
 @Getter @Setter
 public class PageForm {
+    // Page id
     private Long id;
 
     // 제목
