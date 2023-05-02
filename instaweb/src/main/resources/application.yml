@@ -34,3 +34,7 @@ server:
   servlet:
     session:
       timeout: 1800
+
+  error:
+    whitelabel:
+      enabled: false
