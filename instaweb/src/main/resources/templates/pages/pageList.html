@@ -81,14 +81,13 @@
 			beginIdx += cnt;
             xhr.send();
         };
-
-
+        
     </script>
 </head>
 <body>
 
 <p>
-    <a href="/pages/new">글쓰기</a>
+    <a th:if="${loggedIn}" href="/pages/new">글쓰기</a>
 </p>
 
 

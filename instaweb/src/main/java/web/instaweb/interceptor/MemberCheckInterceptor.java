@@ -1,6 +1,7 @@
 package web.instaweb.interceptor;
 
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -50,6 +51,7 @@ public class MemberCheckInterceptor implements HandlerInterceptor {
 //        return true; // request 계속 처리
 //    }
 
+
 //    @Override
 //    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
 //        if (modelAndView != null) {
@@ -73,4 +75,10 @@ public class MemberCheckInterceptor implements HandlerInterceptor {
 //    }
 
 
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+        Long memberId = (Long) request.getSession().getAttribute("memberId");
+
+
+    }
 }

@@ -59,7 +59,8 @@ public class PageController {
      * createPageForm 으로 넘어가기 전에 Page 객체 미리 만들어서 id 생성해놓고, 생성된 id 값도 PageForm 에 포함시켜서 전달
      */
     @GetMapping("/pages/new")
-    public String createForm(Model model, @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
+    public String createForm(Model model, @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
+                             HttpServletRequest request) {
         // 영속성 Member 필요하기 때문에 조회해옴
         Member member = memberService.findOne(loginMember.getId());
         // 글 작성폼에서 ajax request 로 이미지 저장할때 id 가 필요하기 때문에, 아무것도 없는 Page 를 여기서 미리 만든다
@@ -71,7 +72,7 @@ public class PageController {
         pageService.savePage(page);
         pageForm.setId(page.getId());
 
-//        model.addAttribute("member", member); // interceptor 에서 로그인한 맴버인지 체크 위해
+
         model.addAttribute("form", pageForm);
         return "pages/createPageForm";
     }
@@ -142,10 +143,17 @@ public class PageController {
      * 글 목록
      */
     @GetMapping("{memberId}/pages")
-    public String list(Model model, @PathVariable("memberId") Long memberId) {
+    public String list(Model model, @PathVariable("memberId") Long memberId,
+                       @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
         // 영속성 Member 필요하기 때문에 조회해옴
         Member member = memberService.findOne(memberId);
         List<Page> pages = member.getPages();
+
+        if(loginMember.getId().equals(memberId)) {
+            model.addAttribute("loggedIn", true);
+        } else {
+            model.addAttribute("loggedIn", false);
+        }
 
         model.addAttribute("pages", pages);
         model.addAttribute("memberId", memberId);
