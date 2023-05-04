@@ -75,10 +75,10 @@ public class MemberCheckInterceptor implements HandlerInterceptor {
 //    }
 
 
-    @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        Long memberId = (Long) request.getSession().getAttribute("memberId");
-
-
-    }
+//    @Override
+//    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+//        Long memberId = (Long) request.getSession().getAttribute("memberId");
+//
+//
+//    }
 }

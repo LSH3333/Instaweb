@@ -20,16 +20,13 @@ public class WebConfig implements WebMvcConfigurer {
                 // 로그인 되어있어야 접근 가능한 경로
                 .addPathPatterns("/**")
                 // 로그인 안되어있어도 접근 가능 경로
-                .excludePathPatterns("/", "/members/register", "/login", "/logout", "/css/**", "/*.ico", "/error"
-                        ,"/*/pages" // pageList 볼 수 있음
-                        ,"/*/pages/*" // 글 볼 수 있음
-                        ,"/pages/ajaxReq"); // ajax 경로도 제외해줘야함
+                .excludePathPatterns("/", "/members/register", "/login", "/logout", "/css/**", "/*.ico", "/error",
+                        "/*/pages", // pageList 볼 수 있음,
+                        "/*/pages/*", // 글 볼 수 있음
+                        "/pages/ajaxReq", // ajax 경로도 제외해줘야함
+                        "/allPages", "/allPages/ajaxReq");
 
 
-        // session 에 로그인한 member 와 page 의 주인인 member 비교
-        registry.addInterceptor(new MemberCheckInterceptor())
-                .order(2)
-                .addPathPatterns("/pages/new");
     }
 
 }

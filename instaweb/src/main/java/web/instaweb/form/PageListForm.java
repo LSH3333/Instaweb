@@ -13,4 +13,8 @@ public class PageListForm {
 
     // 내용
     private String content;
+
+    // Page 의 주인인 member 의 id
+    private Long memberId;
+
 }

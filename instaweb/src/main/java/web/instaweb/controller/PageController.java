@@ -140,11 +140,14 @@ public class PageController {
     // 페이지 리스트
 
     /**
-     * 글 목록
+     * {memberId} 의 글 목록
      */
     @GetMapping("{memberId}/pages")
     public String list(Model model, @PathVariable("memberId") Long memberId,
-                       @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
+                       @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) throws IOException {
+
+        getNoImgFile();
+
         // 영속성 Member 필요하기 때문에 조회해옴
         Member member = memberService.findOne(memberId);
         List<Page> pages = member.getPages();
@@ -160,7 +163,6 @@ public class PageController {
         model.addAttribute("memberId", memberId);
         return "/pages/pageList";
     }
-
     /**
      *
      * ajax, request from pageList.html
@@ -171,7 +173,7 @@ public class PageController {
      */
     @ResponseBody
     @GetMapping("/pages/ajaxReq")
-    public Map<String, ?> loadPagesAndImages(@RequestParam int beginIdx, @RequestParam int cnt, @RequestParam Long memberId) throws IOException {
+    public Map<String, ?> loadPagesAndImages(@RequestParam int beginIdx, @RequestParam int cnt, @RequestParam Long memberId) {
 
         // 로그인 되있는 Member 가 갖는 Page 들
         Member member = memberService.findOne(memberId);
@@ -179,7 +181,6 @@ public class PageController {
 
         Map<String, List<?>> ret = new HashMap<>();
 
-        getNoImgFile();
 
         // page
         List<Object> pageListForms = new ArrayList<>();
@@ -217,6 +218,58 @@ public class PageController {
 
         return ret;
     }
+
+
+    /**
+     * 존재하는 모든 page 의 목록
+     */
+    @GetMapping("/allPages")
+    public String allList(Model model) {
+        List<Page> pages = pageService.findAll();
+        model.addAttribute("pages", pages);
+        return "/pages/allPageList";
+    }
+    @ResponseBody
+    @GetMapping("/allPages/ajaxReq")
+    public Map<String, ?> loadAllPagesAndImages(@RequestParam int beginIdx, @RequestParam int cnt)  {
+
+        List<Page> pages = pageService.findRange(beginIdx, cnt);
+
+        Map<String, List<?>> ret = new HashMap<>();
+
+        // page
+        List<Object> pageListForms = new ArrayList<>();
+        for (Page page : pages) {
+            PageListForm pageListForm = new PageListForm();
+            pageListForm.setId(page.getId());
+            pageListForm.setTitle(page.getTitle());
+            pageListForm.setContent(page.getContent());
+            pageListForm.setMemberId(page.getMember().getId());
+            pageListForms.add(pageListForm);
+        }
+
+        // images
+        // 각 페이지의 첫번째 이미지(존재한다면)를 base64 로 인코딩 후 리스트에 저장
+        List<String> images = new ArrayList<>();
+        for (Page page : pages) {
+            List<Image> pageImages = page.getImages();
+            String base64Image;
+            if (!pageImages.isEmpty()) {
+                base64Image = pageImages.get(0).generateBase64Image();
+            }
+            else {
+                // 페이지에 이미지가 하나도 없을 경우 "no-img.png" 디스플레이 하도록함
+                base64Image = Base64.encodeBase64String(noImgFile);
+            }
+            images.add(base64Image);
+        }
+
+        ret.put("pages", pageListForms);
+        ret.put("images", images);
+
+        return ret;
+    }
+
 
     /**
      * 글 보기
