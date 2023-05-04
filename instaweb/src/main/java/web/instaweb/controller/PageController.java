@@ -174,13 +174,11 @@ public class PageController {
     @ResponseBody
     @GetMapping("/pages/ajaxReq")
     public Map<String, ?> loadPagesAndImages(@RequestParam int beginIdx, @RequestParam int cnt, @RequestParam Long memberId) {
-
         // 로그인 되있는 Member 가 갖는 Page 들
         Member member = memberService.findOne(memberId);
         List<Page> pages = member.getCntPagesFromIdx(beginIdx, cnt);
 
         Map<String, List<?>> ret = new HashMap<>();
-
 
         // page
         List<Object> pageListForms = new ArrayList<>();
@@ -189,6 +187,7 @@ public class PageController {
             pageListForm.setId(page.getId());
             pageListForm.setTitle(page.getTitle());
             pageListForm.setContent(page.getContent());
+            pageListForm.setMemberId(page.getMember().getId());
             pageListForms.add(pageListForm);
         }
 
@@ -208,11 +207,6 @@ public class PageController {
             images.add(base64Image);
         }
 
-        // member
-        List<Long> memberIdList = new ArrayList<>();
-        memberIdList.add(member.getId());
-
-        ret.put("memberIdList", memberIdList);
         ret.put("pages", pageListForms);
         ret.put("images", images);
 

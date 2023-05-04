@@ -33,7 +33,7 @@
                         var div = document.createElement('div');
 
 						var aElement = document.createElement('a');
-						aElement.href = '/' + data.memberIdList + '/pages/' + data.pages[i].id;
+						aElement.href ='/' + data.pages[i].memberId + '/pages/' + data.pages[i].id;
                         // aElement.href = data.pages[i].id;
 						var imgElement = document.createElement('img');
 						imgElement.src = 'data:image/jpeg;charset=utf-8;base64,' + data.images[i];
@@ -42,7 +42,7 @@
 						var h2Element = document.createElement('h2');
                         var h2InnerAEle = document.createElement('a');
                         h2InnerAEle.innerText = data.pages[i].title;
-                        h2InnerAEle.href = '/' + data.memberIdList + '/pages/' + data.pages[i].id;
+                        h2InnerAEle.href = '/' + data.pages[i].memberId + '/pages/' + data.pages[i].id;
                         h2Element.appendChild(h2InnerAEle);
 						// h2Element.innerHTML = '<a href="pages/' + data.pages[i].id + '/view">' + data.pages[i].title + '</a>'
 						var pElement = document.createElement('p');

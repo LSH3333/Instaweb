@@ -29,7 +29,7 @@ public class Member {
 
     // Member 가 갖고 있는 Page 들 리스트
     @OneToMany(mappedBy = "member")
-    @OrderBy("createdTime asc") // Page 의 생성 시간 기준 오름차순으로 저장
+    @OrderBy("createdTime desc") // Page 의 생성 시간 기준 오름차순으로 저장
     private List<Page> pages = new ArrayList<>();
 
     public void addPage(Page page) {
