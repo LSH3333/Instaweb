@@ -227,7 +227,7 @@ public class PageController {
         // page 주인이 member 인지 확인
         if(!page.getMember().getId().equals(memberId)) {
             return "error/showError.html";
-        }
+        } 
         model.addAttribute("page", page);
         return "pages/pageView";
     }
