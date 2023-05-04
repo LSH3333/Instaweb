@@ -224,8 +224,9 @@ public class PageController {
     @GetMapping("/{memberId}/pages/{pageId}")
     public String viewPage(@PathVariable("memberId") Long memberId, @PathVariable("pageId") Long pageId, Model model) {
         Page page = pageService.findOne(pageId);
+        // page 주인이 member 인지 확인
         if(!page.getMember().getId().equals(memberId)) {
-            return "error/4xx.html";
+            return "error/showError.html";
         }
         model.addAttribute("page", page);
         return "pages/pageView";
@@ -246,7 +247,7 @@ public class PageController {
 
         // Page 의 주인인 Member 와 현재 로그인된 Member 가 다르다면 글 수정 권리 없음
         if (!Objects.equals(loginMember.getId(), page.getMember().getId())) {
-            return "/";
+            return "error/showError.html";
         }
 
 
@@ -295,12 +296,6 @@ public class PageController {
     public ResponseEntity<String> editImages(@RequestParam String pageId,
                                              @RequestParam("imgId") List<String> editedImgIdList,
                                              @RequestParam("imgSrc") List<String> editedImgSrcList) {
-
-//        System.out.println("editImages");
-//        for(int i = 0; i < editedImgIdList.size(); i++) {
-//            System.out.println("imgId = " + editedImgIdList.get(i));
-//            System.out.println("imgSrc = " + editedImgSrcList.get(i));
-//        }
 
         Page page = pageService.findOne(Long.parseLong(pageId));
         List<Image> existedImages = page.getImages(); // 수정폼 이전 Page 에 존재하던 Image 들
@@ -385,11 +380,15 @@ public class PageController {
 
 
     /**
-     * 글 삭제
+     * Page 삭제
      */
     @GetMapping("/pages/{id}/delete")
     public String deletePage(@PathVariable("id") Long id, @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
         Long memberId = memberService.findOne(loginMember.getId()).getId();
+        // 현재 로그인된 Member 가 삭제하려는 Page 의 주인이 아니라면 삭제할수 없음
+        if (!pageService.findOne(id).getMember().getId().equals(loginMember.getId())) {
+            return "error/showError.html";
+        }
         pageService.deletePage(id);
         return "redirect:/" + memberId + "/pages";
     }
