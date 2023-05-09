@@ -5,22 +5,72 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="stylesheet" type="text/style" href="../../static/css/pageBlock.css"> -->
     <title>Page List</title>
 
     <style>
-        html, body {
+        html,
+        body {
             height: 100%;
             margin: 0;
             padding: 0;
         }
-        .content {
+
+        .contents {
             /* footer 아래 위치하도록 최소 높이 보장 */
             min-height: 700px;
-        }        
+            margin-left: 245px;
+            padding: 0 5px;
+        }
 
-        /* pageBlock style */
+
+        /* page Block */
         .pageBlock {
-            height: 200px;
+            /* background-color: brown; */
+            display: flex;
+            height: 250px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid black;
+        }
+
+        .pageBlock .imgBlock {
+            /* background-color: blue; */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 300px;
+            height: 230px;
+        }
+
+        .pageBlock .imgBlock img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .pageBlock .titleAndContentContainer {
+            width: 100%;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        .pageBlock .titleAndContentContainer .title {
+            /* background-color: beige; */
+            height: 50px;
+            width: 100%;
+            line-height: 50px;
+        }
+
+        .pageBlock .titleAndContentContainer .title a {
+            /* background-color: red; */
+            width: 100%;
+            height: 100%;
+        }
+
+        .pageBlock .titleAndContentContainer .content {
+            /* background-color: aquamarine; */
+            height: 180px;
+            width: 100%;
         }
     </style>
 
@@ -37,33 +87,41 @@
                 if (xhr.status == 200) {
                     // 스크롤 웹페이지 끝에 도달시 beginIdx 부터 cnt 개의 페이지 가져옴 
                     var contentContainer = document.getElementById('contentContainer');
-                    contentContainer.classList.add('pageBlock')
 
                     // Map<String, List<>> 의 형태로 리턴받음
                     var data = JSON.parse(xhr.responseText);
 
                     // response로 받은 page와 image들로 html 객체 만듦
                     for (let i = 0; i < data.pages.length; i++) {
-                        var pageBlock = document.createElement('div');
+                        let pageBlock = document.createElement('div');
                         pageBlock.classList.add('pageBlock');
 
-                        var aElement = document.createElement('a');
+                        // image
+                        let aElement = document.createElement('a');
+                        aElement.classList.add('imgBlock');
                         aElement.href = '/' + data.pages[i].memberId + '/pages/' + data.pages[i].id;
-                        var imgElement = document.createElement('img');
+                        let imgElement = document.createElement('img');
                         imgElement.src = 'data:image/jpeg;charset=utf-8;base64,' + data.images[i];
                         aElement.appendChild(imgElement)
 
-                        var h2Element = document.createElement('h2');
-                        var h2InnerAEle = document.createElement('a');
+                        // title and content container 
+                        let divEle = document.createElement('div');
+                        divEle.classList.add('titleAndContentContainer');
+
+                        let h2Element = document.createElement('h2');
+                        let h2InnerAEle = document.createElement('a');
                         h2InnerAEle.innerText = data.pages[i].title;
                         h2InnerAEle.href = '/' + data.pages[i].memberId + '/pages/' + data.pages[i].id;
                         h2Element.appendChild(h2InnerAEle);
-                        var pElement = document.createElement('p');
+                        let pElement = document.createElement('p');
+                        pElement.classList.add('content');
                         pElement.innerHTML = data.pages[i].content;
 
+                        divEle.appendChild(h2Element);
+                        divEle.appendChild(pElement);
+
                         pageBlock.appendChild(aElement);
-                        pageBlock.appendChild(h2Element);
-                        pageBlock.appendChild(pElement);
+                        pageBlock.appendChild(divEle);
 
                         contentContainer.appendChild(pageBlock);
                     }
@@ -101,9 +159,9 @@
 <body>
     <!-- side tab fragment -->
     <div th:replace="fragment/side-tab :: side-tab"></div>
-    
+
     <!-- Page 들 ajax 에 의해 로드됨 -->
-    <div class="content">
+    <div class="contents">
         <div id="contentContainer">
         </div>
     </div>
