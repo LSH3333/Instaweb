@@ -8,10 +8,15 @@
     <title>Page List</title>
 
     <style>
-        html,
-        body {
+        html, body {
+            height: 100%;
             margin: 0;
+            padding: 0;
         }
+        .content {
+            /* footer 아래 위치하도록 최소 높이 보장 */
+            min-height: 700px;
+        }        
     </style>
 
     <script type="text/javascript">
@@ -92,9 +97,12 @@
     
     <!-- Page 들 ajax 에 의해 로드됨 -->
     <div class="content">
-        <div id="contentContainer"></div>
+        <div id="contentContainer">
+        </div>
     </div>
 
+
+    <!-- footer -->
     <footer th:replace="fragment/footer :: footer"></footer>
 
 </body>
