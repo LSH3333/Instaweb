@@ -88,14 +88,14 @@
 
 <body>
     <!-- side tab fragment -->
-    <div th:replace="fragment/fragMain :: side-tab"></div>
+    <div th:replace="fragment/side-tab :: side-tab"></div>
     
     <!-- Page 들 ajax 에 의해 로드됨 -->
     <div class="content">
         <div id="contentContainer"></div>
     </div>
 
-
+    <footer th:replace="fragment/footer :: footer"></footer>
 
 </body>
 

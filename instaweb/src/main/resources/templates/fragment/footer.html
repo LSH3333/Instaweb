@@ -1,0 +1,205 @@
+<div th:fragment="footer">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            /* width, height에 border, padding 값 포함됨  */
+            box-sizing: border-box;
+        }
+
+        ul {
+            list-style-type: none;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        header {
+            width: 100%;
+            border-bottom: 1px solid black;
+        }
+
+        /* ////////// HEADER ///////////// */
+        header .inner {
+            width: 1180px;
+            height: 120px;
+            margin: 0px auto;
+            position: relative;
+        }
+
+        header .inner h1 {
+            position: absolute;
+            left: 10px;
+            bottom: 15px;
+        }
+
+        header .inner h1 a {
+            font: bold 24px/1 "verdana";
+            color: #444;
+        }
+
+        header .inner #gnb {
+            position: absolute;
+            bottom: 0px;
+            right: 0px;
+        }
+
+        header .inner #gnb li {
+            float: left;
+        }
+
+        header .inner #gnb li a {
+            display: block;
+            font: bold 15px/1 "verdana";
+            color: #555;
+            padding: 20px 40px;
+            /* .5s에 걸쳐서 변화 일어남  */
+            transition: all 0.5s;
+        }
+
+        header .inner #gnb li a:hover {
+            background: #555;
+            color: #fff;
+        }
+
+        header .inner .util {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+        }
+
+        header .inner .util li {
+            float: left;
+        }
+
+        header .inner .util li a {
+            display: block;
+            font: 12px/1 "verdana";
+            color: #999;
+            padding: 0 10px;
+        }
+
+        /* ////////// MAIN IMAGE ///////////// */
+        .main {
+            width: 100%;
+            height: 590px;
+            background-image: url(bg_main.png);
+        }
+
+        .main div {
+            width: 800px;
+            height: 300px;
+            margin: 0 auto;
+            padding-top: 150px;
+            color: white;
+            font-size: 25px;
+            /* background-color: pink; */
+        }
+
+        .main div span {
+            font-size: 80px;
+        }
+
+        /* ////////// SECTION ///////////// */
+        section {
+            width: 1180px;
+            height: 450px;
+            margin: 0 auto;
+            padding: 50px;
+            /* background-color: pink; */
+        }
+
+        section>p {
+            text-align: center;
+            font-weight: bold;
+        }
+
+        section article {
+            float: left;
+            width: 250px;
+            margin: 50px 10px;
+            padding: 10px;
+            overflow: hidden;
+            /* background-color: orange; */
+        }
+
+        section article p {
+            font-weight: bold;
+            margin: 10px 0px;
+        }
+
+        /* ////////// FOOTER ///////////// */
+        footer {
+            width: 100%;
+            margin-top: 30px;
+            padding-bottom: 30px;
+            background-color: #202032;
+        }
+
+        footer div {
+            width: 1000px;
+            height: 100px;
+            margin: 0px auto;
+            position: relative;
+            /* background-color: pink; */
+        }
+
+        footer p {
+            width: 1000px;
+            margin: 0 auto;
+            padding: 20px 10px 0px;
+            line-height: 20px;
+            color: gray;
+            font-size: 12px;
+        }
+
+        footer div h1 {
+            position: absolute;
+            left: 10px;
+            bottom: 15px;
+            color: gray;
+        }
+
+        footer div ul {
+            position: absolute;
+            right: 20px;
+            bottom: 15px;
+        }
+
+        footer div ul li {
+            display: inline-block;
+            margin: 0 auto;
+            color: gray;
+        }
+
+        footer div ul li a {
+            color: gray;
+        }
+
+        footer div ul li a:hover {
+            color: orange;
+        }
+    </style>
+
+    <footer>
+        <div>
+            <h1>WON LAB</h1>
+            <ul>
+                <li>@ 2022-2023 Won Lab, Inc.</li>
+                <li>|</li>
+                <li><a href="#">Privacy Notice</a></li>
+                <li>|</li>
+                <li><a href="#">Terms of User</a></li>
+                <li>|</li>
+                <li><a href="#">Site map</a></li>
+            </ul>
+        </div>
+        <p>
+            45, Hwangsaeul-ro 200beon-gil, Bundang-gu, Seognam-si, Gyeonggi-do, Republic of Korea<br>
+            Tel: 031-000-1111<br>
+            Fax: 031-111-0000<br>
+            Contact: aaa@aaaaa.com
+        </p>
+    </footer>
+</div>
