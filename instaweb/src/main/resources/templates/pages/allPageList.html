@@ -70,7 +70,9 @@
 
                         let pElement = document.createElement('p');
                         pElement.classList.add('content');
-                        pElement.innerHTML = data.pages[i].content;
+                        let pInnerDiv = document.createElement('div');                        
+                        pInnerDiv.innerHTML = data.pages[i].content;
+                        pElement.appendChild(pInnerDiv);
 
                         let pElement2 = document.createElement('p');
                         pElement2.classList.add('createdTime');
