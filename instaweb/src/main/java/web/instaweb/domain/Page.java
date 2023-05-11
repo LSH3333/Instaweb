@@ -23,6 +23,7 @@ public class Page {
     private String title;
 
     // 내용
+    @Lob
     private String content;
 
     // 작성일
