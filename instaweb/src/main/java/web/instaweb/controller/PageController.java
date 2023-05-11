@@ -153,7 +153,7 @@ public class PageController {
         List<Page> pages = member.getPages();
 
         // 특정 member 의 글목록과 로그인 정보가 다르다면 글쓰기 버튼 안보이 도록 함
-        if(loginMember.getId().equals(memberId)) {
+        if(loginMember != null && loginMember.getId().equals(memberId)) {
             model.addAttribute("loggedIn", true);
         } else {
             model.addAttribute("loggedIn", false);

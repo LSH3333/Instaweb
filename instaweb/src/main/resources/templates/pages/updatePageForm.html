@@ -68,7 +68,11 @@
 
 <body>
 
-    <div>
+    <!-- side tab fragment -->
+    <div th:replace="fragment/side-tab :: side-tab"></div>
+
+    <!-- Page 들 ajax 에 의해 로드됨 -->
+    <div class="contents" style="min-height: 700px; margin-left: 245px; padding:0 5px;">
         <form th:object="${form}" method="post" enctype="multipart/form-data">
             <!-- type="hidden" 으로 안넘겨주면 null 됨 -->
             <input type="hidden" th:field="*{id}" />
@@ -98,6 +102,9 @@
             <button id="submitBtn" type="submit">수정</button>
         </form>
     </div>
+
+    <!-- footer -->
+    <footer th:replace="fragment/footer :: footer"></footer>
 
 
     <script type="text/javascript">
@@ -273,7 +280,7 @@
                 }
 
             }
-            
+
             uploadImgXhr.open('POST', '/pages/editImages')
             uploadImgXhr.onload = function () {
                 if (uploadImgXhr.status === 200) {

@@ -1,35 +1,46 @@
 <!-- 특정 Page 뷰  -->
 
 <!DOCTYPE html>
-<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>View Page</title>
+
+    <!-- page block style -->
+    <link rel="stylesheet" type="text/css" href="/css/pageBlock.css" th:href="@{/css/pageBlock.css}">
 </head>
 
 <body>
 
-    <p th:text="${page.title}"></p>
-    <textarea cols="50" rows="10" readonly th:text="${page.content}"></textarea>
+    <!-- side tab fragment -->
+    <div th:replace="fragment/side-tab :: side-tab"></div>
 
-    <!-- 모델에 담겨있는 "img" 불러옴   -->
-    <tr th:each="image : ${page.images}">
-        <td>
-           <p th:text="${image.id}"></p>
-            <img th:src="${'data:image/jpeg;charset=utf-8;base64,' + image.generateBase64Image()}" alt="">
-        </td>
-    </tr>
+    <!-- Page 들 ajax 에 의해 로드됨 -->
+    <div class="contents" style="min-height: 700px; margin-left: 245px; padding:0 5px;">
+        <p th:text="${page.title}"></p>
+        <textarea cols="50" rows="10" readonly th:text="${page.content}"></textarea>
+
+        <!-- 모델에 담겨있는 "img" 불러옴   -->
+        <tr th:each="image : ${page.images}">
+            <td>
+                <p th:text="${image.id}"></p>
+                <img th:src="${'data:image/jpeg;charset=utf-8;base64,' + image.generateBase64Image()}" alt="">
+            </td>
+        </tr>
 
 
-    <div>
-        <!-- 글 수정 폼으로 이동  -->
-        <a href="#" th:href="@{/pages/{id}/edit (id=${page.id})}">수정</a>
-        <!-- 글 삭제 -->
-        <a href="#" th:href="@{/pages/{id}/delete (id=${page.id})}">삭제</a>
+        <div>
+            <!-- 글 수정 폼으로 이동  -->
+            <a href="#" th:href="@{/pages/{id}/edit (id=${page.id})}">수정</a>
+            <!-- 글 삭제 -->
+            <a href="#" th:href="@{/pages/{id}/delete (id=${page.id})}">삭제</a>
+        </div>
     </div>
 
-
-
+    <!-- footer -->
+    <footer th:replace="fragment/footer :: footer"></footer>
 
 </body>
+
 </html>
