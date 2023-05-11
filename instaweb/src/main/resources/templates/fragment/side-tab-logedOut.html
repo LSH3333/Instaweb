@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <!-- side tab fragment -->
-<div th:fragment="side-tab">
+<div th:fragment="side-tab-logedOut">
     <script src="https://kit.fontawesome.com/c39d59a5ec.js" crossorigin="anonymous"></script>
 
     <style>
@@ -79,8 +79,8 @@
         </div>
         <div class="menus">
             <div><i class="fa-solid fa-house"></i><a href="/">Home</a></div>
-            <div><i class="fa-solid fa-house"></i><a href="/pages" th:href="@{|/${loginMemberId}/pages|}">My Post</a></div>
-            <div><i class="fa-solid fa-house"></i><a href="/logout">Log out</a></div>
+            <div><i class="fa-solid fa-house"></i><a href="/login">Log in</a></div>
+            <div><i class="fa-solid fa-house"></i><a href="/members/register">Register</a></div>
         </div>
     </div>
 </div>

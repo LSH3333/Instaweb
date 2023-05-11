@@ -1,20 +1,132 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
-    <title>Home</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page List</title>
+
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+
+    <!-- page block style -->
+    <link rel="stylesheet" type="text/css" href="/css/pageBlock.css" th:href="@{/css/pageBlock.css}">
+
+
+    <script type="text/javascript">
+
+        let memberId = "[[${memberId}]]";
+
+        // ajax request
+        var xhr = new XMLHttpRequest();
+        let beginIdx = 0, cnt = 10;
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == XMLHttpRequest.DONE) {
+                if (xhr.status == 200) {
+                    // 스크롤 웹페이지 끝에 도달시 beginIdx 부터 cnt 개의 페이지 가져옴 
+                    var contentContainer = document.getElementById('contentContainer');
+
+                    // Map<String, List<>> 의 형태로 리턴받음
+                    var data = JSON.parse(xhr.responseText);
+
+                    // response로 받은 page와 image들로 html 객체 만듦
+                    for (let i = 0; i < data.pages.length; i++) {
+                        let pageBlock = document.createElement('div');
+                        pageBlock.classList.add('pageBlock');
+
+                        // image
+                        let aElement = document.createElement('a');
+                        aElement.classList.add('imgBlock');
+                        aElement.href = '/' + data.pages[i].memberId + '/pages/' + data.pages[i].id;
+                        let imgElement = document.createElement('img');
+                        imgElement.src = 'data:image/jpeg;charset=utf-8;base64,' + data.images[i];
+                        aElement.appendChild(imgElement)
+
+                        // title and content container 
+                        let divEle = document.createElement('div');
+                        divEle.classList.add('titleAndContentContainer');
+
+                        let h2Element = document.createElement('h2');
+                        h2Element.classList.add('title')
+                        let h2InnerAEle = document.createElement('a');
+                        h2InnerAEle.innerText = data.pages[i].title;
+                        h2InnerAEle.href = '/' + data.pages[i].memberId + '/pages/' + data.pages[i].id;
+                        h2Element.appendChild(h2InnerAEle);
+
+                        let pElement = document.createElement('p');
+                        pElement.classList.add('content');
+                        let pInnerDiv = document.createElement('div');                        
+                        pInnerDiv.innerHTML = data.pages[i].content;
+                        pElement.appendChild(pInnerDiv);
+
+                        let pElement2 = document.createElement('p');
+                        pElement2.classList.add('createdTime');
+                        const date = new Date(data.pages[i].createdTime);
+                        const datePart = date.toISOString().split('T')[0];
+                        const timePart = date.toTimeString().split(' ')[0];
+                        pElement2.innerHTML = datePart + '. ' + timePart;
+
+                        divEle.appendChild(h2Element);
+                        divEle.appendChild(pElement);
+                        divEle.appendChild(pElement2);
+
+                        pageBlock.appendChild(aElement);
+                        pageBlock.appendChild(divEle);
+
+                        contentContainer.appendChild(pageBlock);
+                    }
+
+                } else {
+                    console.error("error");
+                }
+            }
+        }
+
+        // infinite scroll
+        window.addEventListener('scroll', function () {
+            if (window.innerHeight + window.scrollY + 5 >= document.body.offsetHeight) {
+                // 이전 request 에 대한 게시글들 로딩 완료된 이후에만 또 다른 request 보냄
+                if (xhr.readyState == XMLHttpRequest.DONE) {
+                    if (xhr.status == 200) {
+                        xhr.open('GET', '/allPages/ajaxReq?beginIdx=' + beginIdx.toString() + '&cnt=' + cnt.toString(), true);
+                        beginIdx += cnt;
+                        xhr.send();
+                    }
+                }
+            }
+        })
+
+        // 최초 페이지 로드 완료시 페이지 idx=0 부터 cnt=10 개 로드
+        window.onload = function () {
+            xhr.open('GET', '/allPages/ajaxReq?beginIdx=' + beginIdx.toString() + '&cnt=' + cnt.toString() + '&memberId=' + memberId.toString(), true);
+            beginIdx += cnt;
+            xhr.send();
+        };
+
+    </script>
 </head>
+
 <body>
+    <!-- side tab fragment -->
+    <div th:replace="fragment/side-tab :: side-tab"></div>
 
-    <div>MAIN PAGE</div>
-    
-    <!-- <div><a href="/pages" th:href="@{|/pages/${member.id}|}">TO PAGES</a></div>  -->
+    <!-- Page 들 ajax 에 의해 로드됨 -->
+    <div class="contents" style="min-height: 700px; margin-left: 245px; padding:0 5px;">
+        <div id="contentContainer">
+        </div>
+    </div>
 
-    <div><a href="/pages" th:href="@{|/${member.id}/pages|}">TO PAGES</a></div> 
-
-    <div><a href="/logout">LOG OUT</a></div>
-
-    <div><a href="/allPages">TO ALL PAGES</a></div>
+    <!-- footer -->
+    <footer th:replace="fragment/footer :: footer"></footer>
 
 </body>
+
 </html>

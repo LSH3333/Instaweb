@@ -213,13 +213,16 @@ public class PageController {
         return ret;
     }
 
-
     /**
      * 존재하는 모든 page 의 목록
      */
     @GetMapping("/allPages")
-    public String allList(Model model) {
+    public String allList(Model model, @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
         List<Page> pages = pageService.findAll();
+        if(loginMember == null) {
+            
+        }
+        model.addAttribute("loginMemberId", loginMember.getId());
         model.addAttribute("pages", pages);
         return "/pages/allPageList";
     }
