@@ -11,6 +11,7 @@ import web.instaweb.SessionConst;
 import web.instaweb.domain.Member;
 import web.instaweb.form.LoginForm;
 import web.instaweb.service.LoginService;
+import web.instaweb.service.MemberService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;

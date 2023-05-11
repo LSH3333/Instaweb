@@ -31,4 +31,13 @@ public class MemberService {
     public boolean checkNameDuplication(Member member) {
         return memberRepository.findByName(member.getName()).isPresent();
     }
+
+    public Member registerNewMember(String loginId, String password, String name) {
+        Member member = new Member();
+        member.setLoginId(loginId);
+        member.setPassword(password);
+        member.setName(name);
+        memberRepository.save(member);
+        return member;
+    }
 }

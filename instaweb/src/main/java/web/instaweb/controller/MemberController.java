@@ -54,11 +54,6 @@ public class MemberController {
         return "redirect:/";
     }
 
-    private boolean checkLoginIdLength(Member member) {
-        if(member.getLoginId().length() < 4 || member.getLoginId().length() > 10) {
 
-        }
-        return true;
-    }
 
 }
