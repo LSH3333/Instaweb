@@ -1,50 +1,56 @@
  /* page Block */
  .pageBlock {
-    /* background-color: brown; */
-    display: flex;
-    height: 250px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid black;
-}
+     /* background-color: brown; */
+     display: flex;
+     height: 250px;
+     padding-top: 10px;
+     padding-bottom: 10px;
+     border-bottom: 1px solid black;
+ }
 
-.pageBlock .imgBlock {
-    /* background-color: blue; */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 300px;
-    height: 230px;
-}
+ .pageBlock .imgBlock {
+     /* background-color: blue; */
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     width: 300px;
+     height: 230px;
+ }
 
-.pageBlock .imgBlock img {
-    width: 100%;
-    height: 100%;
-}
+ .pageBlock .imgBlock img {
+     width: 100%;
+     height: 100%;
+ }
 
-.pageBlock .titleAndContentContainer {
-    width: 100%;
-    padding-left: 10px;
-    padding-right: 10px;
-}
+ .pageBlock .titleAndContentContainer {
+     width: 100%;
+     padding-left: 10px;
+     padding-right: 10px;
+ }
 
-.pageBlock .titleAndContentContainer .title {
-    /* background-color: beige; */
-    height: 50px;
-    width: 100%;
-    line-height: 50px;
-}
+ .pageBlock .titleAndContentContainer .title {
+     /* background-color: beige; */
+     height: 50px;
+     width: 100%;
+     line-height: 50px;
+ }
 
-.pageBlock .titleAndContentContainer .title a {
-    /* background-color: red; */
-    display: inline-block;
-    width: 100%;
-    height: 100%;
-    font-size: 30px;
-}
+ .pageBlock .titleAndContentContainer .title a {
+     /* background-color: red; */
+     display: inline-block;
+     width: 100%;
+     height: 100%;
+     font-size: 30px;
+ }
 
-.pageBlock .titleAndContentContainer .content {
-    /* background-color: aquamarine; */
-    height: 180px;
-    width: 100%;
-}
+ .pageBlock .titleAndContentContainer .content {
+     /* background-color: aquamarine; */
+     height: 160px;
+     width: 100%;
+ }
+
+ .pageBlock .titleAndContentContainer .createdTime {
+     height: 20px;
+     font-size: 15px;
+     color: gray;
+ }

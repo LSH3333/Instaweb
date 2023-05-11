@@ -223,6 +223,7 @@ public class PageController {
         model.addAttribute("pages", pages);
         return "/pages/allPageList";
     }
+
     @ResponseBody
     @GetMapping("/allPages/ajaxReq")
     public Map<String, ?> loadAllPagesAndImages(@RequestParam int beginIdx, @RequestParam int cnt)  {
@@ -238,6 +239,7 @@ public class PageController {
             pageListForm.setId(page.getId());
             pageListForm.setTitle(page.getTitle());
             pageListForm.setContent(page.getContent());
+            pageListForm.setCreatedTime(page.getCreatedTime());
             pageListForm.setMemberId(page.getMember().getId());
             pageListForms.add(pageListForm);
         }

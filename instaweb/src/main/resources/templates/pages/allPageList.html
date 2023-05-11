@@ -24,7 +24,7 @@
     </style>
 
     <!-- page block style -->
-    <link rel="stylesheet" type="text/css" href="/css/pageBlock.css" th:href="${/css/pageBlock.css}">
+    <link rel="stylesheet" type="text/css" href="/css/pageBlock.css" th:href="@{/css/pageBlock.css}">
 
 
     <script type="text/javascript">
@@ -67,12 +67,21 @@
                         h2InnerAEle.innerText = data.pages[i].title;
                         h2InnerAEle.href = '/' + data.pages[i].memberId + '/pages/' + data.pages[i].id;
                         h2Element.appendChild(h2InnerAEle);
+
                         let pElement = document.createElement('p');
                         pElement.classList.add('content');
                         pElement.innerHTML = data.pages[i].content;
 
+                        let pElement2 = document.createElement('p');
+                        pElement2.classList.add('createdTime');
+                        const date = new Date(data.pages[i].createdTime);
+                        const datePart = date.toISOString().split('T')[0];
+                        const timePart = date.toTimeString().split(' ')[0];
+                        pElement2.innerHTML = datePart + '. ' + timePart;
+
                         divEle.appendChild(h2Element);
                         divEle.appendChild(pElement);
+                        divEle.appendChild(pElement2);
 
                         pageBlock.appendChild(aElement);
                         pageBlock.appendChild(divEle);
