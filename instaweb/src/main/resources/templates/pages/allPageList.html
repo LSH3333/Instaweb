@@ -63,8 +63,10 @@
 
         .pageBlock .titleAndContentContainer .title a {
             /* background-color: red; */
+            display: inline-block;
             width: 100%;
             height: 100%;
+            font-size: 30px;
         }
 
         .pageBlock .titleAndContentContainer .content {
@@ -108,7 +110,8 @@
                         let divEle = document.createElement('div');
                         divEle.classList.add('titleAndContentContainer');
 
-                        let h2Element = document.createElement('h2');
+                        let h2Element = document.createElement('h2');  
+                        h2Element.classList.add('title')                      
                         let h2InnerAEle = document.createElement('a');
                         h2InnerAEle.innerText = data.pages[i].title;
                         h2InnerAEle.href = '/' + data.pages[i].memberId + '/pages/' + data.pages[i].id;
