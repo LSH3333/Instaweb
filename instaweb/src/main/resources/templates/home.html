@@ -61,11 +61,12 @@
                         h2InnerAEle.href = '/' + data.pages[i].memberId + '/pages/' + data.pages[i].id;
                         h2Element.appendChild(h2InnerAEle);
 
-                        let pElement = document.createElement('p');
-                        pElement.classList.add('content');
-                        let pInnerDiv = document.createElement('div');                        
-                        pInnerDiv.innerHTML = data.pages[i].content;
-                        pElement.appendChild(pInnerDiv);
+                        let contentAele = document.createElement('a');
+                        contentAele.classList.add('content');
+                        contentAele.href = '/' + data.pages[i].memberId + '/pages/' + data.pages[i].id;
+                        let aInnerDiv = document.createElement('div');                        
+                        aInnerDiv.innerHTML = data.pages[i].content;
+                        contentAele.appendChild(aInnerDiv);
 
                         let pElement2 = document.createElement('p');
                         pElement2.classList.add('createdTime');
@@ -75,7 +76,7 @@
                         pElement2.innerHTML = datePart + '. ' + timePart;
 
                         divEle.appendChild(h2Element);
-                        divEle.appendChild(pElement);
+                        divEle.appendChild(contentAele);
                         divEle.appendChild(pElement2);
 
                         pageBlock.appendChild(aElement);
