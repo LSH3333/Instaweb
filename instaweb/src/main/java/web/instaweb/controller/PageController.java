@@ -183,12 +183,7 @@ public class PageController {
         // page
         List<Object> pageListForms = new ArrayList<>();
         for (Page page : pages) {
-            PageListForm pageListForm = new PageListForm();
-            pageListForm.setId(page.getId());
-            pageListForm.setTitle(page.getTitle());
-            pageListForm.setContent(page.getContent());
-            pageListForm.setCreatedTime(page.getCreatedTime());
-            pageListForm.setMemberId(page.getMember().getId());
+            PageListForm pageListForm = new PageListForm(page.getId(), page.getTitle(), page.getContent(), page.getMember().getId(), page.getCreatedTime());
             pageListForms.add(pageListForm);
         }
 
@@ -220,10 +215,6 @@ public class PageController {
     @GetMapping("/allPages")
     public String allList(Model model, @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
         List<Page> pages = pageService.findAll();
-        if(loginMember == null) {
-            
-        }
-        
         model.addAttribute("pages", pages);
         return "/pages/allPageList";
     }
@@ -239,12 +230,7 @@ public class PageController {
         // page
         List<Object> pageListForms = new ArrayList<>();
         for (Page page : pages) {
-            PageListForm pageListForm = new PageListForm();
-            pageListForm.setId(page.getId());
-            pageListForm.setTitle(page.getTitle());
-            pageListForm.setContent(page.getContent());
-            pageListForm.setCreatedTime(page.getCreatedTime());
-            pageListForm.setMemberId(page.getMember().getId());
+            PageListForm pageListForm = new PageListForm(page.getId(), page.getTitle(), page.getContent(), page.getMember().getId(), page.getCreatedTime());
             pageListForms.add(pageListForm);
         }
 
