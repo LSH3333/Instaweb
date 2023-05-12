@@ -29,15 +29,13 @@
 }
 
 .pageBlock .titleAndContentContainer:hover {
-    cursor: pointer;            
+    cursor: pointer;
 }
 
-.pageBlock .titleAndContentContainer:hover .title a{
+.pageBlock .titleAndContentContainer:hover .title a {
     text-decoration: underline;
     color: rgb(25, 161, 161)
 }
-
-
 
 .pageBlock .titleAndContentContainer .title {
     /* background-color: beige; */
@@ -52,7 +50,7 @@
     width: 100%;
     height: 100%;
     font-size: 25px;
-    font-weight:bold;
+    font-weight: bold;
 }
 
 .pageBlock .titleAndContentContainer .content {
@@ -76,6 +74,23 @@
     line-height: 1.5em;
     max-height: 4.5em;
 }
+
+.pageBlock .titleAndContentContainer .contentFooter {
+    display: flex;
+    height: 20px;
+    align-items: center;
+}
+
+.pageBlock .titleAndContentContainer .contentFooter .memberName {
+    font-size: 15px;
+    color: rgb(25, 161, 161);
+}
+
+.pageBlock .titleAndContentContainer .contentFooter .delimeter {
+    font-size: 10px;
+    color: rgb(128, 128, 128, 0.5);
+    margin: 0 10px;
+}    
 
 .pageBlock .titleAndContentContainer .createdTime {
     /* background-color: blue; */

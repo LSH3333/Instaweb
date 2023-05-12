@@ -68,16 +68,30 @@
                         aInnerDiv.innerHTML = data.pages[i].content;
                         contentAele.appendChild(aInnerDiv);
 
-                        let pElement2 = document.createElement('p');
-                        pElement2.classList.add('createdTime');
+                        // content footer 
+                        let contentFooter = document.createElement('div'); 
+                        contentFooter.classList.add('contentFooter');                      
+                        let memberName = document.createElement('p');
+                        memberName.classList.add('memberName');
+                        memberName.innerHTML = 'memberName';
+                        let delimeter = document.createElement('p');
+                        delimeter.classList.add('delimeter');
+                        delimeter.innerHTML = '|';
+                        
+                        let createdTime = document.createElement('p');
+                        createdTime.classList.add('createdTime');
                         const date = new Date(data.pages[i].createdTime);
                         const datePart = date.toISOString().split('T')[0];
                         const timePart = date.toTimeString().split(' ')[0];
-                        pElement2.innerHTML = datePart + '. ' + timePart;
+                        createdTime.innerHTML = datePart + '. ' + timePart;
+
+                        contentFooter.appendChild(memberName);
+                        contentFooter.appendChild(delimeter);
+                        contentFooter.appendChild(createdTime);
 
                         divEle.appendChild(h2Element);
                         divEle.appendChild(contentAele);
-                        divEle.appendChild(pElement2);
+                        divEle.appendChild(contentFooter);
 
                         pageBlock.appendChild(aElement);
                         pageBlock.appendChild(divEle);
