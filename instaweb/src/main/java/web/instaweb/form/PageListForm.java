@@ -19,14 +19,16 @@ public class PageListForm {
 
     // Page 의 주인인 member 의 id
     private Long memberId;
+    private String memberName;
 
     private LocalDateTime createdTime;
 
-    public PageListForm(Long id, String title, String content, Long memberId, LocalDateTime createdTime) {
+    public PageListForm(Long id, String title, String content, Long memberId, String memberName, LocalDateTime createdTime) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.memberId = memberId;
+        this.memberName = memberName;
         this.createdTime = createdTime;
     }
 }

@@ -183,7 +183,7 @@ public class PageController {
         // page
         List<Object> pageListForms = new ArrayList<>();
         for (Page page : pages) {
-            PageListForm pageListForm = new PageListForm(page.getId(), page.getTitle(), page.getContent(), page.getMember().getId(), page.getCreatedTime());
+            PageListForm pageListForm = new PageListForm(page.getId(), page.getTitle(), page.getContent(), page.getMember().getId(), page.getMember().getName(), page.getCreatedTime());
             pageListForms.add(pageListForm);
         }
 
@@ -230,7 +230,7 @@ public class PageController {
         // page
         List<Object> pageListForms = new ArrayList<>();
         for (Page page : pages) {
-            PageListForm pageListForm = new PageListForm(page.getId(), page.getTitle(), page.getContent(), page.getMember().getId(), page.getCreatedTime());
+            PageListForm pageListForm = new PageListForm(page.getId(), page.getTitle(), page.getContent(), page.getMember().getId(), page.getMember().getName(), page.getCreatedTime());
             pageListForms.add(pageListForm);
         }
 
@@ -249,6 +249,7 @@ public class PageController {
             }
             images.add(base64Image);
         }
+
 
         ret.put("pages", pageListForms);
         ret.put("images", images);

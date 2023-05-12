@@ -19,7 +19,6 @@ public class Member {
     @Column(name = "member_id")
     private Long id;
 
-    // todo : loginId, name 중복 불가능하도록
     @NotEmpty(message = "loginId 필수입니다")
     private String loginId;
     @NotEmpty(message = "name 필수입니다")
