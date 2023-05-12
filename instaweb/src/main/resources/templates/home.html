@@ -130,8 +130,7 @@
 </head>
 
 <body>
-    <!-- side tab fragment (logedOut) -->
-    <!-- <div th:replace="fragment/side-tab-logedOut :: side-tab-logedOut"></div> -->
+    <!-- side-tab fragment -->
     <div th:if="${loginMemberId == null}">
         <div th:replace="fragment/side-tab-logedOut :: side-tab-logedOut"></div>
     </div>

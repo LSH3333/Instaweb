@@ -133,7 +133,6 @@
 
     <!-- Page 들 ajax 에 의해 로드됨 -->
     <div class="contents" style="min-height: 700px; margin-left: 245px; padding:0 5px;">
-        <!-- <p><a th:if="${loggedIn}" href="/pages/new">글쓰기</a></p> -->
         <p><a th:if="${loggedIn}" th:href="@{|/${memberId}/pages/new|}">글쓰기</a></p>        
         <div id="contentContainer">
         </div>
