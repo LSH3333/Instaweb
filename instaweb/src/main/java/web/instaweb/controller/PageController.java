@@ -223,7 +223,7 @@ public class PageController {
         if(loginMember == null) {
             
         }
-        model.addAttribute("loginMemberId", loginMember.getId());
+        
         model.addAttribute("pages", pages);
         return "/pages/allPageList";
     }

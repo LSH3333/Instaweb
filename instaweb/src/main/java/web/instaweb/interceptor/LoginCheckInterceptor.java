@@ -4,6 +4,7 @@ package web.instaweb.interceptor;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import web.instaweb.SessionConst;
+import web.instaweb.domain.Member;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,6 +30,5 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
 
         return true; // request 계속 처리
     }
-
 
 }

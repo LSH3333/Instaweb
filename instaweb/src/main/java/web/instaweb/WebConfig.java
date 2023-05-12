@@ -26,6 +26,11 @@ public class WebConfig implements WebMvcConfigurer {
                         "/pages/ajaxReq", // ajax 경로도 제외해줘야함
                         "/allPages", "/allPages/ajaxReq");
 
+        // 로그인 상태라면 postHandle 에서 loginMemberId attribute 에 저장
+        registry.addInterceptor(new MemberCheckInterceptor())
+                .order(2)
+                .addPathPatterns("/**");
+
 
     }
 
