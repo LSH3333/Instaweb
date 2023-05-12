@@ -130,8 +130,14 @@
 </head>
 
 <body>
-    <!-- side tab fragment -->
-    <div th:replace="fragment/side-tab-logedOut :: side-tab-logedOut"></div>
+    <!-- side tab fragment (logedOut) -->
+    <!-- <div th:replace="fragment/side-tab-logedOut :: side-tab-logedOut"></div> -->
+    <div th:if="${loginMemberId == null}">
+        <div th:replace="fragment/side-tab-logedOut :: side-tab-logedOut"></div>
+    </div>
+    <div th:unless="${loginMemberId == null}">
+        <div th:replace="fragment/side-tab :: side-tab"></div>
+    </div>
 
     <!-- Page 들 ajax 에 의해 로드됨 -->
     <div class="contents" style="min-height: 700px; margin-left: 245px; padding:0 5px;">

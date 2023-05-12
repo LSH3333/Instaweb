@@ -95,6 +95,7 @@ public class PageController {
          * "application/octet-stream" 은 8 비트 단위 binary 라는 의미
          */
 
+        // Page 객체는 미리 만들어져 있고, updatePage 로 처리
         pageService.updatePage(form.getId(), form.getTitle(), form.getContent(), LocalDateTime.now());
 
         return "redirect:/";
@@ -213,7 +214,7 @@ public class PageController {
      * 존재하는 모든 page 의 목록
      */
     @GetMapping("/allPages")
-    public String allList(Model model, @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
+    public String allList(Model model) {
         List<Page> pages = pageService.findAll();
         model.addAttribute("pages", pages);
         return "/pages/allPageList";
