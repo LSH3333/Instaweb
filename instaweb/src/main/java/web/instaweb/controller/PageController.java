@@ -187,6 +187,7 @@ public class PageController {
             pageListForm.setId(page.getId());
             pageListForm.setTitle(page.getTitle());
             pageListForm.setContent(page.getContent());
+            pageListForm.setCreatedTime(page.getCreatedTime());
             pageListForm.setMemberId(page.getMember().getId());
             pageListForms.add(pageListForm);
         }
