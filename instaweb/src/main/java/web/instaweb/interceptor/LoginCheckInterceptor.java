@@ -28,6 +28,9 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
             return false; // request 종료
         }
 
+        // 로그인 상태인 경우
+        Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
+        request.setAttribute("loginMemberId", loginMember.getId());
         return true; // request 계속 처리
     }
 

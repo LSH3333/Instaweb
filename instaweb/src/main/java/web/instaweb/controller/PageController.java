@@ -58,9 +58,9 @@ public class PageController {
      * createPageForm.html 에서 사용자가 선택, 변경한 이미지의 순서를 기억하려면 form 이 서버로 전달되기 전에 ajax request 로 Image 객체 만들어야 하기 때문에
      * createPageForm 으로 넘어가기 전에 Page 객체 미리 만들어서 id 생성해놓고, 생성된 id 값도 PageForm 에 포함시켜서 전달
      */
-    @GetMapping("/pages/new")
+    @GetMapping("{memberId}/pages/new")
     public String createForm(Model model, @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
-                             HttpServletRequest request) {
+                             HttpServletRequest request, @PathVariable("memberId") Long memberId) {
         // 영속성 Member 필요하기 때문에 조회해옴
         Member member = memberService.findOne(loginMember.getId());
         // 글 작성폼에서 ajax request 로 이미지 저장할때 id 가 필요하기 때문에, 아무것도 없는 Page 를 여기서 미리 만든다
@@ -82,7 +82,7 @@ public class PageController {
      * 페이지폼에서 작성 후 submit 버튼
      */
     @PostMapping("/pages/new")
-    public String create(@Valid @ModelAttribute("form") PageForm form, BindingResult result)  {
+    public String create(@Valid @ModelAttribute("form") PageForm form, BindingResult result, HttpServletRequest request)  {
         // 오류 발생 시 글 작성 폼으로 되돌아감
         if (result.hasErrors()) {
             return "pages/createPageForm";
@@ -98,7 +98,7 @@ public class PageController {
         // Page 객체는 미리 만들어져 있고, updatePage 로 처리
         pageService.updatePage(form.getId(), form.getTitle(), form.getContent(), LocalDateTime.now());
 
-        return "redirect:/";
+        return "redirect:/" + request.getAttribute("loginMemberId") + "/pages";
     }
 
 
