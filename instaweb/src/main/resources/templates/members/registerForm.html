@@ -4,11 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Register</title>
+    <!-- page block style -->
+    <link rel="stylesheet" type="text/css" href="/css/pageBlock.css" th:href="@{/css/pageBlock.css}">
 </head>
 
 <body>
-    <div>
 
+    <!-- side tab fragment -->
+    <div th:replace="fragment/side-tab :: side-tab"></div>
+
+    <!-- Page 들 ajax 에 의해 로드됨 -->
+    <div class="contents" style="min-height: 700px; margin-left: 245px; padding:0 5px;">
         <form th:object="${member}" method="post">
             <!-- ID -->
             <div>
@@ -35,8 +41,12 @@
 
             <button id="submitBtn" type="submit">Submit</button>
         </form>
-
     </div>
+
+    <!-- footer -->
+    <footer th:replace="fragment/footer :: footer"></footer>
+
+
 </body>
 
 </html>
