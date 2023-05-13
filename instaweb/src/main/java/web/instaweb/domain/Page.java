@@ -41,22 +41,28 @@ public class Page {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    private boolean writingDone;
+
+    public boolean getWritingDone() {
+        return this.writingDone;
+    }
 
     public Page() {
     }
 
-    public Page(String title, String content, LocalDateTime createdTime)  {
+    public Page(String title, String content, LocalDateTime createdTime, boolean writingDone)  {
         this.title = title;
         this.content = content;
         this.createdTime = createdTime;
     }
 
 
-    public void changeAll(Long id, String title, String content, LocalDateTime createdTime) {
+    public void changeAll(Long id, String title, String content, LocalDateTime createdTime, boolean writingDone) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.createdTime = createdTime;
+        this.writingDone = true;
     }
 
     public void addImage(Image image) {

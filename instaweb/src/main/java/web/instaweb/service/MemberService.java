@@ -40,4 +40,9 @@ public class MemberService {
         memberRepository.save(member);
         return member;
     }
+
+    public void setMemberWritingPageId(Long memberId, Long writingPageId) {
+        Member member = memberRepository.findById(memberId);
+        member.setWritingPageId(writingPageId);
+    }
 }

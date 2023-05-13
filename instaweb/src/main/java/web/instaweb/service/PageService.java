@@ -22,10 +22,10 @@ public class PageService {
     }
 
     // 변경 감지
-    public Page updatePage(Long id, String title, String content, LocalDateTime createTime) {
+    public Page updatePage(Long id, String title, String content, LocalDateTime createTime, boolean writingDone) {
         // 여기서 findPage 는 db에서 가져왔으므로 영속 상태
         Page findPage = pageRepository.findOne(id);
-        findPage.changeAll(id, title, content, createTime);
+        findPage.changeAll(id, title, content, createTime, writingDone);
         // @Transactional 에 의해 commit 됨 -> flush (변경 감지)
         return findPage;
     }

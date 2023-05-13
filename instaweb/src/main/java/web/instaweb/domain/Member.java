@@ -31,6 +31,10 @@ public class Member {
     @OrderBy("createdTime desc") // Page 의 생성 시간 기준 오름차순으로 저장
     private List<Page> pages = new ArrayList<>();
 
+    // Member 가 작성중인 (작성 완료 하지 않은) Page 의 id
+    private Long writingPageId;
+
+
     public void addPage(Page page) {
         pages.add(page);
     }

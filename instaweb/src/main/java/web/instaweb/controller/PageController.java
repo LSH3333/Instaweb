@@ -63,16 +63,28 @@ public class PageController {
                              HttpServletRequest request, @PathVariable("memberId") Long memberId) {
         // 영속성 Member 필요하기 때문에 조회해옴
         Member member = memberService.findOne(loginMember.getId());
+
         // 글 작성폼에서 ajax request 로 이미지 저장할때 id 가 필요하기 때문에, 아무것도 없는 Page 를 여기서 미리 만든다
+
+        // Member 가 작성 중인 Page 가 있는 경우
+        Page page;
+        if(member.getWritingPageId() != null) {
+            page = pageService.findOne(member.getWritingPageId());
+        } // 없는 경우
+        else {
+            page = new Page();
+        }
+
         PageForm pageForm = new PageForm();
-        Page page = new Page();
         // Member - Page 연결
         page.setMember(member);
         member.addPage(page);
         pageService.savePage(page);
         pageForm.setId(page.getId());
-
+        // member 가 작성중 상태인 page id 기억해놓음
+        memberService.setMemberWritingPageId(member.getId(), page.getId());
         model.addAttribute("form", pageForm);
+
         return "pages/createPageForm";
     }
 
@@ -95,7 +107,11 @@ public class PageController {
          */
 
         // Page 객체는 미리 만들어져 있고, updatePage 로 처리
-        pageService.updatePage(form.getId(), form.getTitle(), form.getContent(), LocalDateTime.now());
+        pageService.updatePage(form.getId(), form.getTitle(), form.getContent(), LocalDateTime.now(), true);
+
+        // Page 작성 성공 시 해당 member 의 writingPageId 는 null 로 되돌림
+        Member loginMember = memberService.findOne((Long) request.getAttribute("loginMemberId"));
+        memberService.setMemberWritingPageId(loginMember.getId(), null);
 
         return "redirect:/" + request.getAttribute("loginMemberId") + "/pages";
     }
@@ -148,18 +164,6 @@ public class PageController {
 
         getNoImgFile();
 
-        // 영속성 Member 필요하기 때문에 조회해옴
-        Member member = memberService.findOne(memberId);
-        List<Page> pages = member.getPages();
-
-        // 특정 member 의 글목록과 로그인 정보가 다르다면 글쓰기 버튼 안보이 도록 함
-        if(loginMember != null && loginMember.getId().equals(memberId)) {
-            model.addAttribute("loggedIn", true);
-        } else {
-            model.addAttribute("loggedIn", false);
-        }
-
-        model.addAttribute("pages", pages);
         model.addAttribute("memberId", memberId);
         return "/pages/pageList";
     }
@@ -183,6 +187,7 @@ public class PageController {
         // page
         List<Object> pageListForms = new ArrayList<>();
         for (Page page : pages) {
+            if(!page.getWritingDone()) continue; // 작성중인 Page 제외
             PageListForm pageListForm = new PageListForm(page.getId(), page.getTitle(), page.getContent(), page.getMember().getId(), page.getMember().getName(), page.getCreatedTime());
             pageListForms.add(pageListForm);
         }
@@ -214,8 +219,6 @@ public class PageController {
      */
     @GetMapping("/allPages")
     public String allList(Model model) {
-        List<Page> pages = pageService.findAll();
-        model.addAttribute("pages", pages);
         return "/pages/allPageList";
     }
 
@@ -320,7 +323,7 @@ public class PageController {
             return "pages/updatePageForm";
         }
         Long memberId = loginMember.getId();
-        pageService.updatePage(id, form.getTitle(), form.getContent(), form.getCreatedTime());
+        pageService.updatePage(id, form.getTitle(), form.getContent(), form.getCreatedTime(), true);
 
         return "redirect:/" + memberId + "/pages";
     }
