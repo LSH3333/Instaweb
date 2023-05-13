@@ -30,20 +30,20 @@ public class MemberController {
     public String register(@Valid @ModelAttribute("member") Member member, BindingResult bindingResult) {
         // member loginId, name 중복 체크
         if (memberService.checkLoginIdDuplication(member)) {
-            bindingResult.addError(new FieldError("member", "loginId", member.getLoginId(), false, null, null, "이미 존재하는 loginId 입니다."));
+            bindingResult.addError(new FieldError("member", "loginId", member.getLoginId(), false, null, null, "이미 존재하는 아이디 입니다."));
         }
         if (memberService.checkNameDuplication(member)) {
-            bindingResult.addError(new FieldError("member", "name", member.getName(), false, null, null,"이미 존재하는 name 입니다."));
+            bindingResult.addError(new FieldError("member", "name", member.getName(), false, null, null,"이미 존재하는 이름 입니다."));
         }
         // member loginId, name, password 길이 체크
         if(member.getLoginId().length() < 4 || member.getLoginId().length() > 10) {
-            bindingResult.addError(new FieldError("member", "loginId", member.getLoginId(), false, null, null,"loginId 는 4글자 이상 10글자 이하여야 합니다."));
+            bindingResult.addError(new FieldError("member", "loginId", member.getLoginId(), false, null, null,"아이디는 4글자 이상 10글자 이하여야 합니다."));
         }
         if(member.getName().length() < 3 || member.getName().length() > 10) {
-            bindingResult.addError(new FieldError("member", "name", member.getName(), false, null, null,"name 은 3글자 이상 10글자 이하여야 합니다."));
+            bindingResult.addError(new FieldError("member", "name", member.getName(), false, null, null,"이름은 3글자 이상 10글자 이하여야 합니다."));
         }
         if(member.getPassword().length() < 4 || member.getLoginId().length() > 10) {
-            bindingResult.addError(new FieldError("member", "password", member.getPassword(), false, null, null,"password 는 4글자 이상 10글자 이하여야 합니다."));
+            bindingResult.addError(new FieldError("member", "password", member.getPassword(), false, null, null,"비밀번호는 4글자 이상 10글자 이하여야 합니다."));
         }
 
         if (bindingResult.hasErrors()) {

@@ -1,0 +1,122 @@
+.loginBox {
+    /* background-color: bisque; */
+    width: 400px;
+    height: 600px;
+    margin: 50px auto 10px auto;
+    padding-top: 1px;
+    border: 2px solid rgb(128, 128, 128, 0.5);
+}
+
+.loginBox .logo {
+    /* background-color: aqua;             */
+    text-align: center;
+    margin: 0px auto;
+    margin-top: 50px;
+    font-size: 50px;
+    font-family: 'Cedarville Cursive', cursive;
+}
+
+.loginBox .userInfo {
+    /* background-color: blue; */
+    margin-top: 50px;
+    text-align: center;
+}
+
+.loginBox .userInfo .loginIdBox {
+    margin-bottom: 5px;
+}
+
+.loginBox .userInfo .loginIdBox input {
+    /* box-sizing: content-box; */
+    width: 272px;
+    height: 35px;
+    border: 1px solid rgb(128, 128, 128, 0.5);
+    background-color: rgba(128, 128, 128, 0.150);
+    padding: 0px 5px;
+    font-size: 12px;
+}
+
+.loginBox .userInfo .loginIdBox input::placeholder {
+    font-size: 12px;
+}
+
+.loginBox .userInfo .loginPasswordBox {
+    margin-top: 5px;
+}
+
+.loginBox .userInfo .loginPasswordBox input {
+    width: 272px;
+    height: 35px;
+    border: 1px solid rgb(128, 128, 128, 0.5);
+    background-color: rgba(128, 128, 128, 0.150);
+    padding: 0px 5px;
+    font-size: 12px;
+}
+
+.loginBox .userInfo .loginPasswordBox input::placeholder {
+    font-size: 12px;
+}
+
+.loginBox .userInfo .loginNameBox {
+    margin-top: 5px;
+}
+
+.loginBox .userInfo .loginNameBox input {
+    width: 272px;
+    height: 35px;
+    border: 1px solid rgb(128, 128, 128, 0.5);
+    background-color: rgba(128, 128, 128, 0.150);
+    padding: 0px 5px;
+    font-size: 12px;
+}
+
+.loginBox .userInfo .loginNameBox input::placeholder {
+    font-size: 12px;
+}
+
+.loginBox #submitBtn {
+    width: 274px;
+    height: 30px;
+    margin: 15px auto;
+    display: block;
+    color: white;
+    border: 0;
+    font-size: 15px;
+    background-color: rgb(8, 148, 244);
+    cursor: pointer;
+}
+
+.loginBox .line {
+    width: 320px;
+    border-top: 1px solid rgb(128, 128, 128, 0.5);
+    margin: 30px auto;
+}
+
+.errorBox {
+    /* background-color:aquamarine; */
+    text-align: center;
+}
+
+.errorBox p {
+    color: red;
+    font-size: 15px;
+}
+
+.toLoginBox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 400px;
+    height: 80px;
+    border: 2px solid rgb(128, 128, 128, 0.5);
+    margin: 0 auto 0 auto;
+}
+
+.toLoginBox div {
+    font-size: 15px;
+}
+
+.toLoginBox div a {
+    font-size: 15px;
+    color: rgb(8, 148, 244);
+}
