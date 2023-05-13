@@ -15,24 +15,25 @@
 
 <body>
 
+
     <!-- side tab fragment -->
     <div th:replace="fragment/side-tab-logedOut :: side-tab-logedOut"></div>
 
     <!-- Page 들 ajax 에 의해 로드됨 -->
     <div class="contents" style="min-height: 700px; margin-left: 245px; padding:1px 5px;">
-        <form th:object="${loginForm}" method="post">
+        <form action="#" th:object="${loginForm}" method="post">
             <div class="loginBox">
                 <div class="logo">InstaWeb</div>
                 <div class="userInfo">
                     <!-- ID -->
                     <div class="loginIdBox">
                         <label th:for="loginId"></label>
-                        <input type="text" th:field="*{loginId}" placeholder=" 회원 아이디">
+                        <input id="loginIdInput" type="text" th:field="*{loginId}" placeholder=" 회원 아이디">
                     </div>
                     <!-- password -->
                     <div class="loginPasswordBox">
                         <label th:for="password"></label>
-                        <input type="password" th:field="*{password}" placeholder=" 비밀번호">
+                        <input id="loginPasswordInput" type="password" th:field="*{password}" placeholder=" 비밀번호">
                     </div>
                 </div>
                 <button id="submitBtn" type="submit">로그인</button>
@@ -50,6 +51,30 @@
     <footer th:replace="fragment/footer :: footer"></footer>
 
 
+    <!-- id & password 입력 안했을 경우 submit button disabled -->
+    <script type="text/javascript">
+        const loginId = document.getElementById('loginIdInput')
+        const password = document.getElementById('loginPasswordInput');
+        const submitBtn = document.getElementById('submitBtn');
+        
+        // 최초 상태 
+        submitBtn.disabled = true;
+        submitBtn.style = "cursor:default; background-color: rgb(80, 180, 252);"
+
+        loginId.addEventListener('input', toggleSubmitBtn);
+        password.addEventListener('input', toggleSubmitBtn);
+
+        function toggleSubmitBtn() {
+            // id, pw 채워짐 
+            if (loginId.value.trim() !== '' && password.value.trim() !== '') {
+                submitBtn.disabled = false;
+                submitBtn.style = "cursor:pointer;"
+            } else {
+                submitBtn.disabled = true;
+                submitBtn.style = "cursor:default; background-color: rgb(80, 180, 252);"
+            }
+        }
+    </script>
 </body>
 
 </html>
