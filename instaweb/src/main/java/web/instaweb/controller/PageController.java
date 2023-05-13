@@ -72,7 +72,6 @@ public class PageController {
         pageService.savePage(page);
         pageForm.setId(page.getId());
 
-
         model.addAttribute("form", pageForm);
         return "pages/createPageForm";
     }
