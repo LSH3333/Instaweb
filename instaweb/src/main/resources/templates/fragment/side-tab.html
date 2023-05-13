@@ -48,7 +48,8 @@
             align-items: center;
             height: 92px;
         }
-        .side-tab .logo a{
+
+        .side-tab .logo a {
             font-family: 'Cedarville Cursive', cursive;
             font-size: 35px;
         }
@@ -78,6 +79,13 @@
 
         .side-tab .menus div a {
             margin: 0 5px;
+            font-size: 18px;
+            padding-left: 5px;
+        }
+
+        /* icon */
+        .side-tab .menus div i {
+            width: 23px;
         }
     </style>
 
@@ -86,9 +94,10 @@
             <a href="/">InstaWeb</a>
         </div>
         <div class="menus">
-            <div><i class="fa-solid fa-house"></i><a href="/">Home</a></div>
-            <div><i class="fa-solid fa-user"></i><a href="/pages" th:href="@{|/${loginMemberId}/pages|}">My Post</a></div>
-            <div><i class="fa-solid fa-arrow-right-from-bracket"></i><a href="/logout">Log out</a></div>
+            <div><i class="fa-solid fa-house"></i><a href="/">홈</a></div>
+            <div><i class="fa-solid fa-user"></i><a href="/pages" th:href="@{|/${loginMemberId}/pages|}">작성 목록</a></div>
+            <div><i class="fa-solid fa-user"></i><a th:href="@{|/${loginMemberId}/pages/new|}">작성</a></div>
+            <div><i class="fa-solid fa-arrow-right-from-bracket"></i><a href="/logout">로그아웃</a></div>
         </div>
     </div>
 </div>
