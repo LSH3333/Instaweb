@@ -17,17 +17,17 @@
             font-family: "verdana";
             font-size: 20px;
         }
-
+    
         ul {
             list-style-type: none;
         }
-
+    
         a {
             text-decoration: none;
             color: black;
         }
-
-
+    
+    
         .side-tab {
             /* background-color: beige; */
             position: fixed;
@@ -36,11 +36,11 @@
             padding-inline: 12.5px;
             border-right: 1px solid darkgray;
         }
-
+    
         .contents {
             margin-left: 250px;
         }
-
+    
         .side-tab .logo {
             width: 100%;
             position: relative;
@@ -48,22 +48,22 @@
             align-items: center;
             height: 92px;
         }
-
+    
         .side-tab .logo a {
             font-family: 'Cedarville Cursive', cursive;
             font-size: 35px;
         }
-
+    
         .side-tab .logo p {
             font-size: large;
         }
-
+    
         .side-tab .menus {
             /* background-color: aqua; */
             width: 100%;
             height: 782px;
         }
-
+    
         .side-tab .menus div {
             /* background-color: aquamarine; */
             width: 100%;
@@ -72,21 +72,27 @@
             justify-content: left;
             align-items: center;
         }
-
+    
         .side-tab .menus div i {
             margin: 0 5px;
         }
-
-        .side-tab .menus div a {
+    
+        .side-tab .menus div a:nth-child(2) {
             margin: 0 5px;
             font-size: 18px;
             padding-left: 5px;
         }
-
+    
         /* icon */
-        .side-tab .menus div i {
+        .side-tab .menus div a i {
             width: 23px;
         }
+    
+        /* @media(max-width:700px) {
+                    .side-tab {
+                        width: 50px;
+                    }
+                } */
     </style>
 
     <div class="side-tab">
@@ -94,10 +100,10 @@
             <a href="/">InstaWeb</a>
         </div>
         <div class="menus">
-            <div><i class="fa-solid fa-house"></i><a href="/">홈</a></div>
-            <div><i class="fa-solid fa-user"></i><a href="/pages" th:href="@{|/${loginMemberId}/pages|}">작성 목록</a></div>
-            <div><i class="fa-solid fa-user"></i><a th:href="@{|/${loginMemberId}/pages/new|}">작성</a></div>
-            <div><i class="fa-solid fa-arrow-right-from-bracket"></i><a href="/logout">로그아웃</a></div>
+            <div><a href="/"><i class="fa-solid fa-house"></i></a><a href="/">홈</a></div>
+            <div><a th:href="@{|/${loginMemberId}/pages|}"><i class="fa-solid fa-user"></i></a><a href="/pages" th:href="@{|/${loginMemberId}/pages|}">작성 목록</a></div>
+            <div><a th:href="@{|/${loginMemberId}/pages/new|}"><i class="fa-solid fa-pen"></i></a><a th:href="@{|/${loginMemberId}/pages/new|}">작성</a></div>
+            <div><a href="/logout"><i class="fa-solid fa-arrow-right-from-bracket"></i></a><a href="/logout">로그아웃</a></div>
         </div>
     </div>
 </div>
