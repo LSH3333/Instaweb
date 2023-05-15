@@ -1,3 +1,20 @@
+* {
+    margin: 0;
+    padding: 0;
+    /* width, height에 border, padding 값 포함됨  */
+    box-sizing: border-box;
+}
+
+.contents {
+    /* footer 아래 위치하도록 최소 높이 보장 */
+    min-height: 700px;
+    margin-left: 245px;
+    /* padding: 0 5px; */
+    /* background-color: aqua; */
+}
+
+
+/* page Block */
 .pageBlock {
     /* background-color: brown; */
     margin: 0 auto;
@@ -98,4 +115,55 @@
     height: 20px;
     font-size: 15px;
     color: gray;
+}
+
+/* 세로 길이 1200px 이하 시, side-tab 줄이기 위해 */
+@media(max-width: 1200px) {
+    .contents {
+        margin-left: 55px;
+    }
+}
+
+/* 세로 길이 955px 이하 시, pageBlock 디자인 축소 */
+@media(max-width: 955px) {
+    .pageBlock {
+        height: 150px;
+        padding: 15px 10px;
+        width: auto;
+    }
+
+    .pageBlock .imgBlock {
+        width: 150px;
+        height: 100px;
+    }
+
+    .pageBlock .titleAndContentContainer {
+        padding: 0 10px;
+    }
+
+    .pageBlock .titleAndContentContainer .title {
+        height: 25px;
+        line-height: 25px;
+    }
+
+    .pageBlock .titleAndContentContainer .title a{
+        font-size: 20px;
+    }
+
+    .pageBlock .titleAndContentContainer .content {
+        height: 65px;
+    }
+
+    .pageBlock .titleAndContentContainer .content div {
+        height: 50px;
+        font-size: 15px;
+        /* 세 줄 초과시 안보이도록 ... 처리  */
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        line-height: 1.5em;
+        max-height: 3em;
+    }
 }

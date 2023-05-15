@@ -8,6 +8,12 @@
     <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 
     <style>
+        .contents {
+            /* footer 아래 위치하도록 최소 높이 보장 */
+            min-height: 700px;
+            margin-left: 245px;
+        }
+
         #sortable {
             list-style-type: none;
             margin: 0;
@@ -72,7 +78,7 @@
     <div th:replace="fragment/side-tab :: side-tab"></div>
 
     <!-- Page 들 ajax 에 의해 로드됨 -->
-    <div class="contents" style="min-height: 700px; margin-left: 245px; padding:0 5px;">
+    <div class="contents">
         <form th:object="${form}" method="post" enctype="multipart/form-data">
             <!-- type="hidden" 으로 안넘겨주면 null 됨 -->
             <input type="hidden" th:field="*{id}" />
