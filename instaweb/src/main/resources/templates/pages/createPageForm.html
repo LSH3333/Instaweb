@@ -60,48 +60,45 @@
 </head>
 
 <body>
-    <div>
-        
-        <!-- side tab fragment -->
-        <div th:replace="fragment/side-tab :: side-tab"></div>
+    <!-- side tab fragment -->
+    <div th:replace="fragment/side-tab :: side-tab"></div>
 
-        <!-- Page 들 ajax 에 의해 로드됨 -->
-        <div class="contents">
-            <form th:action="@{/pages/new}" th:object="${form}" method="post" enctype="multipart/form-data">
-                <!-- title -->
-                <div>
-                    <label th:for="title">제목</label>
-                    <input type="text" th:field="*{title}" placeholder="제목을 입력하세요">
-                    <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}">에러</p>
+    <!-- Page 들 ajax 에 의해 로드됨 -->
+    <div class="contents">
+        <form th:action="@{/pages/new}" th:object="${form}" method="post" enctype="multipart/form-data">
+            <!-- title -->
+            <div>
+                <label th:for="title">제목</label>
+                <input type="text" th:field="*{title}" placeholder="제목을 입력하세요">
+                <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}">에러</p>
+            </div>
+
+            <!-- content -->
+            <div>
+                <div style="display: flex; align-items: center;">
+                    <label th:for="content">내용</label>
+                    <textarea cols="50" rows="10" th:field="*{content}" placeholder="내용을 입력하세요"></textarea>
                 </div>
+            </div>
 
-                <!-- content -->
-                <div>
-                    <div style="display: flex; align-items: center;">
-                        <label th:for="content">내용</label>
-                        <textarea cols="50" rows="10" th:field="*{content}" placeholder="내용을 입력하세요"></textarea>
-                    </div>
-                </div>
+            <!-- images upload  -->
+            <!-- 이미지 선택시 imageInput.eventListener 에 의해 선택한 이미지 디스플레이됨        -->
+            <div>
+                <label id="images-input-label" th:for="images" class="custom-file-upload">Choose Images</label>
+                <input id="images" name="images" type="file" multiple="multiple">
+            </div>
 
-                <!-- images upload  -->
-                <!-- 이미지 선택시 imageInput.eventListener 에 의해 선택한 이미지 디스플레이됨        -->
-                <div>
-                    <label id="images-input-label" th:for="images" class="custom-file-upload">Choose Images</label>
-                    <input id="images" name="images" type="file" multiple="multiple">
-                </div>
+            <ul id="selectedImgContainer" style="list-style:none;">
+            </ul>
 
-                <ul id="selectedImgContainer" style="list-style:none;">
-                </ul>
-
-                <input type="hidden" th:field="*{id}" />
-                <input type="hidden" name="imageOrder" id="imageOrder" value="">
-                <button id="submitBtn" type="submit">Submit</button>
-            </form>
-        </div>
-
-        <!-- footer -->
-        <footer th:replace="fragment/footer :: footer"></footer>
+            <input type="hidden" th:field="*{id}" />
+            <input type="hidden" name="imageOrder" id="imageOrder" value="">
+            <button id="submitBtn" type="submit">Submit</button>
+        </form>
     </div>
+
+    <!-- footer -->
+    <footer th:replace="fragment/footer :: footer"></footer>
 
 
 
