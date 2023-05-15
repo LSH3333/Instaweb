@@ -6,13 +6,12 @@
 <head>
     <meta charset="UTF-8">
     <title>View Page</title>
-
+    <link rel="stylesheet" href="/css/universal.css" th:href="@{/css/universal.css}">
     <!-- page block style -->
     <link rel="stylesheet" type="text/css" href="/css/pageBlock.css" th:href="@{/css/pageBlock.css}">
 </head>
 
 <body>
-
     <!-- side tab fragment -->
     <div th:if="${loginMemberId == null}">
         <div th:replace="fragment/side-tab-logedOut :: side-tab-logedOut"></div>

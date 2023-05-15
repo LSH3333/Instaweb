@@ -1,0 +1,22 @@
+* {
+    margin: 0;
+    padding: 0;
+    /* width, height에 border, padding 값 포함됨  */
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    padding-top: 1px;
+}
+
+.contents {
+    /* footer 아래 위치하도록 최소 높이 보장 */
+    min-height: 700px;
+    margin-left: 245px;
+    /* padding: 0 5px; */
+    /* background-color: aqua; */
+}

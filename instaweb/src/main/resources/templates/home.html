@@ -7,14 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Page List</title>
 
-    <style>
-        html,
-        body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
-    </style>
+    <link rel="stylesheet" href="/css/universal.css" th:href="@{/css/universal.css}">
 
     <!-- page block style -->
     <link rel="stylesheet" type="text/css" href="/css/pageBlock.css" th:href="@{/css/pageBlock.css}">
@@ -128,7 +121,6 @@
 
     </script>
 </head>
-
 <body>
     <!-- side-tab fragment -->
     <div th:if="${loginMemberId == null}">
