@@ -57,6 +57,7 @@
                         contentAele.href = '/' + data.pages[i].memberId + '/pages/' + data.pages[i].id;
                         let aInnerDiv = document.createElement('div');                        
                         aInnerDiv.innerHTML = data.pages[i].content;
+                        console.log('aInnerDiv.innerHTML = ' + data.pages[i].content);
                         contentAele.appendChild(aInnerDiv);
 
                         // content footer 

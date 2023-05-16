@@ -130,7 +130,6 @@ public class PageController {
 
         String message = "";
         Page page = pageService.findOne(Long.parseLong(pageId));
-        imageService.deletePagesAllImages(Long.parseLong(pageId));
 
         try {
             long imgIdx = 0;
