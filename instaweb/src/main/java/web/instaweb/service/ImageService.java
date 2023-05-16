@@ -20,6 +20,7 @@ import java.util.List;
 public class ImageService {
 
     private final ImageRepository imageRepository;
+    private final PageService pageService;
 
     public void saveImage(Image image) {
         imageRepository.save(image);
@@ -54,5 +55,17 @@ public class ImageService {
         image.changeImage(decoded);
         image.changeImgIdx(imgIdx);
         // @Transactional 에 의해 commit 됨 -> flush (변경 감지)
+    }
+
+    // Page 에 속한 모든 Image 들 삭제
+    public void deletePagesAllImages(Long pageId) {
+        System.out.println("deletePagesAllImages");
+        Page page = pageService.findOne(pageId);
+        System.out.println("pageId = " + pageId);
+        List<Image> images = page.getImages();
+        for (Image image : images) {
+            System.out.println("image = " + image.getId());
+        }
+        images.clear();
     }
 }

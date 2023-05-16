@@ -126,6 +126,7 @@
 
 
     <script>
+        let fileList = []; // 유저가 선택한 file 이 담김 
         const form = document.querySelector('form');
         const editor = document.getElementById('editor');
         const btnBold = document.getElementById('btn-bold');
@@ -185,13 +186,13 @@
             }
         });
 
+        // 이미지 유저가 선택했을때 fileList.push 됨 
+        // 그런데 선택한 이미지를 다시 지웠을때 알고리즘이 없음
         function insertImageDate(file) {
+            fileList.push(file);
             const reader = new FileReader();
-            reader.addEventListener('load', function (e) {
-                focusEditor();
-                document.execCommand('insertImage', false, `${reader.result}`);
-            });
-            reader.readAsDataURL(file);
+            let url = URL.createObjectURL(file);
+            document.execCommand('insertImage', false, url);
         }
 
         textDecoration();
@@ -237,9 +238,43 @@
             // <div contenteditable=true> 에 있는 내용 <textarea> 에 복사
             getContent();
             // 이미지 정보 먼저 ajax로 보내고 폼 데이터 이후 보냄 
-            // uploadImgs(fileList);
+            uploadImgs(fileList);
             form.submit();
         });
+
+
+        // files 에 담긴 파일들 formData 에 담아 서버에 ajax request 보냄 
+        // 페이지 id 도 같이 보냄 
+        function uploadImgs(files) {
+            const form = document.querySelector('form');
+            // 선택된 이미지 파일 0개 라면 폼 서버에 보내고 리턴 
+            if (files.length == 0) {
+                form.submit();
+                return;
+            }
+
+            const formData = new FormData();
+            // key:pageId, pageId formData 에 추가 
+            let pageId = "[[${form.id}]]";
+            formData.append('pageId', pageId);
+
+            // key:files, files formData 에 추가 
+            for (let i = 0; i < files.length; i++) {
+                formData.append('files', files[i]);
+            }
+
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', '/pages/uploadImages', true);
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    console.log('Files uploaded successfully');
+                    form.submit(); // ajax 완료 후 form 전송 
+                } else {
+                    console.error('Error uploading files');
+                }
+            };
+            xhr.send(formData);
+        }
 
         // <div contenteditable=true> 에 있는 내용 <textarea> 에 복사
         function getContent() {
