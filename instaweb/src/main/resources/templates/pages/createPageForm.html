@@ -54,9 +54,14 @@
 
         /* content editor */
         div#editor {
-            padding: 16px 24px;
             border: 1px solid #D6D6D6;
             border-radius: 4px;
+            width: 100%;
+            height: 1000px;
+        }
+
+        #editor img {
+            max-width: 100%;
         }
     </style>
     <!-- page block style -->
@@ -80,47 +85,35 @@
                 <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}">에러</p>
             </div>
 
-            <!-- content -->
-            <div>
-                <div style="display: flex; align-items: center;">
-                    <label th:for="content">내용</label>
-                    <textarea id="my-textarea" style="display:none;" th:field="*{content}"></textarea>
-                    <div id="editor" contenteditable="true" th:field="*{content}"></div>
-                </div>
+            <div class="editor-menu">
+                <button id="btn-bold" type="button">
+                    <b>B</b>
+                </button>
+                <button id="btn-italic" type="button">
+                    <i>I</i>
+                </button>
+                <button id="btn-underline" type="button">
+                    <u>U</u>
+                </button>
+                <button id="btn-strike" type="button">
+                    <s>S</s>
+                </button>
+                <button id="btn-ordered-list" type="button">
+                    OL
+                </button>
+                <button id="btn-unordered-list" type="button">
+                    UL
+                </button>
+                <button id="btn-image" type="button">
+                    IMG
+                </button>
             </div>
+            <!-- 실제 content 저장용 -->
+            <textarea id="my-textarea" style="display:none;" th:field="*{content}"></textarea>
+            <!-- 유저에게 보이는 div -->
+            <div id="editor" contenteditable="true" th:field="*{content}"></div>
 
-            <!-- images upload  -->
-            <!-- 이미지 선택시 imageInput.eventListener 에 의해 선택한 이미지 디스플레이됨        -->
-            <div>
-                <div class="editor-menu">
-                    <button id="btn-bold" type="button">
-                        <b>B</b>
-                    </button>
-                    <button id="btn-italic" type="button">
-                        <i>I</i>
-                    </button>
-                    <button id="btn-underline" type="button">
-                        <u>U</u>
-                    </button>
-                    <button id="btn-strike" type="button">
-                        <s>S</s>
-                    </button>
-                    <button id="btn-ordered-list" type="button">
-                        OL
-                    </button>
-                    <button id="btn-unordered-list" type="button">
-                        UL
-                    </button>
-                    <button id="btn-image" type="button">
-                        IMG
-                    </button>
-                </div>
-                <label id="images-input-label" th:for="images" class="custom-file-upload">Choose Images</label>
-                <input id="images" name="images" type="file" multiple="multiple">
-            </div>
-
-            <ul id="selectedImgContainer" style="list-style:none;">
-            </ul>
+            <input id="img-selector" type="file" accept="image/*" />
 
             <input type="hidden" th:field="*{id}" />
             <input type="hidden" name="imageOrder" id="imageOrder" value="">
@@ -132,162 +125,78 @@
     <footer th:replace="fragment/footer :: footer"></footer>
 
 
+    <script>
+        const form = document.querySelector('form');
+        const editor = document.getElementById('editor');
+        const btnBold = document.getElementById('btn-bold');
+        const btnItalic = document.getElementById('btn-italic');
+        const btnUnderline = document.getElementById('btn-underline');
+        const btnStrike = document.getElementById('btn-strike');
+        const btnOrderedList = document.getElementById('btn-ordered-list');
+        const btnUnorderedList = document.getElementById('btn-unordered-list');
 
-    <script type="text/javascript">
+        const btnImage = document.getElementById('btn-image');
+        const imageSelector = document.getElementById('img-selector');
 
-        var imageInput = document.getElementById('images');
-        var selectedImgContainer = document.getElementById('selectedImgContainer');
-        var changedOrder = []; // 유저가 이미지 순서 변경시 update 됨 
-        var fileList = []; // 유저가 선택한 file 이 담김 
-        let labelEle = document.getElementById('images-input-label');
-
-
-        // JQuery sortable <ul id="selectedImgContainer"> 내 의 <li> 드래그로 이동 가능하도록함 
-        // 순서가 변경됐다면 fileList 의 순서도 그에 맞춰 변경되도록함 
-        $(function () {
-            $("#selectedImgContainer").sortable({
-                update: function (event, ui) {
-                    changedOrder = $(this).sortable('toArray', { attribute: 'imgOrder' }); // Get the updated order as an array
-
-                    // li 순서 변경된대로 fileList 도 순서 변경함 
-                    let changedOrderFileList = new Array(changedOrder.length).fill(0);
-                    for (let i = 0; i < changedOrder.length; i++) {
-                        let o = parseInt(changedOrder[i]);
-                        changedOrderFileList[i] = fileList[o];
-                    }
-                    fileList = [];
-
-                    // update fileList with the new order of elements
-                    for (let i = 0; i < changedOrderFileList.length; i++) {
-                        fileList.push(changedOrderFileList[i]);
-                    }
-                    // <ul> 의 자식노드 돌면서 <li> 의 imgOrder 를 다시 위에서 부터 아래로 0부터 증가하면서 바꾼다  
-                    let ulEle = document.getElementById('selectedImgContainer');
-                    for (let i = 0; i < ulEle.childNodes.length; i++) {
-                        let liEle = ulEle.childNodes[i];
-                        liEle.setAttribute('imgOrder', i);
-                    }
-
-                }
-            });
+        btnBold.addEventListener('click', function () {
+            setStyle('bold');
         });
 
-        window.onload = function () {
-            // <input> event listener 
-            // 사용자가 이미지들 선택하면 fileList 에 담고 디스플레이 위한 element 도 만듦 
-            imageInput.addEventListener('change', function (event) { // cancel 시 trigger 되지 않음 
-                let files = event.target.files;
-
-                // 최초 이미지 선택하는 경우 
-                if (labelEle.textContent === "Choose Images") {
-                    selectedImgContainer.innerHTML = "";
-                    // fileList 도 비움 
-                    fileList.length = 0;
-                    // 이미지 선택 이후에 디스플레이 텍스트 "Add More Images" 로 변경 
-                    labelEle.textContent = "Add More Images";
-                }
-
-                // 추가된 이미지들 fileList 에 푸쉬 
-                // imgOrder 어트리뷰트 값도 fileList 크기에 맞게 할당 
-                let appendIdx = fileList.length;
-                for (let i = 0; i < files.length; i++) {
-                    let file = files[i];
-                    fileList.push(file);
-
-                    let liEle = document.createElement('li');
-                    liEle.setAttribute('imgOrder', appendIdx + i);
-
-                    let imgEle = document.createElement('img');
-                    imgEle.src = URL.createObjectURL(file);
-
-                    // 이미지 삭제 <button>     
-                    let btnEle = document.createElement('button');
-                    btnEle.innerText = "DELETE";
-                    btnEle.type = "button";
-                    btnEle.classList.add('added-btn');
-
-                    liEle.appendChild(imgEle);
-                    liEle.appendChild(btnEle);
-                    selectedImgContainer.appendChild(liEle);
-                }
-
-            });
-
-            textDecoration();
-        };
-
-        // submit button event listener 
-        let button = document.getElementById('submitBtn');
-        button.addEventListener('click', function (event) {
-            console.log('summit btn clicked');
-            // Prevent the default form submission behavior (버튼 클릭시 서버로 폼 전송 방지)
-            event.preventDefault();
-
-            // <div contenteditable=true> 에 있는 내용 <textarea> 에 복사
-            getContent();
-            // 이미지 정보 먼저 ajax로 보내고 폼 데이터 이후 보냄 
-            uploadImgs(fileList);
+        btnItalic.addEventListener('click', function () {
+            setStyle('italic');
         });
 
-        // files 에 담긴 파일들 formData 에 담아 서버에 ajax request 보냄 
-        // 페이지 id 도 같이 보냄 
-        function uploadImgs(files) {
-            const form = document.querySelector('form');
-            // 선택된 이미지 파일 0개 라면 폼 서버에 보내고 리턴 
-            if (files.length == 0) {
-                form.submit();
-                return;
-            }
+        btnUnderline.addEventListener('click', function () {
+            setStyle('underline');
+        });
 
-            const formData = new FormData();
-            // key:pageId, pageId formData 에 추가 
-            let pageId = "[[${form.id}]]";
-            formData.append('pageId', pageId);
+        btnStrike.addEventListener('click', function () {
+            setStyle('strikeThrough')
+        });
 
-            // key:files, files formData 에 추가 
-            for (let i = 0; i < files.length; i++) {
-                formData.append('files', files[i]);
-            }
+        btnOrderedList.addEventListener('click', function () {
+            setStyle('insertOrderedList');
+        });
 
-            const xhr = new XMLHttpRequest();
-            xhr.open('POST', '/pages/uploadImages', true);
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    console.log('Files uploaded successfully');
-                    form.submit(); // ajax 완료 후 form 전송 
-                } else {
-                    console.error('Error uploading files');
-                }
-            };
-            xhr.send(formData);
+        btnUnorderedList.addEventListener('click', function () {
+            setStyle('insertUnorderedList');
+        });
+
+        function setStyle(style) {
+            document.execCommand(style);
+            focusEditor();
+        }
+
+        // 버튼 클릭 시 에디터가 포커스를 잃기 때문에 다시 에디터에 포커스를 해줌
+        function focusEditor() {
+            editor.focus({ preventScroll: true });
         }
 
 
-        // 이미지에 대한 삭제 버튼 눌렀을시 이미지 삭제 (이미지가 속한 <li> 를 제거함)
-        selectedImgContainer.addEventListener('click', function (e) {
-            if (e.target.classList.contains('added-btn')) {
-                let btnEle = e.target;
-                let liEle = btnEle.parentNode;
-                let imgOrder = parseInt(liEle.getAttribute('imgOrder'));
-                fileList.splice(imgOrder, 1);
-                liEle.remove();
+
+        btnImage.addEventListener('click', function () {
+            imageSelector.click();
+        });
+
+        imageSelector.addEventListener('change', function (e) {
+            const files = e.target.files;
+            if (!!files) {
+                insertImageDate(files[0]);
             }
         });
 
-        // <div contenteditable=true> 에 있는 내용 <textarea> 에 복사
-        function getContent() {
-            document.getElementById("my-textarea").value = document.getElementById("editor").innerHTML;
+        function insertImageDate(file) {
+            const reader = new FileReader();
+            reader.addEventListener('load', function (e) {
+                focusEditor();
+                document.execCommand('insertImage', false, `${reader.result}`);
+            });
+            reader.readAsDataURL(file);
         }
 
-       
+        textDecoration();
+
         function textDecoration() {
-            const editor = document.getElementById('editor');
-            const btnBold = document.getElementById('btn-bold');
-            const btnItalic = document.getElementById('btn-italic');
-            const btnUnderline = document.getElementById('btn-underline');
-            const btnStrike = document.getElementById('btn-strike');
-            const btnOrderedList = document.getElementById('btn-ordered-list');
-            const btnUnorderedList = document.getElementById('btn-unordered-list');
 
             btnBold.addEventListener('click', function () {
                 setStyle('bold');
@@ -317,13 +226,31 @@
                 document.execCommand(style);
                 focusEditor();
             }
-
-            // 버튼 클릭 시 에디터가 포커스를 잃기 때문에 다시 에디터에 포커스를 해줌
-            function focusEditor() {
-                editor.focus({ preventScroll: true });
-            }
         }
+
+        // submit button event listener 
+        let button = document.getElementById('submitBtn');
+        button.addEventListener('click', function (event) {
+            // Prevent the default form submission behavior (버튼 클릭시 서버로 폼 전송 방지)
+            event.preventDefault();
+
+            // <div contenteditable=true> 에 있는 내용 <textarea> 에 복사
+            getContent();
+            // 이미지 정보 먼저 ajax로 보내고 폼 데이터 이후 보냄 
+            // uploadImgs(fileList);
+            form.submit();
+        });
+
+        // <div contenteditable=true> 에 있는 내용 <textarea> 에 복사
+        function getContent() {
+            console.log('editor = ' + editor);
+            document.getElementById("my-textarea").value = editor.innerHTML;
+        }
+
+
     </script>
+
+
 
 </body>
 
