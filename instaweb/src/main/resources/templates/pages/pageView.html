@@ -9,6 +9,20 @@
     <link rel="stylesheet" href="/css/universal.css" th:href="@{/css/universal.css}">
     <!-- page block style -->
     <link rel="stylesheet" type="text/css" href="/css/pageBlock.css" th:href="@{/css/pageBlock.css}">
+
+    <style>
+        /* content editor */
+        div#editor {
+            border: 1px solid #D6D6D6;
+            border-radius: 4px;
+            width: 100%;
+            height: 1000px;
+        }
+
+        #editor img {
+            max-width: 100%;
+        }
+    </style>
 </head>
 
 <body>
@@ -20,10 +34,9 @@
         <div th:replace="fragment/side-tab :: side-tab"></div>
     </div>
 
-    <!-- Page 들 ajax 에 의해 로드됨 -->
     <div class="contents">
         <p th:text="${page.title}"></p>
-        <textarea cols="50" rows="10" readonly th:text="${page.content}"></textarea>
+        <div id="editor" th:utext="${page.content}"></div>
 
         <!-- 모델에 담겨있는 "img" 불러옴   -->
         <tr th:each="image : ${page.images}">

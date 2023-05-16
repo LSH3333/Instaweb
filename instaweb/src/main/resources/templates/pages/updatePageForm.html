@@ -56,6 +56,19 @@
         input[type="file"] {
             display: none;
         }
+
+
+        /* content editor */
+        div#editor {
+            border: 1px solid #D6D6D6;
+            border-radius: 4px;
+            width: 100%;
+            height: 1000px;
+        }
+
+        #editor img {
+            max-width: 100%;
+        }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
@@ -80,32 +93,47 @@
     <!-- Page 들 ajax 에 의해 로드됨 -->
     <div class="contents">
         <form th:object="${form}" method="post" enctype="multipart/form-data">
+            <!-- title -->
+            <div>
+                <label th:for="title">제목</label>
+                <input type="text" th:field="*{title}" placeholder="제목을 입력하세요">
+                <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}">에러</p>
+            </div>
+
+            <div class="editor-menu">
+                <button id="btn-bold" type="button">
+                    <b>B</b>
+                </button>
+                <button id="btn-italic" type="button">
+                    <i>I</i>
+                </button>
+                <button id="btn-underline" type="button">
+                    <u>U</u>
+                </button>
+                <button id="btn-strike" type="button">
+                    <s>S</s>
+                </button>
+                <button id="btn-ordered-list" type="button">
+                    OL
+                </button>
+                <button id="btn-unordered-list" type="button">
+                    UL
+                </button>
+                <button id="btn-image" type="button">
+                    IMG
+                </button>
+            </div>
+            <!-- 실제 content 저장용 -->
+            <textarea id="my-textarea" style="display:none;" th:field="*{content}"></textarea>
+            <!-- 유저에게 보이는 div -->
+            <div id="editor" contenteditable="true" th:utext="*{content}"></div>
+
+            <input id="img-selector" type="file" accept="image/*" />
+
             <!-- type="hidden" 으로 안넘겨주면 null 됨 -->
             <input type="hidden" th:field="*{id}" />
             <input type="hidden" th:field="*{createdTime}" />
-
-            <!-- 제목 -->
-            <div>
-                <label th:for="title">제목</label>
-                <input type="text" th:field="*{title}" placeholder="제목을 입력하세요" />
-                <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}">에러 발생</p>
-            </div>
-            <!-- 내용 -->
-            <div>
-                <label th:for="content">내용</label>
-                <textarea cols="50" rows="10" th:field="*{content}" placeholder="내용을 입력하세요"></textarea>
-            </div>
-
-            <!-- 이미지 추가 input  -->
-            <div>
-                <label id="images-input-label" th:for="images" class="custom-file-upload">Add More Images</label>
-                <input id="images" name="images" type="file" multiple="multiple">
-            </div>
-
-            <!-- 이미지, byte 배열 형의 이미지를 generateBase64Image() 로 변환 후 디스플레이  -->
-            <ul id="imgContainer"></ul>
-
-            <button id="submitBtn" type="submit">수정</button>
+            <button id="submitBtn" type="submit">Submit</button>
         </form>
     </div>
 
@@ -113,7 +141,131 @@
     <footer th:replace="fragment/footer :: footer"></footer>
 
 
-    <script type="text/javascript">
+    <script>
+        const form = document.querySelector('form');
+        const editor = document.getElementById('editor');
+        const btnBold = document.getElementById('btn-bold');
+        const btnItalic = document.getElementById('btn-italic');
+        const btnUnderline = document.getElementById('btn-underline');
+        const btnStrike = document.getElementById('btn-strike');
+        const btnOrderedList = document.getElementById('btn-ordered-list');
+        const btnUnorderedList = document.getElementById('btn-unordered-list');
+
+        const btnImage = document.getElementById('btn-image');
+        const imageSelector = document.getElementById('img-selector');
+
+        btnBold.addEventListener('click', function () {
+            setStyle('bold');
+        });
+
+        btnItalic.addEventListener('click', function () {
+            setStyle('italic');
+        });
+
+        btnUnderline.addEventListener('click', function () {
+            setStyle('underline');
+        });
+
+        btnStrike.addEventListener('click', function () {
+            setStyle('strikeThrough')
+        });
+
+        btnOrderedList.addEventListener('click', function () {
+            setStyle('insertOrderedList');
+        });
+
+        btnUnorderedList.addEventListener('click', function () {
+            setStyle('insertUnorderedList');
+        });
+
+        function setStyle(style) {
+            document.execCommand(style);
+            focusEditor();
+        }
+
+        // 버튼 클릭 시 에디터가 포커스를 잃기 때문에 다시 에디터에 포커스를 해줌
+        function focusEditor() {
+            editor.focus({ preventScroll: true });
+        }
+
+
+
+        btnImage.addEventListener('click', function () {
+            imageSelector.click();
+        });
+
+        imageSelector.addEventListener('change', function (e) {
+            const files = e.target.files;
+            if (!!files) {
+                insertImageDate(files[0]);
+            }
+        });
+
+        function insertImageDate(file) {
+            const reader = new FileReader();
+            reader.addEventListener('load', function (e) {
+                focusEditor();
+                document.execCommand('insertImage', false, `${reader.result}`);
+            });
+            reader.readAsDataURL(file);
+        }
+
+        textDecoration();
+
+        function textDecoration() {
+
+            btnBold.addEventListener('click', function () {
+                setStyle('bold');
+            });
+
+            btnItalic.addEventListener('click', function () {
+                setStyle('italic');
+            });
+
+            btnUnderline.addEventListener('click', function () {
+                setStyle('underline');
+            });
+
+            btnStrike.addEventListener('click', function () {
+                setStyle('strikeThrough')
+            });
+
+            btnOrderedList.addEventListener('click', function () {
+                setStyle('insertOrderedList');
+            });
+
+            btnUnorderedList.addEventListener('click', function () {
+                setStyle('insertUnorderedList');
+            });
+
+            function setStyle(style) {
+                document.execCommand(style);
+                focusEditor();
+            }
+        }
+
+        // submit button event listener 
+        let button = document.getElementById('submitBtn');
+        button.addEventListener('click', function (event) {
+            // Prevent the default form submission behavior (버튼 클릭시 서버로 폼 전송 방지)
+            event.preventDefault();
+
+            // <div contenteditable=true> 에 있는 내용 <textarea> 에 복사
+            getContent();
+            // 이미지 정보 먼저 ajax로 보내고 폼 데이터 이후 보냄 
+            // uploadImgs(fileList);
+            form.submit();
+        });
+
+        // <div contenteditable=true> 에 있는 내용 <textarea> 에 복사
+        function getContent() {
+            document.getElementById("my-textarea").value = editor.innerHTML;
+        }
+
+
+    </script>
+
+    <!-- <script type="text/javascript">
 
         var pageID = "[[${form.id}]]";
         var imgContainer = document.getElementById("imgContainer");
@@ -244,9 +396,6 @@
             return btoa(binary);
         }
 
-
-
-
         // 이미지 파일들 ajax 로 전송 
         document.getElementById('submitBtn').addEventListener('click', function (event) {
             // Prevent the default form submission behavior (버튼 클릭시 서버로 폼 전송 방지)
@@ -352,7 +501,7 @@
             }
         });
 
-    </script>
+    </script> -->
 
 </body>
 
