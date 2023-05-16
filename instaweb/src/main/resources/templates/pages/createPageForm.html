@@ -51,6 +51,13 @@
         input[type="file"] {
             display: none;
         }
+
+        /* content editor */
+        div#editor {
+            padding: 16px 24px;
+            border: 1px solid #D6D6D6;
+            border-radius: 4px;
+        }
     </style>
     <!-- page block style -->
     <link rel="stylesheet" type="text/css" href="/css/pageBlock.css" th:href="@{/css/pageBlock.css}">
@@ -77,13 +84,37 @@
             <div>
                 <div style="display: flex; align-items: center;">
                     <label th:for="content">내용</label>
-                    <textarea cols="50" rows="10" th:field="*{content}" placeholder="내용을 입력하세요"></textarea>
+                    <textarea id="my-textarea" style="display:none;" th:field="*{content}"></textarea>
+                    <div id="editor" contenteditable="true" th:field="*{content}"></div>
                 </div>
             </div>
 
             <!-- images upload  -->
             <!-- 이미지 선택시 imageInput.eventListener 에 의해 선택한 이미지 디스플레이됨        -->
             <div>
+                <div class="editor-menu">
+                    <button id="btn-bold" type="button">
+                        <b>B</b>
+                    </button>
+                    <button id="btn-italic" type="button">
+                        <i>I</i>
+                    </button>
+                    <button id="btn-underline" type="button">
+                        <u>U</u>
+                    </button>
+                    <button id="btn-strike" type="button">
+                        <s>S</s>
+                    </button>
+                    <button id="btn-ordered-list" type="button">
+                        OL
+                    </button>
+                    <button id="btn-unordered-list" type="button">
+                        UL
+                    </button>
+                    <button id="btn-image" type="button">
+                        IMG
+                    </button>
+                </div>
                 <label id="images-input-label" th:for="images" class="custom-file-upload">Choose Images</label>
                 <input id="images" name="images" type="file" multiple="multiple">
             </div>
@@ -182,14 +213,18 @@
 
             });
 
+            textDecoration();
         };
 
         // submit button event listener 
         let button = document.getElementById('submitBtn');
         button.addEventListener('click', function (event) {
+            console.log('summit btn clicked');
             // Prevent the default form submission behavior (버튼 클릭시 서버로 폼 전송 방지)
             event.preventDefault();
 
+            // <div contenteditable=true> 에 있는 내용 <textarea> 에 복사
+            getContent();
             // 이미지 정보 먼저 ajax로 보내고 폼 데이터 이후 보냄 
             uploadImgs(fileList);
         });
@@ -239,6 +274,55 @@
             }
         });
 
+        // <div contenteditable=true> 에 있는 내용 <textarea> 에 복사
+        function getContent() {
+            document.getElementById("my-textarea").value = document.getElementById("editor").innerHTML;
+        }
+
+       
+        function textDecoration() {
+            const editor = document.getElementById('editor');
+            const btnBold = document.getElementById('btn-bold');
+            const btnItalic = document.getElementById('btn-italic');
+            const btnUnderline = document.getElementById('btn-underline');
+            const btnStrike = document.getElementById('btn-strike');
+            const btnOrderedList = document.getElementById('btn-ordered-list');
+            const btnUnorderedList = document.getElementById('btn-unordered-list');
+
+            btnBold.addEventListener('click', function () {
+                setStyle('bold');
+            });
+
+            btnItalic.addEventListener('click', function () {
+                setStyle('italic');
+            });
+
+            btnUnderline.addEventListener('click', function () {
+                setStyle('underline');
+            });
+
+            btnStrike.addEventListener('click', function () {
+                setStyle('strikeThrough')
+            });
+
+            btnOrderedList.addEventListener('click', function () {
+                setStyle('insertOrderedList');
+            });
+
+            btnUnorderedList.addEventListener('click', function () {
+                setStyle('insertUnorderedList');
+            });
+
+            function setStyle(style) {
+                document.execCommand(style);
+                focusEditor();
+            }
+
+            // 버튼 클릭 시 에디터가 포커스를 잃기 때문에 다시 에디터에 포커스를 해줌
+            function focusEditor() {
+                editor.focus({ preventScroll: true });
+            }
+        }
     </script>
 
 </body>
