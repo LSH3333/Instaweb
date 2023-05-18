@@ -178,30 +178,25 @@
 
 
         btnImage.addEventListener('click', function () {
+            console.log('img btn click');
             imageSelector.click();
         });
 
         imageSelector.addEventListener('change', function (e) {
+            console.log('imageSelector')
             const files = e.target.files;
+            console.log('files = ' + files);
+            console.log('files[0] = ' + files[0]);
             if (!!files) {
                 console.log('insertImageDate files[0] = ' + files[0])
-                // insertImageDate(files[0]);
                 insertImg(files[0]);
             }
+            // 비워주지 않으면 같은 이미지 연속 선택시 imageSelector 'change' triggered 되지 않을 가능성 있음 
+            this.value = null;
         });
 
 
-        // function insertImageDate(file) {
-        //     // fileList.push(file);
-        //     // console.log('fileList.push file = ' + file)
-        //     const reader = new FileReader();
-        //     let url = URL.createObjectURL(file);
-        //     fileMap.set(url, file);
-        //     console.log('filemap.key = ' + url)
-        //     console.log('fileMap.value = ' + fileMap.get(url))
-        //     document.execCommand('insertImage', false, url);
-        // }
-
+        // 선택한 이미지 editor 에 삽입 
         let imgEleCnt = 0;
         function insertImg(file) {
             const reader = new FileReader();
@@ -213,10 +208,17 @@
             imgEle.classList.add(imgEleCnt++);
 
             let selection = window.getSelection();
-            // if selection range is available 
-            if (selection.rangeCount > 0) {
+            // console.log('selection.anchorOffset = ' + selection.anchorOffset);
+            // console.log('selection.anchorNode = ' + selection.anchorNode);
+            // console.log('selection.anchorNode.parentNode = ' + selection.anchorNode.parentNode);
+            // 글 작성하는 editor 영역에 커서 위치할경우 
+            if (selection.anchorNode.parentNode.id === 'editor') {
                 let range = selection.getRangeAt(0);
                 range.insertNode(imgEle);
+            }
+            else { // 아닌 경우에는 editor 영역에 img 삽입                 
+                let targetElement = document.getElementById('editor'); // Replace 'target' with the ID or selector of the element where you want to insert the image
+                targetElement.appendChild(imgEle);
             }
         }
 
