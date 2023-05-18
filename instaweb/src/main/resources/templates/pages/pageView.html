@@ -23,6 +23,7 @@
             max-width: 100%;
         }
     </style>
+
 </head>
 
 <body>
@@ -36,17 +37,8 @@
 
     <div class="contents">
         <p th:text="${page.title}"></p>
-        <div id="editor" th:utext="${page.content}"></div>
 
-
-        <!-- 모델에 담겨있는 "img" 불러옴   -->
-        <tr th:each="image : ${page.images}">
-            <td>
-                <p th:text="${image.id}"></p>
-                <img th:src="${'data:image/jpeg;charset=utf-8;base64,' + image.generateBase64Image()}" alt="">
-            </td>
-        </tr>
-
+        <div id="content"></div>
 
         <div>
             <!-- 글 수정 폼으로 이동  -->
@@ -60,35 +52,45 @@
     <footer th:replace="fragment/footer :: footer"></footer>
 
 
-
-    <script>
+    <!-- ajax 요청으로 내용 가져와서 <img> 삽입  -->
+    <script type="text/javascript">
         let pageId = "[[${page.id}]]";
-        let pageContent = "[[${page.content}]]"
-        let images = "[[${page.images}]]";
+        console.log('pageId = ' + pageId)
+        let xhr = new XMLHttpRequest();
 
-        console.log('images = ' + images);
-        console.log('images.length = ' + images.length)
-        for(let i = 0; i < images.length; i++) {
-            let image = images[i];
-            console.log(image.generateBase64Image());
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == XMLHttpRequest.DONE) {
+                if (xhr.status == 200) {
+                    let data = JSON.parse(xhr.responseText);
+
+                    // console.log('content = ' + data.content);
+                    // console.log('images = ' + data.images.length);
+                    // console.log('imgIdxList = ' + data.imgIdxList.length);
+
+                    // 
+                    const tempDiv = document.createElement("div");
+                    tempDiv.innerHTML = data.content;
+                    // Get all <img> elements from the div
+                    const imgElements = tempDiv.querySelectorAll("img");
+
+                    for (let i = 0; i < imgElements.length; i++) {
+                        let imgElement = imgElements[i];
+                        imgElement.src = 'data:image/jpeg;charset=utf-8;base64,' + data.images[i];
+                    }
+
+                    document.getElementById('content').appendChild(tempDiv);
+
+                } else {
+                    console.error("error");
+                }
+            }
         }
 
 
-        let decodedContent = new DOMParser().parseFromString(pageContent, 'text/html').documentElement.textContent;
-
-        // Create a temporary element to hold the decoded content
-        let tempElement = document.createElement('div');
-        tempElement.innerHTML = decodedContent;
-
-        // Access the <img> tag within the temporary element
-        let imgElements = tempElement.querySelectorAll('img');
-
-        imgElements.forEach((imgElement) => {
-            console.log('imgElement ' + imgElement);
-            console.log('class = ' + imgElement.classList[0]);
-
-            
-        });
+        window.onload = function () {
+            xhr.open('GET', '/view/ajaxReq?pageId=' + pageId.toString(), true);
+            xhr.send();
+        };
 
     </script>
 </body>

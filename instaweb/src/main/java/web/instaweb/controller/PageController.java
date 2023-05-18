@@ -281,6 +281,36 @@ public class PageController {
         return "pages/pageView";
     }
 
+    // view 의 내용과 이미지는 ajax 로 받아서 동적으로 디스플레이한다 
+    @ResponseBody
+    @GetMapping("/view/ajaxReq")
+    public Map<String,?> viewGetImages(@RequestParam long pageId) {
+        System.out.println("viewGetImages " + pageId);
+        Map<String, List<?>> ret = new HashMap<>();
+
+        Page page = pageService.findOne(pageId);
+
+        // images, imgIdxList
+        List<Image> imageList = page.getImages();
+        List<String> images = new ArrayList<>();
+        List<Long> imgIdxList = new ArrayList<>();
+        for (Image image : imageList) {
+            images.add(image.generateBase64Image());
+            imgIdxList.add(image.getImgIdx());
+        }
+
+        // content
+        List<String> content = new ArrayList<>();
+        content.add(page.getContent());
+
+        ret.put("content", content);
+        ret.put("images", images);
+        ret.put("imgIdxList", imgIdxList);
+
+        return ret;
+    }
+
+
     // 페이지 리스트
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
