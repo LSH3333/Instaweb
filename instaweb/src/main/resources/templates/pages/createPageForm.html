@@ -129,6 +129,10 @@
         // key = Image 의 url, value = Image File 
         // let fileList = []; // 유저가 선택한 file 이 담김 
         const fileMap = new Map();
+        // [key,value] = [url, imgIdx]
+        // imgIdx 는 각 img 에 부여된 고유 번호         
+        const imgIdxMap = new Map();
+
         const form = document.querySelector('form');
         const editor = document.getElementById('editor');
         const btnBold = document.getElementById('btn-bold');
@@ -277,7 +281,6 @@
             // 선택된 이미지 파일 0개 라면 폼 서버에 보내고 리턴             
             if (fileMap.size === 0) {
                 form.submit();
-                console.log('fileMap.length == 0')
                 return;
             }
 
@@ -287,11 +290,17 @@
             formData.append('pageId', pageId);
 
             // key:files, files formData 에 추가 
-            fileMap.forEach((value, key) => {
+            fileMap.forEach((value, key) => { // value 는 file 
                 formData.append('files', value);
-                console.log('key = ' + key);
-                console.log('value = ' + value);
             });
+
+            // key:imgIdxList, <img class="imgIdx">
+            fileMap.forEach((value,key) => {
+                let imgIdx = imgIdxMap.get(key); // imgIdx:String 
+                formData.append('imgIdxList', imgIdx)
+            });
+
+            
 
             const xhr = new XMLHttpRequest();
             xhr.open('POST', '/pages/uploadImages', true);
@@ -312,6 +321,7 @@
             getImgEleFromTextArea();
         }
 
+        // editor 에 작성된 글에서 <img> 추출 
         function getImgEleFromTextArea() {
             const textareaValue = document.getElementById("my-textarea").value;
             const tempDiv = document.createElement("div");
@@ -320,25 +330,32 @@
             // Get all <img> elements from the div
             const imgElements = tempDiv.querySelectorAll("img");
 
+            // key,value = [url, file]
             const imgExistence = new Map();
+            // 유저가 한 번 삽입했다가 지운 이미지는 Map 에서 삭제되어야함 
             const keysToDelete = [];
 
             imgElements.forEach((imgElement) => {
                 const key = imgElement.src;
-                console.log("Image source:", key);
-
                 imgExistence.set(key, true);
             });
 
             fileMap.forEach((value, key) => {
                 if (!imgExistence.has(key)) {
-                    console.log('keysToDelete key = ' + key);
                     keysToDelete.push(key);
                 }
             });
 
             keysToDelete.forEach((key) => {
                 fileMap.delete(key);
+            });
+
+
+            // imgIdxMap [key,value] = [url, imgIdx]            
+            imgElements.forEach((imgElement) => {
+                const url = imgElement.src;
+                const imgIdx = imgElement.classList[0];
+                imgIdxMap.set(url, imgIdx);
             });
         }
 

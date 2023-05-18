@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -123,24 +124,28 @@ public class PageController {
      * 전달받은 file 은 유저가 선택한 순서 대로 담겨오게끔 클라이언트에서 전달하기 때문에 순서대로 imgIdx 부여 한다
      * @param pageId : page 의 Id
      * @param files : 글 작성폼에서 보낸 유저가 선택한 파일들, 유저가 선택한 순서대로 담겨서 오기 때문에 그냥 순서대로 imgIdx 부여 하면됨
+     *
      */
     @PostMapping("/pages/uploadImages")
-    public ResponseEntity<String> handleFileUpload(@RequestParam("pageId") String pageId, @RequestParam MultipartFile[] files) {
+    public ResponseEntity<String> handleFileUpload(@RequestParam("pageId") String pageId,
+                                                   @RequestParam("files") List<MultipartFile> files,
+                                                   @RequestParam("imgIdxList") List<String> imgIdxList) {
         System.out.println("handleFileUpload");
 
         String message = "";
         Page page = pageService.findOne(Long.parseLong(pageId));
 
+
         try {
-            long imgIdx = 0;
+            int i = 0;
             for (MultipartFile file : files) {
-                // Get file bytes
-//                byte[] bytes = file.getBytes();
+                long imgIdx = Long.parseLong(imgIdxList.get(i));
                 Image image = new Image(file);
-                image.setImgIdx(imgIdx++);
+                image.setImgIdx(imgIdx);
                 page.addImage(image);
                 image.setPage(page); // image - page 연결
                 imageService.saveImage(image);
+                i++;
             }
 
             message = "Files uploaded successfully!";
@@ -270,7 +275,8 @@ public class PageController {
         // page 주인이 member 인지 확인
         if(!page.getMember().getId().equals(memberId)) {
             return "error/showError.html";
-        } 
+        }
+
         model.addAttribute("page", page);
         return "pages/pageView";
     }

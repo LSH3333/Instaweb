@@ -38,6 +38,7 @@
         <p th:text="${page.title}"></p>
         <div id="editor" th:utext="${page.content}"></div>
 
+
         <!-- 모델에 담겨있는 "img" 불러옴   -->
         <tr th:each="image : ${page.images}">
             <td>
@@ -58,6 +59,38 @@
     <!-- footer -->
     <footer th:replace="fragment/footer :: footer"></footer>
 
+
+
+    <script>
+        let pageId = "[[${page.id}]]";
+        let pageContent = "[[${page.content}]]"
+        let images = "[[${page.images}]]";
+
+        console.log('images = ' + images);
+        console.log('images.length = ' + images.length)
+        for(let i = 0; i < images.length; i++) {
+            let image = images[i];
+            console.log(image.generateBase64Image());
+        }
+
+
+        let decodedContent = new DOMParser().parseFromString(pageContent, 'text/html').documentElement.textContent;
+
+        // Create a temporary element to hold the decoded content
+        let tempElement = document.createElement('div');
+        tempElement.innerHTML = decodedContent;
+
+        // Access the <img> tag within the temporary element
+        let imgElements = tempElement.querySelectorAll('img');
+
+        imgElements.forEach((imgElement) => {
+            console.log('imgElement ' + imgElement);
+            console.log('class = ' + imgElement.classList[0]);
+
+            
+        });
+
+    </script>
 </body>
 
 </html>
