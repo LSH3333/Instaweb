@@ -281,7 +281,7 @@ public class PageController {
         return "pages/pageView";
     }
 
-    // view 의 내용과 이미지는 ajax 로 받아서 동적으로 디스플레이한다 
+    // view 의 내용과 이미지는 ajax 로 받아서 동적으로 디스플레이한다
     @ResponseBody
     @GetMapping("/view/ajaxReq")
     public Map<String,?> viewGetImages(@RequestParam long pageId) {
