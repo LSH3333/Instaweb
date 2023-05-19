@@ -73,16 +73,6 @@
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 
-    <script>
-
-        // JQuery sortable <ul id="imgContainer"> 내 의 리스트 드래그로 이동 가능하도록함 
-        $(function () {
-            $("#imgContainer").sortable({
-            });
-        });
-
-    </script>
-
 </head>
 
 <body>
@@ -126,7 +116,7 @@
             <!-- 실제 content 저장용 -->
             <textarea id="my-textarea" style="display:none;" th:field="*{content}"></textarea>
             <!-- 유저에게 보이는 div -->
-            <div id="editor" contenteditable="true" th:utext="*{content}"></div>
+            <div id="editor" contenteditable="true"></div>
 
             <input id="img-selector" type="file" accept="image/*" />
 
@@ -139,6 +129,48 @@
 
     <!-- footer -->
     <footer th:replace="fragment/footer :: footer"></footer>
+
+    <!-- 작성된 내용 ajax 로 불러옴  -->
+    <script type="text/javascript">
+        let pageId = "[[${form.id}]]";
+        let xhr = new XMLHttpRequest();
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == XMLHttpRequest.DONE) {
+                if (xhr.status == 200) {
+                    let data = JSON.parse(xhr.responseText);
+
+                    // console.log('content = ' + data.content);
+                    // console.log('images = ' + data.images.length);
+                    // console.log('imgIdxList = ' + data.imgIdxList.length);
+
+                    // 
+                    const tempDiv = document.createElement("div");
+                    tempDiv.innerHTML = data.content;
+                    // Get all <img> elements from the div
+                    const imgElements = tempDiv.querySelectorAll("img");
+
+                    for (let i = 0; i < imgElements.length; i++) {
+                        let imgElement = imgElements[i];
+                        imgElement.src = 'data:image/jpeg;charset=utf-8;base64,' + data.images[i];
+                    }
+
+                    let editor = document.getElementById('editor');
+                    editor.innerHTML = tempDiv.innerHTML;
+
+                } else {
+                    console.error("error");
+                }
+            }
+        }
+
+
+        window.onload = function () {
+            xhr.open('GET', '/view/ajaxReq?pageId=' + pageId.toString(), true);
+            xhr.send();
+        };
+
+    </script>
 
 
     <script>
@@ -197,11 +229,11 @@
 
 
 
-        btnImage.addEventListener('click', function () {            
+        btnImage.addEventListener('click', function () {
             imageSelector.click();
         });
 
-        imageSelector.addEventListener('change', function (e) {            
+        imageSelector.addEventListener('change', function (e) {
             const files = e.target.files;
             if (!!files) {
                 insertImg(files[0]);
@@ -311,12 +343,12 @@
             });
 
             // key:imgIdxList, <img class="imgIdx">
-            fileMap.forEach((value,key) => {
+            fileMap.forEach((value, key) => {
                 let imgIdx = imgIdxMap.get(key); // imgIdx:String 
                 formData.append('imgIdxList', imgIdx)
             });
 
-            
+
 
             const xhr = new XMLHttpRequest();
             xhr.open('POST', '/pages/uploadImages', true);
