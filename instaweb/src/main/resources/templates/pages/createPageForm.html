@@ -181,18 +181,13 @@
 
 
 
-        btnImage.addEventListener('click', function () {
-            console.log('img btn click');
+        btnImage.addEventListener('click', function () {            
             imageSelector.click();
         });
 
-        imageSelector.addEventListener('change', function (e) {
-            console.log('imageSelector')
+        imageSelector.addEventListener('change', function (e) {            
             const files = e.target.files;
-            console.log('files = ' + files);
-            console.log('files[0] = ' + files[0]);
             if (!!files) {
-                console.log('insertImageDate files[0] = ' + files[0])
                 insertImg(files[0]);
             }
             // 비워주지 않으면 같은 이미지 연속 선택시 imageSelector 'change' triggered 되지 않을 가능성 있음 

@@ -58,12 +58,16 @@
                         // content
                         let aInnerDiv = document.createElement('div');
                         aInnerDiv.innerHTML = data.pages[i].content;
-                        // pageBlock 에서 이미지는 디스플레이 하지 않도록 지운다 
+                        // // pageBlock 에서 이미지는 디스플레이 하지 않도록 지운다 
                         let imgElements = aInnerDiv.querySelectorAll("img");
                         imgElements.forEach((imgElement) => {
-                            imgElement.remove();
+                            imgElement.onerror = () => {
+                                imgElement.remove();
+                            };
+                            imgElement.src = "";
                         });
                         contentAele.appendChild(aInnerDiv);
+
 
                         // content footer 
                         let contentFooter = document.createElement('div');
@@ -103,18 +107,18 @@
         }
 
         // infinite scroll
-        // window.addEventListener('scroll', function () {
-        //     if (window.innerHeight + window.scrollY + 5 >= document.body.offsetHeight) {
-        //         // 이전 request 에 대한 게시글들 로딩 완료된 이후에만 또 다른 request 보냄
-        //         if (xhr.readyState == XMLHttpRequest.DONE) {
-        //             if (xhr.status == 200) {
-        //                 xhr.open('GET', '/pages/ajaxReq?beginIdx=' + beginIdx.toString() + '&cnt=' + cnt.toString(), true);
-        //                 beginIdx += cnt;
-        //                 xhr.send();
-        //             }
-        //         }
-        //     }
-        // })
+        window.addEventListener('scroll', function () {
+            if (window.innerHeight + window.scrollY + 5 >= document.body.offsetHeight) {
+                // 이전 request 에 대한 게시글들 로딩 완료된 이후에만 또 다른 request 보냄
+                if (xhr.readyState == XMLHttpRequest.DONE) {
+                    if (xhr.status == 200) {
+                        xhr.open('GET', '/pages/ajaxReq?beginIdx=' + beginIdx.toString() + '&cnt=' + cnt.toString(), true);
+                        beginIdx += cnt;
+                        xhr.send();
+                    }
+                }
+            }
+        })
 
         // 최초 페이지 로드 완료시 페이지 idx=0 부터 cnt=10 개 로드
         window.onload = function () {
