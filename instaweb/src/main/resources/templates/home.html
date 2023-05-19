@@ -57,8 +57,17 @@
                         let contentAele = document.createElement('a');
                         contentAele.classList.add('content');
                         contentAele.href = '/' + data.pages[i].memberId + '/pages/' + data.pages[i].id;
-                        let aInnerDiv = document.createElement('div');                        
+                        // content
+                        let aInnerDiv = document.createElement('div');
                         aInnerDiv.innerHTML = data.pages[i].content;
+                        // // pageBlock 에서 이미지는 디스플레이 하지 않도록 지운다 
+                        let imgElements = aInnerDiv.querySelectorAll("img");
+                        imgElements.forEach((imgElement) => {
+                            imgElement.onerror = () => {
+                                imgElement.remove();
+                            };
+                            imgElement.src = "";
+                        });
                         contentAele.appendChild(aInnerDiv);
 
                         // content footer 

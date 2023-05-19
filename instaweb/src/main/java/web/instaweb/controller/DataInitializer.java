@@ -54,13 +54,13 @@ public class DataInitializer implements ApplicationRunner {
      */
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        getNoImgFile();
-        Member member = memberService.registerNewMember("testLoginId", "1234", "testName");
-
-        int dataCnt = 20;
-        for(int i = 0; i < dataCnt; i++) {
-            MakePage(Integer.toString(i), imgFile, member);
-        }
+//        getNoImgFile();
+//        Member member = memberService.registerNewMember("testLoginId", "1234", "testName");
+//
+//        int dataCnt = 20;
+//        for(int i = 0; i < dataCnt; i++) {
+//            MakePage(Integer.toString(i), imgFile, member);
+//        }
 
     }
 
