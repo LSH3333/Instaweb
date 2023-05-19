@@ -181,11 +181,11 @@
 
 
 
-        btnImage.addEventListener('click', function () {            
+        btnImage.addEventListener('click', function () {
             imageSelector.click();
         });
 
-        imageSelector.addEventListener('change', function (e) {            
+        imageSelector.addEventListener('change', function (e) {
             const files = e.target.files;
             if (!!files) {
                 insertImg(files[0]);
@@ -210,13 +210,18 @@
             // console.log('selection.anchorOffset = ' + selection.anchorOffset);
             // console.log('selection.anchorNode = ' + selection.anchorNode);
             // console.log('selection.anchorNode.parentNode = ' + selection.anchorNode.parentNode);
-            // 글 작성하는 editor 영역에 커서 위치할경우 
-            if (selection.anchorNode.parentNode.id === 'editor') {
+
+            if (selection.anchorNode == null) {
+                let targetElement = document.getElementById('editor');
+                targetElement.appendChild(imgEle);
+            }
+            // 글 작성하는 editor 영역에 커서 위치할경우
+            else if (selection.anchorNode.parentNode.id === 'editor') {
                 let range = selection.getRangeAt(0);
                 range.insertNode(imgEle);
             }
             else { // 아닌 경우에는 editor 영역에 img 삽입                 
-                let targetElement = document.getElementById('editor'); // Replace 'target' with the ID or selector of the element where you want to insert the image
+                let targetElement = document.getElementById('editor');
                 targetElement.appendChild(imgEle);
             }
         }
@@ -290,12 +295,12 @@
             });
 
             // key:imgIdxList, <img class="imgIdx">
-            fileMap.forEach((value,key) => {
+            fileMap.forEach((value, key) => {
                 let imgIdx = imgIdxMap.get(key); // imgIdx:String 
                 formData.append('imgIdxList', imgIdx)
             });
 
-            
+
 
             const xhr = new XMLHttpRequest();
             xhr.open('POST', '/pages/uploadImages', true);

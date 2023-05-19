@@ -142,8 +142,13 @@
 
 
     <script>
-        let pageID = "[[${form.id}]]";
-        let fileList = []; // 유저가 선택한 file 이 담김 
+        // key = Image 의 url, value = Image File 
+        // let fileList = []; // 유저가 선택한 file 이 담김 
+        const fileMap = new Map();
+        // [key,value] = [url, imgIdx]
+        // imgIdx 는 각 img 에 부여된 고유 번호         
+        const imgIdxMap = new Map();
+
         const form = document.querySelector('form');
         const editor = document.getElementById('editor');
         const btnBold = document.getElementById('btn-bold');
@@ -192,23 +197,49 @@
 
 
 
-        btnImage.addEventListener('click', function () {
+        btnImage.addEventListener('click', function () {            
             imageSelector.click();
         });
 
-        imageSelector.addEventListener('change', function (e) {
+        imageSelector.addEventListener('change', function (e) {            
             const files = e.target.files;
             if (!!files) {
-                insertImageDate(files[0]);
+                insertImg(files[0]);
             }
+            // 비워주지 않으면 같은 이미지 연속 선택시 imageSelector 'change' triggered 되지 않을 가능성 있음 
+            this.value = null;
         });
 
 
-        function insertImageDate(file) {
-            fileList.push(file);
+        // 선택한 이미지 editor 에 삽입 
+        let imgEleCnt = 0;
+        function insertImg(file) {
             const reader = new FileReader();
             let url = URL.createObjectURL(file);
-            document.execCommand('insertImage', false, url);
+            fileMap.set(url, file);
+
+            let imgEle = document.createElement('img');
+            imgEle.src = url;
+            imgEle.classList.add(imgEleCnt++);
+
+            let selection = window.getSelection();
+            // console.log('selection.anchorOffset = ' + selection.anchorOffset);
+            // console.log('selection.anchorNode = ' + selection.anchorNode);
+            // console.log('selection.anchorNode.parentNode = ' + selection.anchorNode.parentNode);
+            // 글 작성하는 editor 영역에 커서 위치할경우 
+            if (selection.anchorNode == null) {
+                let targetElement = document.getElementById('editor');
+                targetElement.appendChild(imgEle);
+            }
+            // 글 작성하는 editor 영역에 커서 위치할경우
+            else if (selection.anchorNode.parentNode.id === 'editor') {
+                let range = selection.getRangeAt(0);
+                range.insertNode(imgEle);
+            }
+            else { // 아닌 경우에는 editor 영역에 img 삽입                 
+                let targetElement = document.getElementById('editor');
+                targetElement.appendChild(imgEle);
+            }
         }
 
         textDecoration();
@@ -254,22 +285,17 @@
             // <div contenteditable=true> 에 있는 내용 <textarea> 에 복사
             getContent();
             // 이미지 정보 먼저 ajax로 보내고 폼 데이터 이후 보냄 
-            console.log('button eventlistener')
-            uploadImgs(fileList);
+            uploadImgs();
             form.submit();
         });
 
-        // <div contenteditable=true> 에 있는 내용 <textarea> 에 복사
-        function getContent() {
-            document.getElementById("my-textarea").value = editor.innerHTML;
-        }
 
-
-        function uploadImgs(files) {
-            console.log('uploadImgs = ' + files);
+        // files 에 담긴 파일들 formData 에 담아 서버에 ajax request 보냄 
+        // 페이지 id 도 같이 보냄 
+        function uploadImgs() {
             const form = document.querySelector('form');
-            // 선택된 이미지 파일 0개 라면 폼 서버에 보내고 리턴 
-            if (files.length == 0) {
+            // 선택된 이미지 파일 0개 라면 폼 서버에 보내고 리턴             
+            if (fileMap.size === 0) {
                 form.submit();
                 return;
             }
@@ -280,12 +306,20 @@
             formData.append('pageId', pageId);
 
             // key:files, files formData 에 추가 
-            for (let i = 0; i < files.length; i++) {
-                formData.append('files', files[i]);
-            }
+            fileMap.forEach((value, key) => { // value 는 file 
+                formData.append('files', value);
+            });
+
+            // key:imgIdxList, <img class="imgIdx">
+            fileMap.forEach((value,key) => {
+                let imgIdx = imgIdxMap.get(key); // imgIdx:String 
+                formData.append('imgIdxList', imgIdx)
+            });
+
+            
 
             const xhr = new XMLHttpRequest();
-            xhr.open('POST', '/pages/uploadImages', true);        
+            xhr.open('POST', '/pages/uploadImages', true);
             xhr.onload = function () {
                 if (xhr.status === 200) {
                     console.log('Files uploaded successfully');
@@ -296,6 +330,51 @@
             };
             xhr.send(formData);
         }
+
+        // <div contenteditable=true> 에 있는 내용 <textarea> 에 복사
+        function getContent() {
+            document.getElementById("my-textarea").value = editor.innerHTML;
+            getImgEleFromTextArea();
+        }
+
+        // editor 에 작성된 글에서 <img> 추출 
+        function getImgEleFromTextArea() {
+            const textareaValue = document.getElementById("my-textarea").value;
+            const tempDiv = document.createElement("div");
+            tempDiv.innerHTML = textareaValue;
+
+            // Get all <img> elements from the div
+            const imgElements = tempDiv.querySelectorAll("img");
+
+            // key,value = [url, file]
+            const imgExistence = new Map();
+            // 유저가 한 번 삽입했다가 지운 이미지는 Map 에서 삭제되어야함 
+            const keysToDelete = [];
+
+            imgElements.forEach((imgElement) => {
+                const key = imgElement.src;
+                imgExistence.set(key, true);
+            });
+
+            fileMap.forEach((value, key) => {
+                if (!imgExistence.has(key)) {
+                    keysToDelete.push(key);
+                }
+            });
+
+            keysToDelete.forEach((key) => {
+                fileMap.delete(key);
+            });
+
+
+            // imgIdxMap [key,value] = [url, imgIdx]            
+            imgElements.forEach((imgElement) => {
+                const url = imgElement.src;
+                const imgIdx = imgElement.classList[0];
+                imgIdxMap.set(url, imgIdx);
+            });
+        }
+
     </script>
 
     <!-- <script type="text/javascript">

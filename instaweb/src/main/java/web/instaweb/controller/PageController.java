@@ -238,6 +238,7 @@ public class PageController {
         // page
         List<Object> pageListForms = new ArrayList<>();
         for (Page page : pages) {
+            if(!page.getWritingDone()) continue; // 작성중인 Page 제외
             PageListForm pageListForm = new PageListForm(page.getId(), page.getTitle(), page.getContent(), page.getMember().getId(), page.getMember().getName(), page.getCreatedTime());
             pageListForms.add(pageListForm);
         }
@@ -285,7 +286,6 @@ public class PageController {
     @ResponseBody
     @GetMapping("/view/ajaxReq")
     public Map<String,?> viewGetImages(@RequestParam long pageId) {
-        System.out.println("viewGetImages " + pageId);
         Map<String, List<?>> ret = new HashMap<>();
 
         Page page = pageService.findOne(pageId);
