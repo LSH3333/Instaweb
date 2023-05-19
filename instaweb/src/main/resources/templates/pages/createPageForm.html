@@ -7,24 +7,7 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/css/universal.css" th:href="@{/css/universal.css}">
-    <style>
-
-        input[type="file"] {
-            display: none;
-        }
-
-        /* content editor */
-        div#editor {
-            border: 1px solid #D6D6D6;
-            border-radius: 4px;
-            width: 100%;
-            height: 1000px;
-        }
-
-        #editor img {
-            max-width: 100%;
-        }
-    </style>
+    <link rel="stylesheet" href="/css/createPageForm.css" th:href="@{/css/createPageForm.css}">
     <!-- page block style -->
     <link rel="stylesheet" type="text/css" href="/css/pageBlock.css" th:href="@{/css/pageBlock.css}">
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
@@ -36,39 +19,41 @@
     <!-- side tab fragment -->
     <div th:replace="fragment/side-tab :: side-tab"></div>
 
+    <div id="header">
+        <div class="editor-menu">
+            <button id="btn-bold" type="button">
+                <b>B</b>
+            </button>
+            <button id="btn-italic" type="button">
+                <i>I</i>
+            </button>
+            <button id="btn-underline" type="button">
+                <u>U</u>
+            </button>
+            <button id="btn-strike" type="button">
+                <s>S</s>
+            </button>
+            <button id="btn-ordered-list" type="button">
+                OL
+            </button>
+            <button id="btn-unordered-list" type="button">
+                UL
+            </button>
+            <button id="btn-image" type="button">
+                IMG
+            </button>
+        </div>
+    </div>
+    
     <!-- Page 들 ajax 에 의해 로드됨 -->
     <div class="contents">
         <form th:action="@{/pages/new}" th:object="${form}" method="post" enctype="multipart/form-data">
-            <!-- title -->
-            <div>
-                <label th:for="title">제목</label>
+            <div class="title">
+                <!-- <label th:for="title">제목</label> -->
                 <input type="text" th:field="*{title}" placeholder="제목을 입력하세요">
-                <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}">에러</p>
+                <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></p>
             </div>
 
-            <div class="editor-menu">
-                <button id="btn-bold" type="button">
-                    <b>B</b>
-                </button>
-                <button id="btn-italic" type="button">
-                    <i>I</i>
-                </button>
-                <button id="btn-underline" type="button">
-                    <u>U</u>
-                </button>
-                <button id="btn-strike" type="button">
-                    <s>S</s>
-                </button>
-                <button id="btn-ordered-list" type="button">
-                    OL
-                </button>
-                <button id="btn-unordered-list" type="button">
-                    UL
-                </button>
-                <button id="btn-image" type="button">
-                    IMG
-                </button>
-            </div>
             <!-- 실제 content 저장용 -->
             <textarea id="my-textarea" style="display:none;" th:field="*{content}"></textarea>
             <!-- 유저에게 보이는 div -->

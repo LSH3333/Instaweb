@@ -1,161 +1,153 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-  <!-- side tab fragment -->
-  <div th:fragment="side-tab">
-    <!-- google font (logo) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Cedarville+Cursive&display=swap"
-      rel="stylesheet"
-    />
-    <script
-      src="https://kit.fontawesome.com/c39d59a5ec.js"
-      crossorigin="anonymous"
-    ></script>
+<!-- side tab fragment -->
+<div th:fragment="side-tab">
+  <!-- google font (logo) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cedarville+Cursive&display=swap" rel="stylesheet" />
+  <script src="https://kit.fontawesome.com/c39d59a5ec.js" crossorigin="anonymous"></script>
 
-    <style>
-       * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "verdana";
-            font-size: 20px;
-        }
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "verdana";
+      font-size: 20px;
+    }
 
-        ul {
-            list-style-type: none;
-        }
+    ul {
+      list-style-type: none;
+    }
 
-        a {
-            text-decoration: none;
-            color: black;
-        }
+    a {
+      text-decoration: none;
+      color: black;
+    }
 
-        .side-tab {
-            /* background-color: beige; */
-            position: fixed;
-            height: 100%;
-            width: 245px;
-            padding-inline: 12.5px;
-            border-right: 1px solid darkgray;
-        }
+    .side-tab {
+      /* background-color: beige; */
+      position: fixed;
+      height: 100%;
+      width: 245px;
+      padding-inline: 12.5px;
+      border-right: 1px solid darkgray;
+    }
 
 
 
-        .side-tab .logo {
-            width: 100%;
-            position: relative;
-            display: flex;
-            align-items: center;
-            height: 92px;
-        }
+    .side-tab .logo {
+      width: 100%;
+      position: relative;
+      display: flex;
+      align-items: center;
+      height: 92px;
+    }
 
-        .side-tab .logo a:nth-child(2) {
-            display: none;
-            /* display: block; */
-        }
+    .side-tab .logo a:nth-child(2) {
+      display: none;
+      /* display: block; */
+    }
 
-        .side-tab .logo a {
-            font-family: "Cedarville Cursive", cursive;
-            font-size: 35px;
-        }
+    .side-tab .logo a {
+      font-family: "Cedarville Cursive", cursive;
+      font-size: 35px;
+    }
 
-        .side-tab .logo p {
-            font-size: large;
-        }
+    .side-tab .logo p {
+      font-size: large;
+    }
 
-        .side-tab .menus {
-            /* background-color: aqua; */
-            width: 100%;
-            height: 782px;
-        }
+    .side-tab .menus {
+      /* background-color: aqua; */
+      width: 100%;
+      height: 782px;
+    }
 
-        .side-tab .menus div {
-            /* background-color: aquamarine; */
-            width: 100%;
-            height: 56px;
-            display: flex;
-            justify-content: left;
-            align-items: center;
-        }
+    .side-tab .menus div {
+      /* background-color: aquamarine; */
+      width: 100%;
+      height: 56px;
+      display: flex;
+      justify-content: left;
+      align-items: center;
+    }
 
-        .side-tab .menus div i {
-            margin: 0 5px;
-        }
+    .side-tab .menus div i {
+      margin: 0 5px;
+    }
 
-        .side-tab .menus div a:nth-child(2) {
-            margin: 0 5px;
-            font-size: 18px;
-            padding-left: 5px;
-        }
+    .side-tab .menus div a:nth-child(2) {
+      margin: 0 5px;
+      font-size: 18px;
+      padding-left: 5px;
+    }
 
-        /* icon */
-        .side-tab .menus div a i {
-            width: 23px;
-        }
+    /* icon */
+    .side-tab .menus div a i {
+      width: 23px;
+    }
 
-        /* 창 가로 크기 줄였을때 ui 변경 */
-        @media (max-width: 1200px) {
-            .side-tab {
-                width: 55px;
-            }
+    /* 창 가로 크기 줄였을때 ui 변경 */
+    @media (max-width: 1200px) {
+      .side-tab {
+        width: 55px;
+      }
 
-            .side-tab .logo {
-                margin: 0 auto;
-                width: 100%;
-            }
+      .side-tab .logo {
+        margin: 0 auto;
+        width: 100%;
+      }
 
-            .side-tab .logo:hover a:nth-child(2) {
-                transition: all 0.5s;
-            }
+      .side-tab .logo:hover a:nth-child(2) {
+        transition: all 0.5s;
+      }
 
-            /* 큰 창에서 로고 */
-            .side-tab .logo a:nth-child(1) {
-                display: none;
-            }
+      /* 큰 창에서 로고 */
+      .side-tab .logo a:nth-child(1) {
+        display: none;
+      }
 
-            /* 작은 창에서 로고 */
-            .side-tab .logo a:nth-child(2) {
-                display: flex;
-                width: 29px;
-                justify-content: center;
-            }
+      /* 작은 창에서 로고 */
+      .side-tab .logo a:nth-child(2) {
+        display: flex;
+        width: 29px;
+        justify-content: center;
+      }
 
-            .side-tab .logo a:nth-child(2) i {
-                font-size: 30px;
-            }
+      .side-tab .logo a:nth-child(2) i {
+        font-size: 30px;
+      }
 
-            .side-tab .menus div a:nth-child(2) {
-                display: none;
-            }
-        }
-    </style>
+      .side-tab .menus div a:nth-child(2) {
+        display: none;
+      }
+    }
+  </style>
 
-    <div class="side-tab">
-      <div class="logo">
-        <a href="/">InstaWeb</a>
-        <a href="/"><i class="fa-brands fa-instagram"></i></a>
+  <div class="side-tab">
+    <div class="logo">
+      <a href="/">InstaWeb</a>
+      <a href="/"><i class="fa-brands fa-instagram"></i></a>
+    </div>
+    <div class="menus">
+      <div>
+        <a href="/"><i class="fa-solid fa-house"></i></a><a href="/">홈</a>
       </div>
-      <div class="menus">
-        <div>
-          <a href="/"><i class="fa-solid fa-house"></i></a><a href="/">홈</a>
-        </div>
-        <div>
-          <a th:href="@{|/${loginMemberId}/pages|}"
-            ><i class="fa-solid fa-user"></i></a
-          ><a href="/pages" th:href="@{|/${loginMemberId}/pages|}">작성 목록</a>
-        </div>
-        <div>
-          <a th:href="@{|/${loginMemberId}/pages/new|}"
-            ><i class="fa-solid fa-pen"></i></a
-          ><a th:href="@{|/${loginMemberId}/pages/new|}">작성</a>
-        </div>
-        <div>
-          <a href="/logout"
-            ><i class="fa-solid fa-arrow-right-from-bracket"></i></a
-          ><a href="/logout">로그아웃</a>
-        </div>
+      <div>
+        <a th:href="@{|/${loginMemberId}/pages|}"><i class="fa-solid fa-user"></i></a><a href="/pages"
+          th:href="@{|/${loginMemberId}/pages|}">작성 목록</a>
+      </div>
+      <div>
+        <a th:href="@{|/${loginMemberId}/pages/new|}"><i class="fa-solid fa-pen"></i></a><a
+          th:href="@{|/${loginMemberId}/pages/new|}">작성</a>
+      </div>
+      <div>
+        <a href="/logout"><i class="fa-solid fa-arrow-right-from-bracket"></i></a><a href="/logout">로그아웃</a>
       </div>
     </div>
+  </div>
+</div>
+
 </html>
