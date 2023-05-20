@@ -175,24 +175,27 @@
             let imgEle = document.createElement('img');
             imgEle.src = url;
             imgEle.classList.add(imgEleCnt++);
+            let divImgEle = document.createElement('div');
+            divImgEle.appendChild(imgEle);
 
             let selection = window.getSelection();
             // console.log('selection.anchorOffset = ' + selection.anchorOffset);
             // console.log('selection.anchorNode = ' + selection.anchorNode);
             // console.log('selection.anchorNode.parentNode = ' + selection.anchorNode.parentNode);
-            // 글 작성하는 editor 영역에 커서 위치할경우 
+
+            // 지정하지 않은 경우 editor 영역에 img 삽입 
             if (selection.anchorNode == null) {
                 let targetElement = document.getElementById('editor');
-                targetElement.appendChild(imgEle);
+                targetElement.appendChild(divImgEle);
             }
             // 글 작성하는 editor 영역에 커서 위치할경우
             else if (selection.anchorNode.parentNode.id === 'editor') {
                 let range = selection.getRangeAt(0);
-                range.insertNode(imgEle);
+                range.insertNode(divImgEle);
             }
             else { // 아닌 경우에는 editor 영역에 img 삽입                 
                 let targetElement = document.getElementById('editor');
-                targetElement.appendChild(imgEle);
+                targetElement.appendChild(divImgEle);
             }
         }
 
