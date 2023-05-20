@@ -34,7 +34,16 @@ input[type="file"] {
 }
 
 #header .editor-menu button {
+    width: 25px;
+    height: 25px;
+    border: none;
+    background-color: white;
+    /* background-color: blue; */
     margin: 0 5px;
+}
+#header .editor-menu button:hover {
+    cursor: pointer;
+    background-color: #ccc;
 }
 
 /* title */
@@ -104,4 +113,5 @@ form {
 
 #submitBtn:hover {
     cursor:pointer;
+    background-color: rgba(255, 72, 0, 0.908);
 }
