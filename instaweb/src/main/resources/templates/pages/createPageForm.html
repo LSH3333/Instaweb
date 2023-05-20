@@ -31,12 +31,6 @@
             <button id="btn-strike" type="button">
                 <s>S</s>
             </button>
-            <button id="btn-ordered-list" type="button">
-                OL
-            </button>
-            <button id="btn-unordered-list" type="button">
-                UL
-            </button>
             <button id="btn-image" type="button">
                 IMG
             </button>
@@ -60,7 +54,7 @@
 
             <input type="hidden" th:field="*{id}" />
             <input type="hidden" name="imageOrder" id="imageOrder" value="">
-            <button id="submitBtn" type="submit">Submit</button>
+            <button id="submitBtn" type="submit">완료</button>
         </form>
     </div>
 
@@ -82,8 +76,6 @@
         const btnItalic = document.getElementById('btn-italic');
         const btnUnderline = document.getElementById('btn-underline');
         const btnStrike = document.getElementById('btn-strike');
-        const btnOrderedList = document.getElementById('btn-ordered-list');
-        const btnUnorderedList = document.getElementById('btn-unordered-list');
 
         const btnImage = document.getElementById('btn-image');
         const imageSelector = document.getElementById('img-selector');
@@ -104,14 +96,6 @@
             setStyle('strikeThrough')
         });
 
-        btnOrderedList.addEventListener('click', function () {
-            setStyle('insertOrderedList');
-        });
-
-        btnUnorderedList.addEventListener('click', function () {
-            setStyle('insertUnorderedList');
-        });
-
         function setStyle(style) {
             document.execCommand(style);
             focusEditor();
@@ -122,7 +106,7 @@
             editor.focus({ preventScroll: true });
         }
 
-
+       
 
         btnImage.addEventListener('click', function () {
             imageSelector.click();
@@ -169,39 +153,7 @@
             }
         }
 
-        textDecoration();
-
-        function textDecoration() {
-
-            btnBold.addEventListener('click', function () {
-                setStyle('bold');
-            });
-
-            btnItalic.addEventListener('click', function () {
-                setStyle('italic');
-            });
-
-            btnUnderline.addEventListener('click', function () {
-                setStyle('underline');
-            });
-
-            btnStrike.addEventListener('click', function () {
-                setStyle('strikeThrough')
-            });
-
-            btnOrderedList.addEventListener('click', function () {
-                setStyle('insertOrderedList');
-            });
-
-            btnUnorderedList.addEventListener('click', function () {
-                setStyle('insertUnorderedList');
-            });
-
-            function setStyle(style) {
-                document.execCommand(style);
-                focusEditor();
-            }
-        }
+        
 
         // submit button event listener 
         let button = document.getElementById('submitBtn');
