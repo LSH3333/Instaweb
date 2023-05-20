@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="/css/createPageForm.css" th:href="@{/css/createPageForm.css}">
     <!-- page block style -->
     <link rel="stylesheet" type="text/css" href="/css/pageBlock.css" th:href="@{/css/pageBlock.css}">
-    
+
 </head>
 
 <body>
@@ -106,7 +106,7 @@
             editor.focus({ preventScroll: true });
         }
 
-       
+
 
         // 이미지 선택 삽입 
         btnImage.addEventListener('click', function () {
@@ -126,7 +126,6 @@
         // 선택한 이미지 editor 에 삽입 
         let imgEleCnt = 0;
         function insertImg(file) {
-            const reader = new FileReader();
             let url = URL.createObjectURL(file);
             fileMap.set(url, file);
 
@@ -155,9 +154,12 @@
                 let targetElement = document.getElementById('editor');
                 targetElement.appendChild(divImgEle);
             }
+
+            // 이미지 삽입함에 따라 그만큼 editor 의 높이 늘림 
+            resizeEditorAfterImgInserted(divImgEle, file);
         }
 
-        
+
 
         // submit button event listener 
         let button = document.getElementById('submitBtn');
@@ -198,8 +200,6 @@
                 let imgIdx = imgIdxMap.get(key); // imgIdx:String 
                 formData.append('imgIdxList', imgIdx)
             });
-
-
 
             const xhr = new XMLHttpRequest();
             xhr.open('POST', '/pages/uploadImages', true);
@@ -264,9 +264,27 @@
             const minHeight = 500; // Set the desired minimum height
             editor.style.height = 'auto'; // Reset the height to auto to recalculate the height based on content
             editor.style.height = Math.max(minHeight, editor.scrollHeight) + 'px'; // Set the height to the maximum of minHeight and scroll height
+        }
 
-            // Scroll to the bottom of the content if needed
-            // editor.scrollTop = editor.scrollHeight;
+         // 이미지 editor 에 삽입 하고, 그 높이 만큼 editor 의 높이 조절함
+         function resizeEditorAfterImgInserted(divImgEle, file) {
+            let divHeight = 0;
+            let editor = document.getElementById('editor');
+            let minHeight = 500;
+
+            const reader = new FileReader();
+            const imgEle = document.createElement('img');
+            reader.onload = function (event) {
+                imgEle.onload = function () {
+                    const imageHeight = imgEle.height;
+                    divHeight += imageHeight + 4;
+                    editor.style.height = 'auto';
+                    editor.style.height = Math.max(minHeight, editor.scrollHeight + divHeight) + 'px';
+                };
+
+                imgEle.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
         }
     </script>
 
