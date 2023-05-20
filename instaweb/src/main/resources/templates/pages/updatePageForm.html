@@ -40,10 +40,9 @@
         <form th:object="${form}" method="post" enctype="multipart/form-data">
             <!-- title -->
             <div class="title">
-                <input type="text" th:field="*{title}" placeholder="제목을 입력하세요">
-                <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></p>
+                <input class="hasErrors" th:if="${#fields.hasErrors('title')}" type="text" th:field="*{title}" placeholder="제목을 입력하세요">
+                <input class="noErrors" th:unless="${#fields.hasErrors('title')}" type="text" th:field="*{title}" placeholder="제목을 입력하세요">
             </div>
-
             <!-- 실제 content 저장용 -->
             <textarea id="my-textarea" style="display:none;" th:field="*{content}"></textarea>
             <!-- 유저에게 보이는 div -->

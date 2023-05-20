@@ -41,8 +41,8 @@
     <div class="contents">
         <form th:action="@{/pages/new}" th:object="${form}" method="post" enctype="multipart/form-data">
             <div class="title">
-                <input type="text" th:field="*{title}" placeholder="제목을 입력하세요">
-                <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></p>
+                <input class="hasErrors" th:if="${#fields.hasErrors('title')}" type="text" th:field="*{title}" placeholder="제목을 입력하세요">
+                <input class="noErrors" th:unless="${#fields.hasErrors('title')}" type="text" th:field="*{title}" placeholder="제목을 입력하세요">
             </div>
 
             <!-- 실제 content 저장용 -->
@@ -63,6 +63,7 @@
 
 
     <script>
+
         // key = Image 의 url, value = Image File 
         // let fileList = []; // 유저가 선택한 file 이 담김 
         const fileMap = new Map();
@@ -266,8 +267,8 @@
             editor.style.height = Math.max(minHeight, editor.scrollHeight) + 'px'; // Set the height to the maximum of minHeight and scroll height
         }
 
-         // 이미지 editor 에 삽입 하고, 그 높이 만큼 editor 의 높이 조절함
-         function resizeEditorAfterImgInserted(divImgEle, file) {
+        // 이미지 editor 에 삽입 하고, 그 높이 만큼 editor 의 높이 조절함
+        function resizeEditorAfterImgInserted(divImgEle, file) {
             let divHeight = 0;
             let editor = document.getElementById('editor');
             let minHeight = 500;
