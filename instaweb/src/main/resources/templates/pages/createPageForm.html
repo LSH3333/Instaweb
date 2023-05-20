@@ -46,12 +46,11 @@
                 <input th:unless="${#fields.hasErrors('title')}" type="text" th:field="*{title}"
                     placeholder="제목을 입력하세요">
             </div>
-
-            <!-- 실제 content 저장용 -->
-            <textarea id="my-textarea" style="display:none;" th:field="*{content}"></textarea>
+            
             <!-- 유저에게 보이는 div -->
             <div id="editor" contenteditable="true" th:field="*{content}" oninput="resizeEditor()"></div>
-            <!-- <textarea cols="50" rows="10" th:field="*{content}" placeholder="내용을 입력하세요"></textarea> -->
+            <!-- 실제 content 저장용 -->
+            <textarea id="my-textarea" style="display:none;" th:field="*{content}"></textarea>        
 
             <input id="img-selector" type="file" accept="image/*" />
 
@@ -225,7 +224,7 @@
             textAreaToEditor();
         };
 
-        // <div contenteditable=true> 에 있는 내용 <textarea> 에 복사
+        // 폼 전송 전에 <div contenteditable=true> 에 있는 내용 <textarea> 에 복사해서 textarea 내용 서버로 보냄 
         function getContent() {
             document.getElementById("my-textarea").value = editor.innerHTML;
             getImgEleFromTextArea();
