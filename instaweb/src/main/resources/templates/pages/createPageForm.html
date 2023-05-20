@@ -42,7 +42,7 @@
         <form th:action="@{/pages/new}" th:object="${form}" method="post" enctype="multipart/form-data">
             <div class="title">
                 <input class="hasErrors" th:if="${#fields.hasErrors('title')}" type="text" th:field="*{title}" placeholder="제목을 입력하세요">
-                <input class="noErrors" th:unless="${#fields.hasErrors('title')}" type="text" th:field="*{title}" placeholder="제목을 입력하세요">
+                <input th:unless="${#fields.hasErrors('title')}" type="text" th:field="*{title}" placeholder="제목을 입력하세요">
             </div>
 
             <!-- 실제 content 저장용 -->
