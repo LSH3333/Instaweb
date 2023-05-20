@@ -46,11 +46,11 @@
                 <input th:unless="${#fields.hasErrors('title')}" type="text" th:field="*{title}"
                     placeholder="제목을 입력하세요">
             </div>
-            
+
             <!-- 유저에게 보이는 div -->
-            <div id="editor" contenteditable="true" th:field="*{content}" oninput="resizeEditor()"></div>
+            <div id="editor" contenteditable="true" oninput="resizeEditor()"></div>
             <!-- 실제 content 저장용 -->
-            <textarea id="my-textarea" style="display:none;" th:field="*{content}"></textarea>        
+            <textarea id="my-textarea" style="display:none;" th:field="*{content}"></textarea>
 
             <input id="img-selector" type="file" accept="image/*" />
 
@@ -226,15 +226,52 @@
 
         // 폼 전송 전에 <div contenteditable=true> 에 있는 내용 <textarea> 에 복사해서 textarea 내용 서버로 보냄 
         function getContent() {
+            insertFisrtLineDiv();
             document.getElementById("my-textarea").value = editor.innerHTML;
             getImgEleFromTextArea();
         }
-        
-        function textAreaToEditor() {
-            editor.innerHTML = document.getElementById("my-textarea").value;
+
+        // editor 의 첫줄은 <div> 속에 포함안되고 그냥 text object 이 되버림. 
+        // 일관성과 폼 입력 후 오류 발생해서 다시 되돌아왔을때 editor 높이 크기 계산 위해 
+        function insertFisrtLineDiv() {
+            let string = '';
+            let i = 0;
+            for (; i < editor.innerHTML.length; i++) {
+                if (editor.innerHTML[i] == '<') {
+                    break;
+                }
+                string += editor.innerHTML[i];
+            }
+
+            editor.innerHTML = editor.innerHTML.substring(i);
+
+            let div = document.createElement('div');
+            div.innerHTML = string;
+            editor.insertBefore(div, editor.firstChild);
         }
 
-        
+        // textarea 내용을 editor 로 불러옴 
+        // 이 과정에서 editor 의 높이도 조절함
+        function textAreaToEditor() {
+            editor.innerHTML = document.getElementById("my-textarea").value;
+
+            // Perform additional actions after the element is displayed
+            window.requestAnimationFrame(function () {
+                // Your additional actions here
+                // This code will run after the element is rendered
+                let height = 62; // editor 기본 padding, border 포함
+                for (let i = 0; i < editor.childNodes.length; i++) {
+                    let childNode = editor.childNodes[i];
+                    height += childNode.offsetHeight;
+                }
+                console.log('height = ' + height);
+
+                editor.style.height = 'auto';
+                editor.style.height = Math.max(500, height) + 'px';
+            });
+        }
+
+
 
 
         // editor 에 작성된 글에서 <img> 추출 
@@ -277,7 +314,6 @@
 
         // 유저가 글 쓰는 editor 의 높이를 유저가 글 씀에 따라 같이 증가시킴
         function resizeEditor() {
-            const editor = document.getElementById('editor');
             const minHeight = 500; // Set the desired minimum height
             editor.style.height = 'auto'; // Reset the height to auto to recalculate the height based on content
             editor.style.height = Math.max(minHeight, editor.scrollHeight) + 'px'; // Set the height to the maximum of minHeight and scroll height

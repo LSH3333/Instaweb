@@ -213,8 +213,7 @@
             // <div contenteditable=true> 에 있는 내용 <textarea> 에 복사
             getContent();
             // 이미지 정보 먼저 ajax로 보내고 폼 데이터 이후 보냄 
-            uploadImgs();
-            form.submit();
+            uploadImgs();            
         });
 
 
@@ -259,11 +258,61 @@
             xhr.send(formData);
         }
 
+         // <div id="editor"> 는 유저가 글 쓰는 영역
+        // <textarea> 는 글 내용이 저장되서 서버로 보내지는 영역 
+        // page 에 에러 있으면 다시 현재 페이지로 되돌아오는데 이때 textarea에 있는 내용을 editor 로 불러와야함        
+        window.onload = function () {
+            textAreaToEditor();
+        };
+
         // <div contenteditable=true> 에 있는 내용 <textarea> 에 복사
         function getContent() {
+            insertFisrtLineDiv();
             document.getElementById("my-textarea").value = editor.innerHTML;
             getImgEleFromTextArea();
         }
+
+        // editor 의 첫줄은 <div> 속에 포함안되고 그냥 text object 이 되버림. 
+        // 일관성과 폼 입력 후 오류 발생해서 다시 되돌아왔을때 editor 높이 크기 계산 위해 
+        function insertFisrtLineDiv() {
+            let string = '';
+            let i = 0;
+            for (; i < editor.innerHTML.length; i++) {
+                if (editor.innerHTML[i] == '<') {
+                    break;
+                }
+                string += editor.innerHTML[i];
+            }
+
+            editor.innerHTML = editor.innerHTML.substring(i);
+
+            let div = document.createElement('div');
+            div.innerHTML = string;
+            editor.insertBefore(div, editor.firstChild);
+        }
+
+        // textarea 내용을 editor 로 불러옴 
+        // 이 과정에서 editor 의 높이도 조절함
+        function textAreaToEditor() {
+            editor.innerHTML = document.getElementById("my-textarea").value;
+
+            // Perform additional actions after the element is displayed
+            window.requestAnimationFrame(function () {
+                // Your additional actions here
+                // This code will run after the element is rendered
+                let height = 62; // editor 기본 padding, border 포함
+                for (let i = 0; i < editor.childNodes.length; i++) {
+                    let childNode = editor.childNodes[i];
+                    height += childNode.offsetHeight;
+                }
+                console.log('height = ' + height);
+
+                editor.style.height = 'auto';
+                editor.style.height = Math.max(500, height) + 'px';
+            });
+        }
+
+        
 
         // editor 에 작성된 글에서 <img> 추출 
         function getImgEleFromTextArea() {
