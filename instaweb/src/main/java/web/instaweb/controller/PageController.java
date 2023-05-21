@@ -131,7 +131,6 @@ public class PageController {
                                                    @RequestParam("files") List<MultipartFile> files,
                                                    @RequestParam("imgIdxList") List<String> imgIdxList) {
         System.out.println("handleFileUpload");
-
         String message = "";
         Page page = pageService.findOne(Long.parseLong(pageId));
 
@@ -155,6 +154,8 @@ public class PageController {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(message);
         }
     }
+
+
 
     // 글 작성 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -346,6 +347,7 @@ public class PageController {
         return "pages/updatePageForm";
     }
 
+
     /**
      * 글 수정
      * 전달받은 폼을 기반으로 Page update
@@ -365,66 +367,43 @@ public class PageController {
         return "redirect:/" + memberId + "/pages";
     }
 
-    /**
-     * updatePageForm.html 에서 전달 받은 ajax 요청, Page 에 속한 Image 들을 추가, 수정, 제거 한다
-     * @param pageId
-     * @param editedImgIdList : Page 에 속한 Image 의 id 리스트
-     * @param editedImgSrcList : Image 들의 src, Base64 String 형식으로 전달 받음
-     * @return : response entity
-     */
-    @PostMapping("/pages/editImages")
-    public ResponseEntity<String> editImages(@RequestParam String pageId,
-                                             @RequestParam("imgId") List<String> editedImgIdList,
-                                             @RequestParam("imgSrc") List<String> editedImgSrcList) {
+    // todo : 위으 updatePage 없애버리고 아래 ajaxReq 로 모든 정보 받아서 처리하도록 변경해야함, 기존 방식은 컨텐츠, 이미지 따로 처리하는데 컨텐츠에 오류 있어도 이미지가 그냥 서버로 전달되버림 
+    @PostMapping("/pages/uploadImages2")
+    public ResponseEntity<String> handleFileUpload2(@RequestParam("pageId") String pageId,
+                                                    @RequestParam("files") List<MultipartFile> files,
+                                                    @RequestParam("imgIdxList") List<String> imgIdxList,
+                                                    @RequestParam("title") String title,
+                                                    @RequestParam("content") String content) {
+        System.out.println("handleFileUpload2");
+        System.out.println(title);
+        System.out.println(content);
 
+        String message = "";
         Page page = pageService.findOne(Long.parseLong(pageId));
-        List<Image> existedImages = page.getImages(); // 수정폼 이전 Page 에 존재하던 Image 들
 
-        // 수정폼에 Image 가 하나도 없는 경우
-        if(editedImgIdList.get(0).equals("empty")) {
-            // 기존에 Page 에 존재하던 모든 이미지들 제거
-            for (Image existedImage : existedImages) {
-                imageService.deleteImage(existedImage.getId());
+
+        try {
+            int i = 0;
+            for (MultipartFile file : files) {
+                long imgIdx = Long.parseLong(imgIdxList.get(i));
+                Image image = new Image(file);
+                image.setImgIdx(imgIdx);
+                page.addImage(image);
+                image.setPage(page); // image - page 연결
+                imageService.saveImage(image);
+                i++;
             }
+
+            message = "Files uploaded successfully!";
+            return ResponseEntity.status(HttpStatus.OK).body(message);
+        } catch (IOException e) {
+            message = "Failed to upload files: " + e.getMessage();
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(message);
         }
-        else {
-            // 수정폼에서 삭제한 이미지 삭제 처리
-            // 수정폼 이전의 이미지들과, 수정폼에서 수정된 이미지들 비교해서, 수정폼 이전의 이미지가 삭제됐는지 판단
-            for (Image existedImage : existedImages) {
-                // 기존에 존재하던 Image 가 삭제된 경우
-                if (isImgDeleted(editedImgIdList, existedImage)) {
-                    imageService.deleteImage(existedImage.getId());
-                }
-            }
-
-            // Page 에 속한 Image 추가, 수정
-            int imgIdx = 0;
-            for(int i = 0; i < editedImgIdList.size(); i++) {
-                String imgId = editedImgIdList.get(i);
-                String imgSrc = editedImgSrcList.get(i); // imgSrc 는 base64String
-
-                // 수정 전에는 페이지에 없던 이미지, 새로 생긴 이미지
-                if(imgId.equals("added-img")) {
-                    System.out.println("added-img");
-                    Image image = new Image();
-                    image.setImage(java.util.Base64.getDecoder().decode(imgSrc));
-                    image.setImgIdx(imgIdx++);
-                    page.addImage(image);
-                    image.setPage(page);
-                    imageService.saveImage(image);
-                }
-                // 수정 전에도 페이지에 있던 이미지
-                else {
-                    imageService.updateImage(Long.parseLong((imgId)), imgSrc, imgIdx++);
-                }
-            }
-        }
-
-        String message = "Files uploaded successfully!";
-        return ResponseEntity.status(HttpStatus.OK).body(message);
     }
 
-   
+
+
     /**
      * @param editedImgIdList : 수정폼에 존재하는 Image 들의 id 리스트
      * @param existedImg : 수정폼 이전에 Page 에 존재한 Image 중 한 개
