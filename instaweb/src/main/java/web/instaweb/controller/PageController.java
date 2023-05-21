@@ -366,7 +366,7 @@ public class PageController {
     }
 
     /**
-     * updatePageForm.html 에서 전달 받은 요청, Page 에 속한 Image 들을 추가, 수정, 제거 한다
+     * updatePageForm.html 에서 전달 받은 ajax 요청, Page 에 속한 Image 들을 추가, 수정, 제거 한다
      * @param pageId
      * @param editedImgIdList : Page 에 속한 Image 의 id 리스트
      * @param editedImgSrcList : Image 들의 src, Base64 String 형식으로 전달 받음
@@ -424,6 +424,7 @@ public class PageController {
         return ResponseEntity.status(HttpStatus.OK).body(message);
     }
 
+   
     /**
      * @param editedImgIdList : 수정폼에 존재하는 Image 들의 id 리스트
      * @param existedImg : 수정폼 이전에 Page 에 존재한 Image 중 한 개
