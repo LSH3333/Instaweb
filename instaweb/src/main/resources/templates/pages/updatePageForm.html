@@ -256,11 +256,11 @@
       formData.append("content", document.getElementById("my-textarea").value);
 
       const xhr = new XMLHttpRequest();
-      xhr.open("POST", "/pages/uploadImages2", true);
+      xhr.open("POST", "/pages/upload", true);
       xhr.onload = function () {
         if (xhr.status === 200) {
           console.log("Files uploaded successfully");
-          form.submit(); // ajax 완료 후 form 전송
+          form.submit();
         } else {
           console.error("Error uploading files");
         }

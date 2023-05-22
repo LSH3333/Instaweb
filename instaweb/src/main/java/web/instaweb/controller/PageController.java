@@ -363,13 +363,12 @@ public class PageController {
             return "pages/updatePageForm";
         }
         Long memberId = loginMember.getId();
-        pageService.updatePage(id, form.getTitle(), form.getContent(), form.getCreatedTime(), true);
 
         return "redirect:/" + memberId + "/pages";
     }
 
     // todo : 위의 updatePage 없애버리고 아래 ajaxReq 로 모든 정보 받아서 처리하도록 변경해야함, 기존 방식은 컨텐츠, 이미지 따로 처리하는데 컨텐츠에 오류 있어도 이미지가 그냥 서버로 전달되버림
-    @PostMapping("/pages/uploadImages2")
+    @PostMapping("/pages/upload")
     public ResponseEntity<String> handleFileUpload2(@RequestParam("pageId") String pageId,
                                                     @RequestParam(value="files", required = false) List<MultipartFile> files,
                                                     @RequestParam(value="imgIdxList", required = false) List<String> imgIdxList,
@@ -378,8 +377,6 @@ public class PageController {
                                                     @RequestParam("createdTime") String createdTime,
                                                     @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
         System.out.println("handleFileUpload2");
-        System.out.println(title);
-        System.out.println(content);
 
         String message = "";
         Page page = pageService.findOne(Long.parseLong(pageId));
