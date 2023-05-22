@@ -65,8 +65,9 @@
 
 
 
+    <!-- createPageForm, updatePageForm 동일하게 사용 -->
     <script>
-    let pageId = "[[${form.id}]]";
+        let pageId = "[[${form.id}]]";
 
         // key = Image 의 url, value = Image File
         // let fileList = []; // 유저가 선택한 file 이 담김
@@ -159,6 +160,23 @@
 
             // 이미지 삽입함에 따라 그만큼 editor 의 높이 늘림
             resizeEditorAfterImgInserted(divImgEle, file);
+            focusAfterImgInserted();
+        }
+
+        function focusAfterImgInserted() {
+            let newLineDiv = document.createElement('div');
+            // Set the content editable attribute of the new <div> to true
+            newLineDiv.setAttribute('contenteditable', 'true');
+            let br = document.createElement('br');
+            newLineDiv.appendChild(br);
+            editor.appendChild(newLineDiv);
+
+            // Set the focus on the inner text of the new <div>
+            const range = document.createRange();
+            const selection = window.getSelection();
+            range.selectNodeContents(br);
+            selection.removeAllRanges();
+            selection.addRange(range);
         }
 
         // todo : 컨텐츠, 이미지 모두 ajax 로 전달
@@ -180,6 +198,7 @@
             let title = document.getElementById('titleInput');
             if (title.value.length == 0) {
                 title.classList.add('placeholder-red');
+                title.focus({ preventScroll: false });
                 return true;
             }
             return false;

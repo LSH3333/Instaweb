@@ -332,9 +332,7 @@ public class PageController {
                                                     @RequestParam("content") String content,
                                                     @RequestParam(value="createdTime", required = false) String createdTime,
                                                     @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
-        System.out.println("handleFileUpload2");
-        System.out.println("createdTime = " + createdTime);
-        System.out.println("pageId = " + pageId);
+
         String message = "";
         Page page = pageService.findOne(Long.parseLong(pageId));
         Long memberId = loginMember.getId();
