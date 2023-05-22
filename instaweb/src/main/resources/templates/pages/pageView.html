@@ -7,22 +7,10 @@
     <meta charset="UTF-8">
     <title>View Page</title>
     <link rel="stylesheet" href="/css/universal.css" th:href="@{/css/universal.css}">
+    <link rel="stylesheet" href="/css/pageView.css" th:href="@{/css/pageView.css}">
     <!-- page block style -->
     <link rel="stylesheet" type="text/css" href="/css/pageBlock.css" th:href="@{/css/pageBlock.css}">
 
-    <style>
-        /* content editor */
-        div#editor {
-            border: 1px solid #D6D6D6;
-            border-radius: 4px;
-            width: 100%;
-            height: 1000px;
-        }
-
-        #editor img {
-            max-width: 100%;
-        }
-    </style>
 
 </head>
 
@@ -36,15 +24,24 @@
     </div>
 
     <div class="contents">
-        <p th:text="${page.title}"></p>
-
-        <div id="content"></div>
-
         <div>
-            <!-- 글 수정 폼으로 이동  -->
-            <a href="#" th:href="@{/pages/{id}/edit (id=${page.id})}">수정</a>
-            <!-- 글 삭제 -->
-            <a href="#" th:href="@{/pages/{id}/delete (id=${page.id})}">삭제</a>
+            <div class="title">
+                <p class="pageTitle" th:text="${page.title}">Hello world!</p>
+                <div class="titleFooter">
+                    <p class="memberName" th:text="${page.member.name}">aaaa</p>
+                    <p class="delimeter">|</p>
+                    <p class="createdTime" th:text="${page.createdTime}">2023.05.22. 20:39:33</p>
+                </div>
+            </div>
+
+            <div id="editor"></div>
+
+            <div class="extraBox">
+                <!-- 글 수정 폼으로 이동  -->
+                <a href="#" th:href="@{/pages/{id}/edit (id=${page.id})}">수정</a>
+                <!-- 글 삭제 -->
+                <a href="#" th:href="@{/pages/{id}/delete (id=${page.id})}">삭제</a>
+            </div>
         </div>
     </div>
 
@@ -62,11 +59,6 @@
                 if (xhr.status == 200) {
                     let data = JSON.parse(xhr.responseText);
 
-                    // console.log('content = ' + data.content);
-                    // console.log('images = ' + data.images.length);
-                    // console.log('imgIdxList = ' + data.imgIdxList.length);
-
-                    // 
                     const tempDiv = document.createElement("div");
                     tempDiv.innerHTML = data.content;
                     // Get all <img> elements from the div
@@ -77,7 +69,8 @@
                         imgElement.src = 'data:image/jpeg;charset=utf-8;base64,' + data.images[i];
                     }
 
-                    document.getElementById('content').appendChild(tempDiv);
+                    document.getElementById('editor').appendChild(tempDiv);
+                    resizeEditorOnload();
 
                 } else {
                     console.error("error");
@@ -85,13 +78,32 @@
             }
         }
 
-
         window.onload = function () {
             xhr.open('GET', '/view/ajaxReq?pageId=' + pageId.toString(), true);
             xhr.send();
         };
 
     </script>
+
+    <script>
+        // page onload 시 editor 크기 조절 
+        function resizeEditorOnload() {
+            let editor = document.getElementById('editor');
+            // Perform additional actions after the element is displayed
+            window.requestAnimationFrame(function () {
+                // Your additional actions here
+                // This code will run after the element is rendered
+                let height = 62; // editor 기본 padding, border 포함
+                for (let i = 0; i < editor.childNodes.length; i++) {
+                    let childNode = editor.childNodes[i];
+                    height += childNode.offsetHeight;
+                }
+                editor.style.height = 'auto';
+                editor.style.height = Math.max(500, height) + 'px';
+            });
+        }
+    </script>
+
 </body>
 
 </html>
