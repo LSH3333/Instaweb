@@ -35,12 +35,13 @@
     <form th:object="${form}" method="post" enctype="multipart/form-data">
       <!-- title -->
       <div class="title">
-        <input id="titleInput" type="text" th:field="*{title}" placeholder="제목을 입력하세요" oninput="removePlaceholderRed()"/>
+        <input id="titleInput" type="text" th:field="*{title}" placeholder="제목을 입력하세요"
+          oninput="removePlaceholderRed()" />
       </div>
       <!-- 실제 content 저장용 -->
       <textarea id="my-textarea" style="display: none" th:field="*{content}"></textarea>
       <!-- 유저에게 보이는 div -->
-      <div id="editor" contenteditable="true" oninput="resizeEditor()"></div>
+      <div id="editor" contenteditable="true" oninput="resizeEditorWhenTyped()"></div>
 
       <input id="img-selector" type="file" accept="image/*" />
 
@@ -82,6 +83,7 @@
 
           let editor = document.getElementById("editor");
           editor.innerHTML = tempDiv.innerHTML;
+          resizeEditorOnload();
         } else {
           console.error("error");
         }
@@ -89,8 +91,9 @@
     };
 
     window.onload = function () {
+      // 페이지 내용 가져옴 
       xhr.open("GET", "/view/ajaxReq?pageId=" + pageId.toString(), true);
-      xhr.send();
+      xhr.send();      
     };
   </script>
 
@@ -227,13 +230,13 @@
       const formData = new FormData();
 
       // key:pageId, pageId formData 에 추가
-      let pageId = "[[${form.id}]]";      
+      let pageId = "[[${form.id}]]";
       formData.append("pageId", pageId);
 
       // key:createdTime 
       let createdTime = "[[${form.createdTime}]]"
       // pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS";
-      createdTime = createdTime.substring(0, 23); 
+      createdTime = createdTime.substring(0, 23);
       formData.append("createdTime", createdTime);
 
       // key:files, files formData 에 추가
@@ -311,7 +314,8 @@
       });
     }
 
-    function resizeEditor() {
+    // text editor 에 입력시 editor 크기 조절 
+    function resizeEditorWhenTyped() {
       const editor = document.getElementById("editor");
       const minHeight = 500; // Set the desired minimum height
       editor.style.height = "auto"; // Reset the height to auto to recalculate the height based on content
@@ -339,245 +343,28 @@
       };
       reader.readAsDataURL(file);
     }
+
+    // page onload 시 editor 크기 조절 
+    function resizeEditorOnload() {
+
+      // Perform additional actions after the element is displayed
+      window.requestAnimationFrame(function () {
+        // Your additional actions here
+        // This code will run after the element is rendered
+        let height = 62; // editor 기본 padding, border 포함
+        for (let i = 0; i < editor.childNodes.length; i++) {
+          let childNode = editor.childNodes[i];
+          height += childNode.offsetHeight;
+        }
+        console.log('height = ' + height);
+
+        editor.style.height = 'auto';
+        editor.style.height = Math.max(500, height) + 'px';
+      });
+    }
+
   </script>
 
-  <!-- <script type="text/javascript">
-
-        var pageID = "[[${form.id}]]";
-        var imgContainer = document.getElementById("imgContainer");
-        var GetStoredImgXhr = new XMLHttpRequest(); // 최초 페이지 로드시, 저장된 이미지들 가져온다 
-
-
-        window.onload = function () {
-            // 페이지에 저장되어 있는 모든 이미지들 요청 
-            GetStoredImgXhr.open('GET', '/pages/requestImages?id=' + pageID.toString(), true);
-            // 순환참조 에러 발생, dto 사용 or 
-            /**
-             * 발생하게된 주원인은 '양방향 매핑'이기도 하지만, 더 정확하게는 Entity 자체를 response로 리턴한데에 있다. 
-             * entity 자체를 return 하지 말고, DTO 객체를 만들어 필요한 데이터만 옮겨담아 Client로 리턴하면 순환 참조 관련 문제는 애초에 방지 할 수 있다.
-             * 
-             * */
-            GetStoredImgXhr.send();
-        };
-
-        GetStoredImgXhr.onload = function () {
-            if (GetStoredImgXhr.status === 200) {
-                // data is from GetImageDto  
-                let data = JSON.parse(GetStoredImgXhr.responseText);
-                let imgIdx = 0;
-
-                for (imgIdx = 0; imgIdx < data.length; imgIdx++) {
-                    // <li> 
-                    let liEle = document.createElement('li');
-                    liEle.setAttribute('imgId', data[imgIdx].id)
-                    // <p>
-                    let pEle = document.createElement('p');
-                    pEle.innerHTML = data[imgIdx].id.toString();
-                    // <img> 
-                    let imgEle = document.createElement('img');
-                    imgEle.id = imgIdx;
-                    // GetImageDto.image 는 byte[] 이지만 서버에서 클라이언트로 전송되면서 base 64 string 으로 인코딩되서옴 
-                    imgEle.src = 'data:image/jpeg;charset=utf-8;base64,' + data[imgIdx].image;
-                    imgEle.classList.add('added-img');
-                    // <input> 이미지 클릭 시 파일 선택하도록 
-                    let inputEle = document.createElement('input');
-                    inputEle.id = imgIdx;
-                    inputEle.type = "file";
-                    inputEle.style = "display:none;";
-                    inputEle.classList.add('added-input')
-                    // 이미지 삭제 <button>     
-                    let btnEle = document.createElement('button');
-                    btnEle.innerText = "DELETE";
-                    btnEle.type = "button";
-                    btnEle.classList.add('added-btn');
-                    /**
-                     * <ul id="imgContainer">
-                     *  <li>
-                     *   <p>
-                     *   <img>
-                     *   <input> 
-                     *   <button>   
-                     *  </li>
-                     * </ul>
-                     * */
-                    liEle.appendChild(pEle);
-                    liEle.appendChild(imgEle);
-                    liEle.appendChild(inputEle);
-                    liEle.appendChild(btnEle);
-                    imgContainer.appendChild(liEle);
-                }
-            }
-        };
-
-
-        // imgContainer 하위 <img> eventListener, 이미지 누르면 파일 선택창 뜨도록   
-        imgContainer.addEventListener('click', function (e) {
-            if (e.target.classList.contains('added-img')) {
-                let imgEle = e.target;
-                let inputEle = getNodeThatContainsClassFromSibling(imgEle, 'added-input');
-                inputEle.click();
-            }
-        });
-
-        // imgContainer 하위 <input> eventListener 
-        // 유저가 변경하도록 선택한 이미지를 디스플레이함 
-        imgContainer.addEventListener('change', function (e) {
-            // <input> 에 변경 발생시 변경한 이미지로 디스플레이, e.target 은 <input> 
-            if (e.target.classList.contains('added-input')) {
-                // input 창 열린 후 아무것도 선택하지 않고 취소 누를 경우 file = undefined 됨 
-                if (e.target.files[0] != undefined) {
-                    var inputEle = e.target;
-                    var imgEle = getNodeThatContainsClassFromSibling(inputEle, 'added-img');
-
-                    // e.target.files[0] = <input> 에서 선택한 파일
-                    // 선택한 파일을 base64 String 으로 변환 후 디스플레이 
-                    var reader = new FileReader();
-                    reader.onload = function (event) {
-                        var byteArray = new Uint8Array(event.target.result);
-                        // Convert the byteArray to a base64 string
-                        var base64String = byteArrayToBase64String(byteArray);
-                        imgEle.src = 'data:image/jpeg;charset=utf-8;base64,' + base64String;
-                    }
-                    // Read the file as an ArrayBuffer
-                    reader.readAsArrayBuffer(e.target.files[0]);
-                }
-            }
-        });
-
-        // 이미지에 대한 삭제 버튼 눌렀을시 이미지 삭제 
-        imgContainer.addEventListener('click', function (e) {
-            if (e.target.classList.contains('added-btn')) {
-                let btnEle = e.target;
-                // 부모 노드인 <li> 제거 
-                let liEle = btnEle.parentNode.remove();
-            }
-        });
-
-        // element 의 자매 element 들 중 containClass(string) 를 클래스로 갖는 element 찾음 
-        // return : HtmlElement 
-        function getNodeThatContainsClassFromSibling(element, containClass) {
-            let parentNode = element.parentNode;
-            for (let i = 0; i < parentNode.childNodes.length; i++) {
-                if (parentNode.childNodes[i].classList.contains(containClass)) {
-                    return parentNode.childNodes[i];
-                }
-            }
-        }
-
-        function byteArrayToBase64String(bytes) {
-            let binary = '';
-            for (let i = 0; i < bytes.length; i++) {
-                binary += String.fromCharCode(bytes[i]);
-            }
-            return btoa(binary);
-        }
-
-        // 이미지 파일들 ajax 로 전송 
-        document.getElementById('submitBtn').addEventListener('click', function (event) {
-            // Prevent the default form submission behavior (버튼 클릭시 서버로 폼 전송 방지)
-            event.preventDefault();
-
-            // 이미지 정보 먼저 ajax로 보내고 폼 데이터 이후 보냄 
-            uploadImgs();
-        });
-
-        function uploadImgs() {
-            let form = document.querySelector('form');
-            let uploadImgXhr = new XMLHttpRequest();
-
-            // pageId, imgId List, imgSrc List 를 폼데이터로 전송 
-            let formData = new FormData();
-
-            formData.append('pageId', pageID);
-
-            // Image 가 하나도 없을 경우 'empty' 를 FormData 에 채워서 보낸다
-            // 서버에서 맞는 파라미터가 없을 경우 경로 못찾기 때문에  
-            if (imgContainer.childNodes.length === 0) {
-                formData.append('imgId', 'empty');
-                formData.append('imgSrc', 'empty');
-            }
-            else {
-                for (let i = 0; i < imgContainer.childNodes.length; i++) {
-                    let liEle = imgContainer.childNodes[i];
-
-                    // formData 에 imgId 추가 
-                    formData.append('imgId', liEle.getAttribute('imgId'));
-
-                    // formData 에 imgSrc 추가 
-                    // imgEle.src = 'data:image/jpeg;charset=utf-8;base64,' + data[imgIdx].image;
-                    let imgSrc = getChildNodeWithTag(liEle, 'IMG').src;
-                    let base64StringSrc = imgSrc.split(',')[1];
-                    formData.append('imgSrc', base64StringSrc);
-                }
-
-            }
-
-            uploadImgXhr.open('POST', '/pages/editImages')
-            uploadImgXhr.onload = function () {
-                if (uploadImgXhr.status === 200) {
-                    console.log('Files uploaded successfully');
-                    form.submit(); // ajax 완료 후 form 전송 
-                } else {
-                    console.error('Error uploading files');
-                }
-            };
-            uploadImgXhr.send(formData);
-        }
-
-        // parentNode 의 child 중 tag ('IMG', 'INPUT' ... ) 일치하는 자식 리턴 
-        function getChildNodeWithTag(parent, tag) {
-            for (let i = 0; i < parent.childNodes.length; i++) {
-                if (parent.childNodes[i].tagName === tag) {
-                    return parent.childNodes[i];
-                }
-            }
-        }
-
-
-        // add more images 
-        // button event listener 
-        document.getElementById('images').addEventListener('change', function (event) { // <input> 
-            let files = event.target.files;
-
-            for (let i = 0; i < files.length; i++) {
-                let file = files[i];
-
-                // <li> 
-                let liEle = document.createElement('li');
-                liEle.setAttribute('imgId', 'added-img'); // 추가된 이미지인 경우 imgId = added-img 
-                // <img> 
-                let imgEle = document.createElement('img');
-
-                let reader = new FileReader();
-                reader.onload = function (event) {
-                    let byteArray = new Uint8Array(event.target.result);
-                    let base64String = byteArrayToBase64String(byteArray);
-                    imgEle.src = 'data:image/jpeg;charset=utf-8;base64,' + base64String;
-                    imgEle.classList.add('added-img');
-                }
-                // Read the file as an ArrayBuffer
-                reader.readAsArrayBuffer(file);
-
-                // <input> 이미지 클릭 시 파일 선택하도록 
-                let inputEle = document.createElement('input');
-                inputEle.type = "file";
-                inputEle.style = "display:none;";
-                inputEle.classList.add('added-input')
-
-                // 이미지 삭제 <button>     
-                let btnEle = document.createElement('button');
-                btnEle.innerText = "DELETE";
-                btnEle.type = "button";
-                btnEle.classList.add('added-btn');
-
-                liEle.appendChild(imgEle);
-                liEle.appendChild(inputEle);
-                liEle.appendChild(btnEle);
-                imgContainer.appendChild(liEle);
-            }
-        });
-
-    </script> -->
 </body>
 
 </html>
