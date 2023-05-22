@@ -31,6 +31,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Controller
@@ -367,31 +368,45 @@ public class PageController {
         return "redirect:/" + memberId + "/pages";
     }
 
-    // todo : 위으 updatePage 없애버리고 아래 ajaxReq 로 모든 정보 받아서 처리하도록 변경해야함, 기존 방식은 컨텐츠, 이미지 따로 처리하는데 컨텐츠에 오류 있어도 이미지가 그냥 서버로 전달되버림 
+    // todo : 위의 updatePage 없애버리고 아래 ajaxReq 로 모든 정보 받아서 처리하도록 변경해야함, 기존 방식은 컨텐츠, 이미지 따로 처리하는데 컨텐츠에 오류 있어도 이미지가 그냥 서버로 전달되버림
     @PostMapping("/pages/uploadImages2")
     public ResponseEntity<String> handleFileUpload2(@RequestParam("pageId") String pageId,
-                                                    @RequestParam("files") List<MultipartFile> files,
-                                                    @RequestParam("imgIdxList") List<String> imgIdxList,
+                                                    @RequestParam(value="files", required = false) List<MultipartFile> files,
+                                                    @RequestParam(value="imgIdxList", required = false) List<String> imgIdxList,
                                                     @RequestParam("title") String title,
-                                                    @RequestParam("content") String content) {
+                                                    @RequestParam("content") String content,
+                                                    @RequestParam("createdTime") String createdTime,
+                                                    @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
         System.out.println("handleFileUpload2");
         System.out.println(title);
         System.out.println(content);
 
         String message = "";
         Page page = pageService.findOne(Long.parseLong(pageId));
-
+        Long memberId = loginMember.getId();
 
         try {
-            int i = 0;
-            for (MultipartFile file : files) {
-                long imgIdx = Long.parseLong(imgIdxList.get(i));
-                Image image = new Image(file);
-                image.setImgIdx(imgIdx);
-                page.addImage(image);
-                image.setPage(page); // image - page 연결
-                imageService.saveImage(image);
-                i++;
+            // title, content, createdTime 저장
+            // Define the pattern of the input string
+            String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS";
+            // Create a DateTimeFormatter based on the pattern
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+            // Parse the string to LocalDateTime using the formatter
+            LocalDateTime localDateTime = LocalDateTime.parse(createdTime, formatter);
+
+            pageService.updatePage(Long.parseLong(pageId), title, content, localDateTime, true);
+            // 이미지 파일은 없을수도 있음
+            if(files != null) {
+                int i = 0;
+                for (MultipartFile file : files) {
+                    long imgIdx = Long.parseLong(imgIdxList.get(i));
+                    Image image = new Image(file);
+                    image.setImgIdx(imgIdx);
+                    page.addImage(image);
+                    image.setPage(page); // image - page 연결
+                    imageService.saveImage(image);
+                    i++;
+                }
             }
 
             message = "Files uploaded successfully!";
