@@ -73,6 +73,8 @@ public class Page {
         this.member = member;
     }
 
+    public void setCreatedTime(LocalDateTime time) {this.createdTime = time;}
+
     public void delete() {}
 
 }

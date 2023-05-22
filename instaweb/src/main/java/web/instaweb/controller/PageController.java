@@ -59,6 +59,8 @@ public class PageController {
      * 글 작성 폼
      * createPageForm.html 에서 사용자가 선택, 변경한 이미지의 순서를 기억하려면 form 이 서버로 전달되기 전에 ajax request 로 Image 객체 만들어야 하기 때문에
      * createPageForm 으로 넘어가기 전에 Page 객체 미리 만들어서 id 생성해놓고, 생성된 id 값도 PageForm 에 포함시켜서 전달
+     *
+     * 작성폼에서 유저가 작성한 내용들 저장은 ajax 로 처리, 수정폼이랑 같은 ajax 사용, handleFileUpload() 에서 처리
      */
     @GetMapping("{memberId}/pages/new")
     public String createForm(Model model, @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
@@ -75,16 +77,17 @@ public class PageController {
         } // 없는 경우
         else {
             page = new Page();
+            page.setCreatedTime(LocalDateTime.now());
         }
 
-        PageForm pageForm = new PageForm();
+
         // Member - Page 연결
         page.setMember(member);
         member.addPage(page);
         pageService.savePage(page);
-        pageForm.setId(page.getId());
         // member 가 작성중 상태인 page id 기억해놓음
         memberService.setMemberWritingPageId(member.getId(), page.getId());
+        PageForm pageForm = new PageForm(page.getId(), page.getCreatedTime());
         model.addAttribute("form", pageForm);
 
         return "pages/createPageForm";
@@ -101,59 +104,11 @@ public class PageController {
             return "pages/createPageForm";
         }
 
-        // 이미지 객체들 먼저 만들고
-        /**
-         * 생성폼에서 이미지를 선택하지 않았다면 form.getImages().get(0).getContentType() = "application/octet-stream" 이 된다
-         * 이미지 파일이라면 "image/png" 이런식으로 온다
-         * "application/octet-stream" 은 8 비트 단위 binary 라는 의미
-         */
-
-        // Page 객체는 미리 만들어져 있고, updatePage 로 처리
-        pageService.updatePage(form.getId(), form.getTitle(), form.getContent(), LocalDateTime.now(), true);
-
         // Page 작성 성공 시 해당 member 의 writingPageId 는 null 로 되돌림
         Member loginMember = memberService.findOne((Long) request.getAttribute("loginMemberId"));
         memberService.setMemberWritingPageId(loginMember.getId(), null);
 
         return "redirect:/" + request.getAttribute("loginMemberId") + "/pages";
-    }
-
-
-    /**
-     * createPageForm.html 에서 보낸 ajax request
-     * 전달받은 file 로 Image 객체 만들고 Page 와 연관관계 맺음
-     * 전달받은 file 은 유저가 선택한 순서 대로 담겨오게끔 클라이언트에서 전달하기 때문에 순서대로 imgIdx 부여 한다
-     * @param pageId : page 의 Id
-     * @param files : 글 작성폼에서 보낸 유저가 선택한 파일들, 유저가 선택한 순서대로 담겨서 오기 때문에 그냥 순서대로 imgIdx 부여 하면됨
-     *
-     */
-    @PostMapping("/pages/uploadImages")
-    public ResponseEntity<String> handleFileUpload(@RequestParam("pageId") String pageId,
-                                                   @RequestParam("files") List<MultipartFile> files,
-                                                   @RequestParam("imgIdxList") List<String> imgIdxList) {
-        System.out.println("handleFileUpload");
-        String message = "";
-        Page page = pageService.findOne(Long.parseLong(pageId));
-
-
-        try {
-            int i = 0;
-            for (MultipartFile file : files) {
-                long imgIdx = Long.parseLong(imgIdxList.get(i));
-                Image image = new Image(file);
-                image.setImgIdx(imgIdx);
-                page.addImage(image);
-                image.setPage(page); // image - page 연결
-                imageService.saveImage(image);
-                i++;
-            }
-
-            message = "Files uploaded successfully!";
-            return ResponseEntity.status(HttpStatus.OK).body(message);
-        } catch (IOException e) {
-            message = "Failed to upload files: " + e.getMessage();
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(message);
-        }
     }
 
 
@@ -196,6 +151,7 @@ public class PageController {
         for (Page page : pages) {
             if(!page.getWritingDone()) continue; // 작성중인 Page 제외
             PageListForm pageListForm = new PageListForm(page.getId(), page.getTitle(), page.getContent(), page.getMember().getId(), page.getMember().getName(), page.getCreatedTime());
+            System.out.println("loadPagesAndImages content = " + page.getContent());
             pageListForms.add(pageListForm);
         }
 
@@ -336,11 +292,9 @@ public class PageController {
             // 1. 뷰에서는 저장된 이미지를 보여줘야함
         // Page 에는 Image 형으로 저장되어있음, 폼은 MultiPartFile 형식 -> 폼에 Image 형으로도 저장할수 있도록 선언
 
-        PageForm form = new PageForm();
+        PageForm form = new PageForm(page.getId(), page.getCreatedTime());
         form.setId(page.getId());
         form.setTitle(page.getTitle());
-        form.setContent(page.getContent());
-        form.setCreatedTime(page.getCreatedTime());
         // 수정을 위해서 PageForm 에는 Image 형으로도 저장 가능
         form.setByteImages(page.getImages());
 
@@ -367,17 +321,20 @@ public class PageController {
         return "redirect:/" + memberId + "/pages";
     }
 
-    // todo : 위의 updatePage 없애버리고 아래 ajaxReq 로 모든 정보 받아서 처리하도록 변경해야함, 기존 방식은 컨텐츠, 이미지 따로 처리하는데 컨텐츠에 오류 있어도 이미지가 그냥 서버로 전달되버림
+    /**
+     * 작성폼, 수정폼에서 데이터 서버로 보내오면 처리함
+     */
     @PostMapping("/pages/upload")
-    public ResponseEntity<String> handleFileUpload2(@RequestParam("pageId") String pageId,
+    public ResponseEntity<String> handleFileUpload(@RequestParam("pageId") String pageId,
                                                     @RequestParam(value="files", required = false) List<MultipartFile> files,
                                                     @RequestParam(value="imgIdxList", required = false) List<String> imgIdxList,
                                                     @RequestParam("title") String title,
                                                     @RequestParam("content") String content,
-                                                    @RequestParam("createdTime") String createdTime,
+                                                    @RequestParam(value="createdTime", required = false) String createdTime,
                                                     @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
         System.out.println("handleFileUpload2");
-
+        System.out.println("createdTime = " + createdTime);
+        System.out.println("pageId = " + pageId);
         String message = "";
         Page page = pageService.findOne(Long.parseLong(pageId));
         Long memberId = loginMember.getId();
@@ -414,40 +371,6 @@ public class PageController {
         }
     }
 
-
-
-    /**
-     * @param editedImgIdList : 수정폼에 존재하는 Image 들의 id 리스트
-     * @param existedImg : 수정폼 이전에 Page 에 존재한 Image 중 한 개
-     * @return : true = existedImg 가 제거됨
-     */
-    private boolean isImgDeleted(List<String> editedImgIdList, Image existedImg) {
-        for (String editImgId : editedImgIdList) {
-            if(editImgId.equals("added-img")) continue;
-            if(Long.parseLong(editImgId) == existedImg.getId()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * 글 수정 폼(updatePageForm.html) 에서  요청
-     * 특정 id 페이지에 저장된 모든 이미지들 리턴
-     * 순환참조 오류 때문에 GetImageDto 로 반환
-     */
-    @ResponseBody
-    @GetMapping("/pages/requestImages")
-    public List<GetImageDto> requestImages(@RequestParam Long id) {
-        Page page = pageService.findOne(id);
-        List<GetImageDto> imageDtoList = new ArrayList<>();
-        List<Image> images = page.getImages();
-        for (Image image : images) {
-            GetImageDto getImageDto = new GetImageDto(image);
-            imageDtoList.add(getImageDto);
-        }
-        return imageDtoList;
-    }
 
 
 

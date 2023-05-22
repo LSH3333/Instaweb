@@ -57,7 +57,7 @@
 
   <!-- 작성된 내용 ajax 로 불러옴  -->
   <script type="text/javascript">
-    let pageId = "[[${form.id}]]";
+
     let xhr = new XMLHttpRequest();
 
     xhr.onreadystatechange = function () {
@@ -93,11 +93,13 @@
     window.onload = function () {
       // 페이지 내용 가져옴 
       xhr.open("GET", "/view/ajaxReq?pageId=" + pageId.toString(), true);
-      xhr.send();      
+      xhr.send();
     };
   </script>
 
+
   <script>
+    let pageId = "[[${form.id}]]";
     // key = Image 의 url, value = Image File
     // let fileList = []; // 유저가 선택한 file 이 담김
     const fileMap = new Map();
@@ -197,7 +199,7 @@
     button.addEventListener("click", function (event) {
       // Prevent the default form submission behavior (버튼 클릭시 서버로 폼 전송 방지)
       event.preventDefault();
-      console.log("submitBtn");
+      
       // error check, error 없을시 데이터 서버로 전송 시작 
       if (!checkErrors()) {
         // 이미지 정보 먼저 ajax로 보내고 폼 데이터 이후 보냄
@@ -273,8 +275,29 @@
 
     // <div contenteditable=true> 에 있는 내용 <textarea> 에 복사
     function getContent() {
+      insertFisrtLineDiv();
       document.getElementById("my-textarea").value = editor.innerHTML;
       getImgEleFromTextArea();
+    }
+
+
+    // editor 의 첫줄은 <div> 속에 포함안되고 그냥 text object 이 되버림. 
+    // 일관성과 폼 입력 후 오류 발생해서 다시 되돌아왔을때 editor 높이 크기 계산 위해 
+    function insertFisrtLineDiv() {
+      let string = '';
+      let i = 0;
+      for (; i < editor.innerHTML.length; i++) {
+        if (editor.innerHTML[i] == '<') {
+          break;
+        }
+        string += editor.innerHTML[i];
+      }
+
+      editor.innerHTML = editor.innerHTML.substring(i);
+
+      let div = document.createElement('div');
+      div.innerHTML = string;
+      editor.insertBefore(div, editor.firstChild);
     }
 
     // editor 에 작성된 글에서 <img> 추출
@@ -356,8 +379,6 @@
           let childNode = editor.childNodes[i];
           height += childNode.offsetHeight;
         }
-        console.log('height = ' + height);
-
         editor.style.height = 'auto';
         editor.style.height = Math.max(500, height) + 'px';
       });
