@@ -332,32 +332,25 @@
 
         // 이미지 editor 에 삽입 하고, 그 높이 만큼 editor 의 높이 조절함
         function resizeEditorAfterImgInserted(divImgEle, file) {
-            let divHeight = 0;
-            let editor = document.getElementById("editor");
             let minHeight = 500;
             console.log('init editor.scrollHeight = ' + editor.scrollHeight)
             const reader = new FileReader();
             const imgEle = document.createElement("img");
+
             reader.onload = function (event) {
                 imgEle.onload = function () {
+                    // insert 한 img 높이 
                     const imageHeight = imgEle.height + 20 + 20; // 위 아래 margin 20
-                    console.log('imageHeight = ' + imageHeight)
-                    // 여기서 editor.scrollHeight 가 이미 바뀌어 있음 why?
-                    console.log('editor.scrollHeight = ' + editor.scrollHeight)
-                    divHeight += imageHeight;
-                    editor.style.height = "auto";
-                                        
-                    if(divHeight > editor.scrollHeight){
-                        editor.style.height = (divHeight - editor.scrollHeight)  + "px";
-                    }
-                    else {
-                        editor.style.height = minHeight + "px";
-                    }
-
-                    // editor.style.height = Math.max(minHeight, editor.scrollHeight - divHeight) + "px";
+                    // wait for scrollHeight reflection 
+                    setTimeout(function () {
+                        editor.style.height = "auto";
+                        editor.style.height = Math.max(minHeight, editor.scrollHeight) + "px";
+                        // Your code to adjust the editor height here
+                    }, 100);
                 };
 
                 imgEle.src = event.target.result;
+                
             };
             reader.readAsDataURL(file);
         }

@@ -363,27 +363,30 @@
       editor.style.height = Math.max(minHeight, editor.scrollHeight) + "px"; // Set the height to the maximum of minHeight and scroll height
     }
 
-    // 이미지 editor 에 삽입 하고, 그 높이 만큼 editor 의 높이 조절함
-    function resizeEditorAfterImgInserted(divImgEle, file) {
-      let divHeight = 0;
-      let editor = document.getElementById("editor");
-      let minHeight = 500;
+   // 이미지 editor 에 삽입 하고, 그 높이 만큼 editor 의 높이 조절함
+   function resizeEditorAfterImgInserted(divImgEle, file) {
+            let minHeight = 500;
+            console.log('init editor.scrollHeight = ' + editor.scrollHeight)
+            const reader = new FileReader();
+            const imgEle = document.createElement("img");
 
-      const reader = new FileReader();
-      const imgEle = document.createElement("img");
-      reader.onload = function (event) {
-        imgEle.onload = function () {
-          const imageHeight = imgEle.height;
-          divHeight += imageHeight + 4;
-          editor.style.height = "auto";
-          editor.style.height =
-            Math.max(minHeight, editor.scrollHeight + divHeight) + "px";
-        };
+            reader.onload = function (event) {
+                imgEle.onload = function () {
+                    // insert 한 img 높이 
+                    const imageHeight = imgEle.height + 20 + 20; // 위 아래 margin 20
+                    // wait for scrollHeight reflection 
+                    setTimeout(function () {
+                        editor.style.height = "auto";
+                        editor.style.height = Math.max(minHeight, editor.scrollHeight) + "px";
+                        // Your code to adjust the editor height here
+                    }, 100);
+                };
 
-        imgEle.src = event.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
+                imgEle.src = event.target.result;
+                
+            };
+            reader.readAsDataURL(file);
+        }
 
     // page onload 시 editor 크기 조절 
     function resizeEditorOnload() {
