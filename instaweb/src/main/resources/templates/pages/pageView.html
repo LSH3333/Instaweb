@@ -1,5 +1,3 @@
-<!-- 특정 Page 뷰  -->
-
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
@@ -52,6 +50,7 @@
     <!-- ajax 요청으로 내용 가져와서 <img> 삽입  -->
     <script type="text/javascript">
         let pageId = "[[${page.id}]]";
+      
         let xhr = new XMLHttpRequest();
 
         xhr.onreadystatechange = function () {
@@ -61,6 +60,7 @@
 
                     const tempDiv = document.createElement("div");
                     tempDiv.innerHTML = data.content;
+                    console.log('data.content = ' + data.content)
                     // Get all <img> elements from the div
                     const imgElements = tempDiv.querySelectorAll("img");
 
@@ -79,6 +79,8 @@
         }
 
         window.onload = function () {
+            console.log('pageId = ' + pageId);
+            console.log('pageId.toString() = ' + pageId.toString())
             xhr.open('GET', '/view/ajaxReq?pageId=' + pageId.toString(), true);
             xhr.send();
         };

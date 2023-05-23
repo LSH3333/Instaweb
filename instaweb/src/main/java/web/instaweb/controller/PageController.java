@@ -258,7 +258,8 @@ public class PageController {
     // view 의 내용과 이미지는 ajax 로 받아서 동적으로 디스플레이한다
     @ResponseBody
     @GetMapping("/view/ajaxReq")
-    public Map<String,?> viewGetImages(@RequestParam long pageId) {
+    public Map<String,?> viewPageSendData(@RequestParam long pageId) {
+        System.out.println("viewPageSendData");
         Map<String, List<?>> ret = new HashMap<>();
 
         Page page = pageService.findOne(pageId);

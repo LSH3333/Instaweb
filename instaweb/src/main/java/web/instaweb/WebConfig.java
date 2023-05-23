@@ -23,7 +23,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/", "/members/register", "/login", "/logout", "/css/**", "/*.ico", "/error",
                         "/*/pages", // pageList 볼 수 있음,
                         "/*/pages/*", // 글 볼 수 있음
-                        "/pages/ajaxReq", // ajax 경로도 제외해줘야함
+                        "/pages/ajaxReq", "/view/ajaxReq", // ajax 경로도 제외해줘야함
                         "/allPages", "/allPages/ajaxReq");
 
         // 로그인 상태라면 postHandle 에서 loginMemberId attribute 에 저장
