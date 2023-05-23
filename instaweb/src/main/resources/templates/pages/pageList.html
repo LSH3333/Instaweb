@@ -16,8 +16,7 @@
 
     // ajax request
     var xhr = new XMLHttpRequest();
-    let beginIdx = 0,
-      cnt = 10;
+    let beginIdx = 0;
 
     xhr.onreadystatechange = function () {
       if (xhr.readyState == XMLHttpRequest.DONE) {
@@ -27,6 +26,8 @@
           // response from "/pages/ajaxReq"
           // Map<String, List<>> 의 형태로 리턴받음
           var data = JSON.parse(xhr.responseText);
+          // 서버에서 받은 nextBeginIdx, 다음에 서버로 요청할때 해당 인덱스부터 page 리스트 탐색시작 
+          beginIdx = data.nextBeginIdx[0];
 
           // response로 받은 page와 image들로 html 객체 만듦
           for (let i = 0; i < data.pages.length; i++) {
@@ -137,11 +138,10 @@
               "GET",
               "/pages/ajaxReq?beginIdx=" +
               beginIdx.toString() +
-              "&cnt=" +
-              cnt.toString(),
+              "&memberId=" +
+              memberId.toString(),
               true
             );
-            beginIdx += cnt;
             xhr.send();
           }
         }
@@ -154,13 +154,10 @@
         "GET",
         "/pages/ajaxReq?beginIdx=" +
         beginIdx.toString() +
-        "&cnt=" +
-        cnt.toString() +
         "&memberId=" +
         memberId.toString(),
         true
       );
-      beginIdx += cnt;
       xhr.send();
     };
   </script>

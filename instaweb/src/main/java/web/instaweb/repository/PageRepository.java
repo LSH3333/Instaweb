@@ -3,8 +3,10 @@ package web.instaweb.repository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import web.instaweb.domain.Page;
+import web.instaweb.dto.PagesAndEndIdxDto;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -33,10 +35,23 @@ public class PageRepository {
     /**
      * firstIdx 부터 count 개의 Page 를 가져온다 (생성일 기준 내림차순 정렬)
      */
-    public List<Page> findRange(int beginIdx, int count) {
-        return em.createQuery("select p from Page p order by p.createdTime desc", Page.class)
+    public PagesAndEndIdxDto findRange(int beginIdx, int count) {
+        List<Page> ret = new ArrayList<>();
+
+        List<Page> resultList = em.createQuery("select p from Page p order by p.createdTime desc", Page.class)
                 .setFirstResult(beginIdx)
                 .setMaxResults(count)
                 .getResultList();
+
+
+        for (Page page : resultList) {
+            if(page.getWritingDone()) {
+                ret.add(page);
+            }
+        }
+
+        int endIdx = beginIdx + resultList.size();
+
+        return new PagesAndEndIdxDto(endIdx, ret);
     }
 }

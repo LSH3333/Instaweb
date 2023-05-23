@@ -7,9 +7,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,16 +15,14 @@ import web.instaweb.SessionConst;
 import web.instaweb.domain.Image;
 import web.instaweb.domain.Member;
 import web.instaweb.domain.Page;
-import web.instaweb.dto.GetImageDto;
+import web.instaweb.dto.PagesAndEndIdxDto;
 import web.instaweb.form.PageForm;
 import web.instaweb.form.PageListForm;
 import web.instaweb.service.ImageService;
-import web.instaweb.service.LoginService;
 import web.instaweb.service.MemberService;
 import web.instaweb.service.PageService;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.io.InputStream;
@@ -139,10 +135,17 @@ public class PageController {
      */
     @ResponseBody
     @GetMapping("/pages/ajaxReq")
-    public Map<String, ?> loadPagesAndImages(@RequestParam int beginIdx, @RequestParam int cnt, @RequestParam Long memberId) {
+    public Map<String, ?> loadPagesAndImages(@RequestParam int beginIdx, @RequestParam Long memberId) {
+        int cnt = 10; // 최대 10개의 Page 가져오기 시도
+        System.out.println("loadPagesAndImages = " + beginIdx + ' ' + cnt);
         // 로그인 되있는 Member 가 갖는 Page 들
         Member member = memberService.findOne(memberId);
-        List<Page> pages = member.getCntPagesFromIdx(beginIdx, cnt);
+
+        PagesAndEndIdxDto pagesAndEndIdxDto = member.getCntPagesFromIdx(beginIdx, cnt);
+        // 클라이언트로 보낼 page 목록
+        List<Page> pages = pagesAndEndIdxDto.getRetPages();
+        // 다음 요청때 page 에서 탐색 시작할 idx
+        int nextBeginIdx = pagesAndEndIdxDto.getEndIdx();
 
         Map<String, List<?>> ret = new HashMap<>();
 
@@ -151,7 +154,6 @@ public class PageController {
         for (Page page : pages) {
             if(!page.getWritingDone()) continue; // 작성중인 Page 제외
             PageListForm pageListForm = new PageListForm(page.getId(), page.getTitle(), page.getContent(), page.getMember().getId(), page.getMember().getName(), page.getCreatedTime());
-            System.out.println("loadPagesAndImages content = " + page.getContent());
             pageListForms.add(pageListForm);
         }
 
@@ -173,23 +175,32 @@ public class PageController {
 
         ret.put("pages", pageListForms);
         ret.put("images", images);
+
+        List<String> nextBeginIdxList = new ArrayList<>();
+        nextBeginIdxList.add(Integer.toString(nextBeginIdx));
+        ret.put("nextBeginIdx", nextBeginIdxList);
+
 
         return ret;
     }
 
     /**
-     * 존재하는 모든 page 의 목록
+     * 존재하는 모든 page 의 목록 (login 안해도 볼수있음)
      */
     @GetMapping("/allPages")
     public String allList(Model model) {
-        return "/pages/allPageList";
+        return "/pages/home";
     }
 
     @ResponseBody
     @GetMapping("/allPages/ajaxReq")
-    public Map<String, ?> loadAllPagesAndImages(@RequestParam int beginIdx, @RequestParam int cnt)  {
+    public Map<String, ?> loadAllPagesAndImages(@RequestParam int beginIdx)  {
+        int cnt = 10;
 
-        List<Page> pages = pageService.findRange(beginIdx, cnt);
+        PagesAndEndIdxDto pagesAndEndIdxDto = pageService.findRange(beginIdx, cnt);
+        List<Page> pages = pagesAndEndIdxDto.getRetPages();
+        // 다음 요청때 page 에서 탐색 시작할 idx
+        int nextBeginIdx = pagesAndEndIdxDto.getEndIdx();
 
         Map<String, List<?>> ret = new HashMap<>();
 
@@ -220,6 +231,10 @@ public class PageController {
 
         ret.put("pages", pageListForms);
         ret.put("images", images);
+
+        List<String> nextBeginIdxList = new ArrayList<>();
+        nextBeginIdxList.add(Integer.toString(nextBeginIdx));
+        ret.put("nextBeginIdx", nextBeginIdxList);
 
         return ret;
     }

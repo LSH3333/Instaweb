@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import web.instaweb.domain.Page;
+import web.instaweb.dto.PagesAndEndIdxDto;
 import web.instaweb.repository.ImageRepository;
 import web.instaweb.repository.PageRepository;
 
@@ -43,7 +44,7 @@ public class PageService {
         return pageRepository.findAll();
     }
 
-    public List<Page> findRange(int beginIdx, int cnt) {
+    public PagesAndEndIdxDto findRange(int beginIdx, int cnt) {
         return pageRepository.findRange(beginIdx, cnt);
     }
 }

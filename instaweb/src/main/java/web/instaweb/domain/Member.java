@@ -3,6 +3,7 @@ package web.instaweb.domain;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.transaction.annotation.Transactional;
+import web.instaweb.dto.PagesAndEndIdxDto;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -39,11 +40,20 @@ public class Member {
         pages.add(page);
     }
 
-    public List<Page> getCntPagesFromIdx(int beginIdx, int cnt) {
-        List<Page> ret = new ArrayList<>();
-        for(int i = beginIdx; (i < beginIdx+cnt) && (i < pages.size()) ; i++) {
-            ret.add(pages.get(i));
+    /**
+     * 이 member 가 작성한 page 들 중 beginIdx 부터 cnt 개 찾는다
+     * @param beginIdx
+     * @param cnt
+     * @return : {다음에 찾기 시작할 idx, 찾은 pages 들}
+     */
+    public PagesAndEndIdxDto getCntPagesFromIdx(int beginIdx, int cnt) {
+        List<Page> retPages = new ArrayList<>();
+        int i;
+        for(i = beginIdx; (i < beginIdx+cnt) && (i < pages.size()) ; i++) {
+            if(pages.get(i).getWritingDone()) {
+                retPages.add(pages.get(i));
+            }
         }
-        return ret;
+        return new PagesAndEndIdxDto(i, retPages);
     }
 }

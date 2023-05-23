@@ -17,6 +17,7 @@ body {
     /* footer 아래 위치하도록 최소 높이 보장 */
     min-height: 780px;
     margin-left: 245px;
+    margin-bottom: 30px;
     /* padding: 0 5px; */
     /* background-color: aqua; */
 }
