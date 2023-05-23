@@ -150,8 +150,7 @@
     });
 
     // 최초 페이지 로드 완료시 페이지 idx=0 부터 cnt=10 개 로드
-    window.onload = function () {
-      console.log('home')
+    window.onload = function () {      
       xhr.open(
         "GET",
         "/allPages/ajaxReq?beginIdx=" +

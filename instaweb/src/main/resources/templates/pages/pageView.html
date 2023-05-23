@@ -8,8 +8,6 @@
     <link rel="stylesheet" href="/css/pageView.css" th:href="@{/css/pageView.css}">
     <!-- page block style -->
     <link rel="stylesheet" type="text/css" href="/css/pageBlock.css" th:href="@{/css/pageBlock.css}">
-
-
 </head>
 
 <body>
@@ -50,7 +48,7 @@
     <!-- ajax 요청으로 내용 가져와서 <img> 삽입  -->
     <script type="text/javascript">
         let pageId = "[[${page.id}]]";
-      
+
         let xhr = new XMLHttpRequest();
 
         xhr.onreadystatechange = function () {
@@ -60,7 +58,6 @@
 
                     const tempDiv = document.createElement("div");
                     tempDiv.innerHTML = data.content;
-                    console.log('data.content = ' + data.content)
                     // Get all <img> elements from the div
                     const imgElements = tempDiv.querySelectorAll("img");
 
@@ -79,10 +76,9 @@
         }
 
         window.onload = function () {
-            console.log('pageId = ' + pageId);
-            console.log('pageId.toString() = ' + pageId.toString())
             xhr.open('GET', '/view/ajaxReq?pageId=' + pageId.toString(), true);
             xhr.send();
+            changeCreatedTimePattern();
         };
 
     </script>
@@ -103,6 +99,16 @@
                 editor.style.height = 'auto';
                 editor.style.height = Math.max(500, height) + 'px';
             });
+        }
+
+        // change "yyyy-MM-dd'T'HH:mm:ss.SSS" to "yyyy-MM-dd HH:ss"
+        function changeCreatedTimePattern() {
+            var createdTimeElement = document.querySelector(".createdTime");
+            const date = new Date(createdTimeElement.textContent);
+            const datePart = date.toISOString().split("T")[0];
+            const timePart = date.toTimeString().split(" ")[0];
+            const newPattern = datePart + ". " + timePart;
+            createdTimeElement.textContent = newPattern;
         }
     </script>
 
