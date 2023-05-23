@@ -303,7 +303,6 @@ public class PageController {
             return "error/showError.html";
         }
 
-
             // 1. 뷰에서는 저장된 이미지를 보여줘야함
         // Page 에는 Image 형으로 저장되어있음, 폼은 MultiPartFile 형식 -> 폼에 Image 형으로도 저장할수 있도록 선언
 
@@ -314,6 +313,7 @@ public class PageController {
         form.setByteImages(page.getImages());
 
         model.addAttribute("form", form);
+
         return "pages/updatePageForm";
     }
 
@@ -363,6 +363,7 @@ public class PageController {
             pageService.updatePage(Long.parseLong(pageId), title, content, localDateTime, true);
 
             imageService.deletePagesAllImages(Long.parseLong(pageId));
+
             // 이미지 파일은 없을수도 있음
             if(files != null) {
                 int i = 0;
