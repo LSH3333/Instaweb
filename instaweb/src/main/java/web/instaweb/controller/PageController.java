@@ -351,17 +351,18 @@ public class PageController {
         String message = "";
         Page page = pageService.findOne(Long.parseLong(pageId));
         Long memberId = loginMember.getId();
-
+        System.out.println("handleFileUpload file.size() = " + files.size());
         try {
             // title, content, createdTime 저장
-            // Define the pattern of the input string
+
+
             String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS";
-            // Create a DateTimeFormatter based on the pattern
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-            // Parse the string to LocalDateTime using the formatter
             LocalDateTime localDateTime = LocalDateTime.parse(createdTime, formatter);
 
             pageService.updatePage(Long.parseLong(pageId), title, content, localDateTime, true);
+
+            imageService.deletePagesAllImages(Long.parseLong(pageId));
             // 이미지 파일은 없을수도 있음
             if(files != null) {
                 int i = 0;

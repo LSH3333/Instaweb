@@ -266,6 +266,7 @@
         formData.append("files", value);
       });
 
+
       // key:imgIdxList, <img class="imgIdx">
       fileMap.forEach((value, key) => {
         let imgIdx = imgIdxMap.get(key); // imgIdx:String
@@ -327,6 +328,14 @@
       // Get all <img> elements from the div
       const imgElements = tempDiv.querySelectorAll("img");
 
+      // imgElements.forEach((imgElement) => {
+      //   const url = imgElement.src;
+      //   const imgIdx = imgElement.classList[0];
+      //   if (!fileMap.has(url)) {
+      //     fileMap.set(url, )
+      //   }
+      // });
+
       // key,value = [url, file]
       const imgExistence = new Map();
       // 유저가 한 번 삽입했다가 지운 이미지는 Map 에서 삭제되어야함
@@ -334,11 +343,14 @@
 
       imgElements.forEach((imgElement) => {
         const key = imgElement.src;
+        console.log('imgElement = ' + key);
         imgExistence.set(key, true);
       });
 
+      // 수정폼에서 추가된게 아닌 이전부터 존재하던 이미지는 애초에 fileMap 에 존재하지 않음 
       fileMap.forEach((value, key) => {
         if (!imgExistence.has(key)) {
+          console.log('keysToDelete = ' + key);
           keysToDelete.push(key);
         }
       });
@@ -346,6 +358,7 @@
       keysToDelete.forEach((key) => {
         fileMap.delete(key);
       });
+      console.log('fileMap.size = ' + fileMap.size)
 
       // imgIdxMap [key,value] = [url, imgIdx]
       imgElements.forEach((imgElement) => {
@@ -353,6 +366,9 @@
         const imgIdx = imgElement.classList[0];
         imgIdxMap.set(url, imgIdx);
       });
+
+
+
     }
 
     // text editor 에 입력시 editor 크기 조절 
@@ -363,29 +379,29 @@
       editor.style.height = Math.max(minHeight, editor.scrollHeight) + "px"; // Set the height to the maximum of minHeight and scroll height
     }
 
-   // 이미지 editor 에 삽입 하고, 그 높이 만큼 editor 의 높이 조절함
-   function resizeEditorAfterImgInserted(divImgEle, file) {
-            let minHeight = 500;
-            const reader = new FileReader();
-            const imgEle = document.createElement("img");
+    // 이미지 editor 에 삽입 하고, 그 높이 만큼 editor 의 높이 조절함
+    function resizeEditorAfterImgInserted(divImgEle, file) {
+      let minHeight = 500;
+      const reader = new FileReader();
+      const imgEle = document.createElement("img");
 
-            reader.onload = function (event) {
-                imgEle.onload = function () {
-                    // insert 한 img 높이 
-                    const imageHeight = imgEle.height + 20 + 20; // 위 아래 margin 20
-                    // wait for scrollHeight reflection 
-                    setTimeout(function () {
-                        editor.style.height = "auto";
-                        editor.style.height = Math.max(minHeight, editor.scrollHeight) + "px";
-                        // Your code to adjust the editor height here
-                    }, 100);
-                };
+      reader.onload = function (event) {
+        imgEle.onload = function () {
+          // insert 한 img 높이 
+          const imageHeight = imgEle.height + 20 + 20; // 위 아래 margin 20
+          // wait for scrollHeight reflection 
+          setTimeout(function () {
+            editor.style.height = "auto";
+            editor.style.height = Math.max(minHeight, editor.scrollHeight) + "px";
+            // Your code to adjust the editor height here
+          }, 100);
+        };
 
-                imgEle.src = event.target.result;
-                
-            };
-            reader.readAsDataURL(file);
-        }
+        imgEle.src = event.target.result;
+
+      };
+      reader.readAsDataURL(file);
+    }
 
     // page onload 시 editor 크기 조절 
     function resizeEditorOnload() {
