@@ -58,14 +58,21 @@
 
                     const tempDiv = document.createElement("div");
                     tempDiv.innerHTML = data.content;
-                    // Get all <img> elements from the div
-                    const imgElements = tempDiv.querySelectorAll("img");
 
+                    // 이미지 src 서버에서 가져온걸로 변경
+                    const imgElements = tempDiv.querySelectorAll("img");
                     for (let i = 0; i < imgElements.length; i++) {
                         let imgElement = imgElements[i];
                         imgElement.src = 'data:image/jpeg;charset=utf-8;base64,' + data.images[i];
                     }
 
+                    // 글 작성폼에서 삽입되는 div 는 contenteditable=true임, pageView 에서는  false로 바꿈
+                    const divElements = tempDiv.querySelectorAll("div");
+                    for(let i = 0; i < divElements.length; i++) {
+                        let divElement = divElements[i];
+                        divElement.setAttribute('contenteditable', 'false');
+                    }
+                    
                     document.getElementById('editor').appendChild(tempDiv);
                     resizeEditorOnload();
 
