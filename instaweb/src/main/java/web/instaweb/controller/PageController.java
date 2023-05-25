@@ -58,6 +58,7 @@ public class PageController {
      * createPageForm 으로 넘어가기 전에 Page 객체 미리 만들어서 id 생성해놓고, 생성된 id 값도 PageForm 에 포함시켜서 전달
      *
      * 작성폼에서 유저가 작성한 내용들 저장은 ajax 로 처리, 수정폼이랑 같은 ajax 사용, handleFileUpload() 에서 처리
+     * todo : 작성폼, 수정폼에서 작성 중 다른 페이지로 이동 시에도 title, content 저장하도록 수정 필요 
      */
     @GetMapping("{memberId}/pages/new")
     public String createForm(Model model, @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
