@@ -150,6 +150,8 @@
     const btnImage = document.getElementById("btn-image");
     const imageSelector = document.getElementById("img-selector");
 
+    let isFormSubmitting = false;
+
     btnBold.addEventListener("click", function () {
       setStyle("bold");
     });
@@ -255,6 +257,7 @@
       event.preventDefault();
       // error check, error 없을시 데이터 서버로 전송 시작 
       if (!checkErrors()) {
+        isFormSubmitting = true;
         // 이미지 정보 먼저 ajax로 보내고 폼 데이터 이후 보냄
         uploadToServer();
       }
@@ -298,6 +301,8 @@
       // key: files
       // key: uuid
       uploadMap.forEach((value, key) => {
+        console.log('uuid = ' + key)
+        console.log('file = ' + value)
         formData.append("files", value);
         formData.append("uuids", key);
       });
@@ -363,7 +368,6 @@
         uploadMap.set(imgElement.id, fileMap.get(imgElement.id));
         imgElement.removeAttribute('src');
       }
-      console.log('uploadMap.size = ' + uploadMap.size);
 
       // img src 는 필요없으므로 제거 (서버에 전송 x)
       document.getElementById("my-textarea").value = tempDiv.innerHTML;
@@ -404,20 +408,34 @@
 
     // page onload 시 editor 크기 조절 
     function resizeEditorOnload() {
-      let editor = document.getElementById('editor');
 
-      let height = 62; // editor 기본 padding, border 포함
-
-      for (let i = 0; i < editor.childNodes.length; i++) {
-        let childNode = editor.childNodes[i];
-        height += childNode.offsetHeight;
-      }
-
-      editor.style.height = "auto";
-      editor.style.height = Math.max(500, height) + 'px';
+      // Perform additional actions after the element is displayed
+      window.requestAnimationFrame(function () {
+        // Your additional actions here
+        // This code will run after the element is rendered
+        let height = 62; // editor 기본 padding, border 포함
+        for (let i = 0; i < editor.childNodes.length; i++) {
+          let childNode = editor.childNodes[i];
+          height += childNode.offsetHeight;
+        }
+        editor.style.height = 'auto';
+        editor.style.height = Math.max(500, height) + 'px';
+      });
     }
 
 
+    // Add the event listener for the beforeunload event
+    window.addEventListener('beforeunload', function (event) {
+      // Check if the form submission is in progress
+      if (isFormSubmitting) {
+        return; // Allow the default behavior for form submission
+      }
+      // Cancel the event as a fallback
+      event.preventDefault();
+
+      // Set the message that will be displayed in the confirmation dialog
+      event.returnValue = 'Are you sure you want to leave this page? Your unsaved changes may be lost.';
+    });
 
   </script>
 

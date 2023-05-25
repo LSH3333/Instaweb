@@ -84,6 +84,8 @@
         const btnImage = document.getElementById("btn-image");
         const imageSelector = document.getElementById("img-selector");
 
+        let isFormSubmitting = false;
+
         btnBold.addEventListener("click", function () {
             setStyle("bold");
         });
@@ -130,7 +132,7 @@
             let url = URL.createObjectURL(file);
             // fileMap.set(url, file);
             // const imgUUID = uuidv4(); // 이미지의 고유 UUID 값 
-            const imgUUID = self.crypto.randomUUID();            
+            const imgUUID = self.crypto.randomUUID();
             fileMap.set(imgUUID, file);
 
             let imgEle = document.createElement("img");
@@ -189,6 +191,7 @@
             event.preventDefault();
             // error check, error 없을시 데이터 서버로 전송 시작 
             if (!checkErrors()) {
+                isFormSubmitting = true;
                 // 이미지 정보 먼저 ajax로 보내고 폼 데이터 이후 보냄
                 uploadToServer();
             }
@@ -231,7 +234,7 @@
 
             // key: files
             // key: uuid
-            uploadMap.forEach((value,key) => {
+            uploadMap.forEach((value, key) => {
                 console.log('uuid = ' + key)
                 console.log('file = ' + value)
                 formData.append("files", value);
@@ -292,17 +295,17 @@
 
             // Get all <img> elements from the div
             const imgElements = tempDiv.querySelectorAll("img");
-            
+
             // uploadMap 에 uuid,file 저장 (서버에 업로드할 파일들)
-            for(let i = 0; i < imgElements.length; i++) {
+            for (let i = 0; i < imgElements.length; i++) {
                 const imgElement = imgElements[i];
-                uploadMap.set(imgElement.id, fileMap.get(imgElement.id));                
+                uploadMap.set(imgElement.id, fileMap.get(imgElement.id));
                 imgElement.removeAttribute('src');
             }
 
             // img src 는 필요없으므로 제거 (서버에 전송 x)
             document.getElementById("my-textarea").value = tempDiv.innerHTML;
-                                    
+
         }
 
         // text editor 에 입력시 editor 크기 조절 
@@ -353,6 +356,20 @@
                 editor.style.height = Math.max(500, height) + 'px';
             });
         }
+
+
+        // Add the event listener for the beforeunload event
+        window.addEventListener('beforeunload', function (event) {
+            // Check if the form submission is in progress
+            if (isFormSubmitting) {
+                return; // Allow the default behavior for form submission
+            }
+            // Cancel the event as a fallback
+            event.preventDefault();
+
+            // Set the message that will be displayed in the confirmation dialog
+            event.returnValue = 'Are you sure you want to leave this page? Your unsaved changes may be lost.';
+        });
 
     </script>
 
