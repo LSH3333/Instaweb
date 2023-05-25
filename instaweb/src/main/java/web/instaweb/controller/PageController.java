@@ -353,7 +353,7 @@ public class PageController {
         String message = "";
         Page page = pageService.findOne(Long.parseLong(pageId));
         Long memberId = loginMember.getId();
-        System.out.println("handleFileUpload file.size() = " + files.size());
+        System.out.println("handleFileUpload");
 
         try {
             // title, content, createdTime 저장
@@ -364,14 +364,23 @@ public class PageController {
 
             pageService.updatePage(Long.parseLong(pageId), title, content, localDateTime, true);
 
-//            imageService.deletePagesAllImages(Long.parseLong(pageId));
+            imageService.deletePagesAllImages(Long.parseLong(pageId));
+
+//            List<Image> images = page.getImages();
+//            // 기존에 존재하던 Image 들
+//            List<String> existingUUIDList = new ArrayList<>();
+//            for (Image image : images) {
+//                existingUUIDList.add(image.getUUID());
+//            }
 
             // 이미지 파일은 없을수도 있음
             if(files != null) {
                 int i = 0;
                 for (MultipartFile file : files) {
+                    String uuid = uuids.get(i);
+                    System.out.println("uuid = " + uuid);
                     Image image = new Image(file);
-                    image.setImgUUID(uuids.get(i));
+                    image.setImgUUID(uuid);
                     page.addImage(image);
                     image.setPage(page); // image - page 연결
                     imageService.saveImage(image);

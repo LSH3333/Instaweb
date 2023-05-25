@@ -289,8 +289,6 @@
       // key: files
       // key: uuid
       uploadMap.forEach((value, key) => {
-        console.log('uuid = ' + key)
-        console.log('file = ' + value)
         formData.append("files", value);
         formData.append("uuids", key);
       });
@@ -352,10 +350,11 @@
 
       // uploadMap 에 uuid,file 저장 (서버에 업로드할 파일들)
       for (let i = 0; i < imgElements.length; i++) {
-        const imgElement = imgElements[i];
-        uploadMap.set(imgElement.id, fileMap.get(imgElement.id));
+        const imgElement = imgElements[i];        
+        uploadMap.set(imgElement.id, fileMap.get(imgElement.id));       
         imgElement.removeAttribute('src');
       }
+      console.log('uploadMap.size = ' + uploadMap.size);
 
       // img src 는 필요없으므로 제거 (서버에 전송 x)
       document.getElementById("my-textarea").value = tempDiv.innerHTML;

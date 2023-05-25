@@ -65,7 +65,7 @@ public class ImageService {
         List<Image> images = page.getImages();
         for (Image image : images) {
             System.out.println("image = " + image.getId());
+            imageRepository.deleteImage(image.getId());
         }
-        images.clear();
     }
 }
