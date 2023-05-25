@@ -238,18 +238,6 @@
                 formData.append("uuids", key);
             });
 
-            // key:files, files formData 에 추가
-            // fileMap.forEach((value, key) => {
-            //     // value 는 file
-            //     formData.append("files", value);
-            // });
-
-            // key:imgIdxList, <img class="imgIdx">
-            // fileMap.forEach((value, key) => {
-            //     let imgIdx = imgIdxMap.get(key); // imgIdx:String
-            //     formData.append("imgIdxList", imgIdx);
-            // });
-
             // key:title
             let title = document.getElementById('titleInput').value;
             formData.append("title", title);

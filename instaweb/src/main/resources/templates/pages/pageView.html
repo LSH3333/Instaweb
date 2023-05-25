@@ -73,6 +73,9 @@
                         // img uuid 
                         const uuid = imgElement.id;
                         imgElement.src = 'data:image/jpeg;charset=utf-8;base64,' + fileMap.get(uuid);
+
+                        // let url = URL.createObjectURL(fileMap.get(uuid));
+                        // imgElement.src = url;
                     }
                 
 

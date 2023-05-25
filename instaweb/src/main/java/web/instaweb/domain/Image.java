@@ -24,7 +24,8 @@ public class Image {
     @Lob
     private byte[] image;
 
-    // Page.images 리스트에 저장되는 순서
+
+    // 이미지의 유니크한 uuid
     private String UUID;
 
     public void setImgUUID(String UUID) {

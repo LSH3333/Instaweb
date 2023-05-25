@@ -65,9 +65,11 @@
         if (xhr.status == 200) {
           let data = JSON.parse(xhr.responseText);
 
-          // console.log('content = ' + data.content);
-          // console.log('images = ' + data.images.length);
-          // console.log('imgIdxList = ' + data.imgIdxList.length);
+          // key,val = 이미지의 uuid,이미지 File 
+          for (let i = 0; i < data.images.length; i++) {
+            let file = base64ToFile(data.images[i], data.imgUUIDList[i], 'image/');
+            fileMap.set(data.imgUUIDList[i], file);
+          }
 
           //
           const tempDiv = document.createElement("div");
@@ -77,9 +79,11 @@
           // 이미지 디스플레이
           for (let i = 0; i < imgElements.length; i++) {
             let imgElement = imgElements[i];
-            imgElement.src =
-              "data:image/jpeg;charset=utf-8;base64," + data.images[i];
+            // imgElement.src =
+            //   "data:image/jpeg;charset=utf-8;base64," + fileMap.get(data.imgUUIDList[i]);    
+            imgElement.src = URL.createObjectURL(fileMap.get(data.imgUUIDList[i]));               
           }
+
 
           let editor = document.getElementById("editor");
           editor.innerHTML = tempDiv.innerHTML;
@@ -95,19 +99,37 @@
       xhr.open("GET", "/view/ajaxReq?pageId=" + pageId.toString(), true);
       xhr.send();
     };
+
+    function base64ToFile(base64String, fileName, contentType) {
+      const byteCharacters = atob(base64String);
+      const byteArrays = [];
+
+      for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+        const slice = byteCharacters.slice(offset, offset + 512);
+        const byteNumbers = new Array(slice.length);
+
+        for (let i = 0; i < slice.length; i++) {
+          byteNumbers[i] = slice.charCodeAt(i);
+        }
+
+        const byteArray = new Uint8Array(byteNumbers);
+        byteArrays.push(byteArray);
+      }
+
+      const blob = new Blob(byteArrays, { type: contentType });
+      return new File([blob], fileName, { type: contentType });
+    }
   </script>
 
 
   <!-- createPageForm, updatePageForm 동일하게 사용 -->
   <script>
     let pageId = "[[${form.id}]]";
-
     // key = Image 의 url, value = Image File
     // let fileList = []; // 유저가 선택한 file 이 담김
     const fileMap = new Map();
-    // [key,value] = [url, imgIdx]
-    // imgIdx 는 각 img 에 부여된 고유 번호
-    const imgIdxMap = new Map();
+    // key,value = UUID,File
+    const uploadMap = new Map();
 
     const form = document.querySelector("form");
     const editor = document.getElementById("editor");
@@ -163,11 +185,15 @@
     function insertImg(file) {
       const reader = new FileReader();
       let url = URL.createObjectURL(file);
-      fileMap.set(url, file);
+      // fileMap.set(url, file);
+      // const imgUUID = uuidv4(); // 이미지의 고유 UUID 값 
+      const imgUUID = self.crypto.randomUUID();
+      fileMap.set(imgUUID, file);
 
       let imgEle = document.createElement("img");
       imgEle.src = url;
-      imgEle.classList.add(imgEleCnt++);
+      // imgEle.classList.add(imgEleCnt++);
+      imgEle.id = imgUUID;
       let divImgEle = document.createElement("div");
       divImgEle.appendChild(imgEle);
 
@@ -260,17 +286,13 @@
       createdTime = createdTime.substring(0, 23);
       formData.append("createdTime", createdTime);
 
-      // key:files, files formData 에 추가
-      fileMap.forEach((value, key) => {
-        // value 는 file
+      // key: files
+      // key: uuid
+      uploadMap.forEach((value, key) => {
+        console.log('uuid = ' + key)
+        console.log('file = ' + value)
         formData.append("files", value);
-      });
-
-
-      // key:imgIdxList, <img class="imgIdx">
-      fileMap.forEach((value, key) => {
-        let imgIdx = imgIdxMap.get(key); // imgIdx:String
-        formData.append("imgIdxList", imgIdx);
+        formData.append("uuids", key);
       });
 
       // key:title
@@ -328,46 +350,15 @@
       // Get all <img> elements from the div
       const imgElements = tempDiv.querySelectorAll("img");
 
-      // imgElements.forEach((imgElement) => {
-      //   const url = imgElement.src;
-      //   const imgIdx = imgElement.classList[0];
-      //   if (!fileMap.has(url)) {
-      //     fileMap.set(url, )
-      //   }
-      // });
+      // uploadMap 에 uuid,file 저장 (서버에 업로드할 파일들)
+      for (let i = 0; i < imgElements.length; i++) {
+        const imgElement = imgElements[i];
+        uploadMap.set(imgElement.id, fileMap.get(imgElement.id));
+        imgElement.removeAttribute('src');
+      }
 
-      // key,value = [url, file]
-      const imgExistence = new Map();
-      // 유저가 한 번 삽입했다가 지운 이미지는 Map 에서 삭제되어야함
-      const keysToDelete = [];
-
-      imgElements.forEach((imgElement) => {
-        const key = imgElement.src;
-        console.log('imgElement = ' + key);
-        imgExistence.set(key, true);
-      });
-
-      // 수정폼에서 추가된게 아닌 이전부터 존재하던 이미지는 애초에 fileMap 에 존재하지 않음 
-      fileMap.forEach((value, key) => {
-        if (!imgExistence.has(key)) {
-          console.log('keysToDelete = ' + key);
-          keysToDelete.push(key);
-        }
-      });
-
-      keysToDelete.forEach((key) => {
-        fileMap.delete(key);
-      });
-      console.log('fileMap.size = ' + fileMap.size)
-
-      // imgIdxMap [key,value] = [url, imgIdx]
-      imgElements.forEach((imgElement) => {
-        const url = imgElement.src;
-        const imgIdx = imgElement.classList[0];
-        imgIdxMap.set(url, imgIdx);
-      });
-
-
+      // img src 는 필요없으므로 제거 (서버에 전송 x)
+      document.getElementById("my-textarea").value = tempDiv.innerHTML;
 
     }
 

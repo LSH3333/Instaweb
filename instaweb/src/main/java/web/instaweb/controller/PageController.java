@@ -255,7 +255,7 @@ public class PageController {
         return "pages/pageView";
     }
 
-    // view 의 내용과 이미지는 ajax 로 받아서 동적으로 디스플레이한다
+    // view 의 내용과 이미지는 ajax 로 받아서 동적으로 디스플레이한다, 수정폼에서도 사용
     @ResponseBody
     @GetMapping("/view/ajaxReq")
     public Map<String,?> viewPageSendData(@RequestParam long pageId) {
@@ -268,6 +268,7 @@ public class PageController {
         List<Image> imageList = page.getImages();
         List<String> images = new ArrayList<>();
         List<String> imgUUIDList = new ArrayList<>();
+
         for (Image image : imageList) {
             images.add(image.generateBase64Image());
             imgUUIDList.add(image.getUUID());
@@ -354,8 +355,6 @@ public class PageController {
         Long memberId = loginMember.getId();
         System.out.println("handleFileUpload file.size() = " + files.size());
 
-
-
         try {
             // title, content, createdTime 저장
 
@@ -372,9 +371,7 @@ public class PageController {
                 int i = 0;
                 for (MultipartFile file : files) {
                     Image image = new Image(file);
-//                    image.setImgIdx(imgIdx);
                     image.setImgUUID(uuids.get(i));
-                    System.out.println("uuid[i] = " + uuids.get(i));
                     page.addImage(image);
                     image.setPage(page); // image - page 연결
                     imageService.saveImage(image);
