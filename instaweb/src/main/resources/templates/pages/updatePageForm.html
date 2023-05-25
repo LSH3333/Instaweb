@@ -65,6 +65,9 @@
         if (xhr.status == 200) {
           let data = JSON.parse(xhr.responseText);
 
+          const imgCount = data.images.length;
+          let loadedImgCount = 0;
+
           // key,val = 이미지의 uuid,이미지 File 
           for (let i = 0; i < data.images.length; i++) {
             let file = base64ToFile(data.images[i], data.imgUUIDList[i], 'image/');
@@ -74,20 +77,26 @@
           //
           const tempDiv = document.createElement("div");
           tempDiv.innerHTML = data.content;
+
           // Get all <img> elements from the div
           const imgElements = tempDiv.querySelectorAll("img");
           // 이미지 디스플레이
           for (let i = 0; i < imgElements.length; i++) {
             let imgElement = imgElements[i];
-            // imgElement.src =
-            //   "data:image/jpeg;charset=utf-8;base64," + fileMap.get(data.imgUUIDList[i]);    
-            imgElement.src = URL.createObjectURL(fileMap.get(data.imgUUIDList[i]));               
-          }
+            imgElement.src = URL.createObjectURL(fileMap.get(data.imgUUIDList[i]));
 
+            imgElement.onload = function () {
+              loadedImgCount++;
+
+              if (loadedImgCount === imgCount) {
+                resizeEditorOnload();
+              }
+            }
+          }
 
           let editor = document.getElementById("editor");
           editor.innerHTML = tempDiv.innerHTML;
-          resizeEditorOnload();
+
         } else {
           console.error("error");
         }
@@ -350,8 +359,8 @@
 
       // uploadMap 에 uuid,file 저장 (서버에 업로드할 파일들)
       for (let i = 0; i < imgElements.length; i++) {
-        const imgElement = imgElements[i];        
-        uploadMap.set(imgElement.id, fileMap.get(imgElement.id));       
+        const imgElement = imgElements[i];
+        uploadMap.set(imgElement.id, fileMap.get(imgElement.id));
         imgElement.removeAttribute('src');
       }
       console.log('uploadMap.size = ' + uploadMap.size);
@@ -395,20 +404,20 @@
 
     // page onload 시 editor 크기 조절 
     function resizeEditorOnload() {
+      let editor = document.getElementById('editor');
 
-      // Perform additional actions after the element is displayed
-      window.requestAnimationFrame(function () {
-        // Your additional actions here
-        // This code will run after the element is rendered
-        let height = 62; // editor 기본 padding, border 포함
-        for (let i = 0; i < editor.childNodes.length; i++) {
-          let childNode = editor.childNodes[i];
-          height += childNode.offsetHeight;
-        }
-        editor.style.height = 'auto';
-        editor.style.height = Math.max(500, height) + 'px';
-      });
+      let height = 62; // editor 기본 padding, border 포함
+
+      for (let i = 0; i < editor.childNodes.length; i++) {
+        let childNode = editor.childNodes[i];
+        height += childNode.offsetHeight;
+      }
+
+      editor.style.height = "auto";
+      editor.style.height = Math.max(500, height) + 'px';
     }
+
+
 
   </script>
 

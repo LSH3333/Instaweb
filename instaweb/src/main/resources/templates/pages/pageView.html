@@ -57,6 +57,9 @@
                     // contents, images, imgUUIDList
                     let data = JSON.parse(xhr.responseText);
 
+                    const imgCount = data.images.length;
+                    let loadedImgCount = 0;
+
                     // key,val = 이미지의 uuid,이미지 File 
                     const fileMap = new Map();
                     for (let i = 0; i < data.images.length; i++) {
@@ -76,7 +79,15 @@
                         // imgElement.src = 'data:image/jpeg;charset=utf-8;base64,' + fileMap.get(uuid);
 
                         let url = URL.createObjectURL(fileMap.get(uuid));
-                        imgElement.src = url;                        
+                        imgElement.src = url;
+
+                        imgElement.onload = function () {
+                            loadedImgCount++;
+
+                            if (loadedImgCount === imgCount) {
+                                resizeEditorOnload();
+                            }
+                        }
                     }
 
 
@@ -87,8 +98,8 @@
                         divElement.setAttribute('contenteditable', 'false');
                     }
 
-                    document.getElementById('editor').appendChild(tempDiv);
-                    resizeEditorOnload();
+                    // document.getElementById('editor').appendChild(tempDiv);
+                    document.getElementById('editor').innerHTML = tempDiv.innerHTML;
 
                 } else {
                     console.error("error");
@@ -128,23 +139,16 @@
         // page onload 시 editor 크기 조절 
         function resizeEditorOnload() {
             let editor = document.getElementById('editor');
-            // Perform additional actions after the element is displayed
-            window.requestAnimationFrame(function () {
-                // Your additional actions here
-                // This code will run after the element is rendered
-                let height = 62; // editor 기본 padding, border 포함
-                console.log('editor.childNodes[0] = ' + editor.childNodes[0]);
-                console.log('editor.childNodes[0].length = ' + editor.childNodes[0].childNodes.length)
-                
-                for (let i = 0; i < editor.childNodes[0].childNodes.length; i++) {
-                    let childNode = editor.childNodes[0].childNodes[i];
-                    console.log('childNode.offsetHeight = ' + childNode.offsetHeight)
-                    height += childNode.offsetHeight;
-                }
-                editor.style.height = 'auto';
-                editor.style.height = Math.max(500, height) + 'px';
-                console.log('height = ' + height)
-            });
+
+            let height = 62; // editor 기본 padding, border 포함
+
+            for (let i = 0; i < editor.childNodes.length; i++) {
+                let childNode = editor.childNodes[i];
+                height += childNode.offsetHeight;
+            }
+
+            editor.style.height = "auto";
+            editor.style.height = Math.max(500, height) + 'px';
         }
 
         // change "yyyy-MM-dd'T'HH:mm:ss.SSS" to "yyyy-MM-dd HH:ss"
