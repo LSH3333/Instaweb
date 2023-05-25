@@ -30,6 +30,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+
 @Controller
 @RequiredArgsConstructor
 public class PageController {
@@ -127,7 +128,7 @@ public class PageController {
     }
 
     /**
-     * ajax, request from pageList.html
+     * ajax request from pageList.html
      * 이 member 가 작성한 page 들 중 beginIdx 부터 cnt 개 찾는다
      *
      * @return : pages = member 에 속한 페이지들, images = 페이지의 첫번째 이미지, nextBeginIdx = 다음 request 에 여기부터 탐색 시작
@@ -266,10 +267,10 @@ public class PageController {
         // images, imgIdxList
         List<Image> imageList = page.getImages();
         List<String> images = new ArrayList<>();
-        List<Long> imgIdxList = new ArrayList<>();
+        List<String> imgUUIDList = new ArrayList<>();
         for (Image image : imageList) {
             images.add(image.generateBase64Image());
-            imgIdxList.add(image.getImgIdx());
+            imgUUIDList.add(image.getUUID());
         }
 
         // content
@@ -278,7 +279,7 @@ public class PageController {
 
         ret.put("content", content);
         ret.put("images", images);
-        ret.put("imgIdxList", imgIdxList);
+        ret.put("imgUUIDList", imgUUIDList);
 
         return ret;
     }
@@ -342,7 +343,7 @@ public class PageController {
     @PostMapping("/pages/upload")
     public ResponseEntity<String> handleFileUpload(@RequestParam("pageId") String pageId,
                                                     @RequestParam(value="files", required = false) List<MultipartFile> files,
-                                                    @RequestParam(value="imgIdxList", required = false) List<String> imgIdxList,
+                                                    @RequestParam(value="uuids", required = false) List<String> uuids,
                                                     @RequestParam("title") String title,
                                                     @RequestParam("content") String content,
                                                     @RequestParam(value="createdTime", required = false) String createdTime,
@@ -352,9 +353,11 @@ public class PageController {
         Page page = pageService.findOne(Long.parseLong(pageId));
         Long memberId = loginMember.getId();
         System.out.println("handleFileUpload file.size() = " + files.size());
+
+
+
         try {
             // title, content, createdTime 저장
-
 
             String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS";
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
@@ -362,15 +365,16 @@ public class PageController {
 
             pageService.updatePage(Long.parseLong(pageId), title, content, localDateTime, true);
 
-            imageService.deletePagesAllImages(Long.parseLong(pageId));
+//            imageService.deletePagesAllImages(Long.parseLong(pageId));
 
             // 이미지 파일은 없을수도 있음
             if(files != null) {
                 int i = 0;
                 for (MultipartFile file : files) {
-                    long imgIdx = Long.parseLong(imgIdxList.get(i));
                     Image image = new Image(file);
-                    image.setImgIdx(imgIdx);
+//                    image.setImgIdx(imgIdx);
+                    image.setImgUUID(uuids.get(i));
+                    System.out.println("uuid[i] = " + uuids.get(i));
                     page.addImage(image);
                     image.setPage(page); // image - page 연결
                     imageService.saveImage(image);

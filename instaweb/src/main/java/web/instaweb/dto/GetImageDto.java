@@ -11,13 +11,13 @@ public class GetImageDto {
     //private String base64Image; // view 에서 디스플레이 할때 사용
 
     // Page.images 리스트에 저장되는 순서
-    private long imgIdx;
+    private String UUID;
 
     public GetImageDto(Image image) {
         this.id = image.getId();
         this.image = image.getImage();
       //  this.base64Image = generateBase64Image();
-        this.imgIdx = image.getImgIdx();
+        this.UUID = image.getUUID();
     }
 
     // byte 배열을 base64 string 형으로 변환해 리턴

@@ -54,7 +54,14 @@
         xhr.onreadystatechange = function () {
             if (xhr.readyState == XMLHttpRequest.DONE) {
                 if (xhr.status == 200) {
+                    // contents, images, imgUUIDList
                     let data = JSON.parse(xhr.responseText);
+
+                    // key,val = 이미지의 uuid,이미지 File 
+                    const fileMap = new Map();
+                    for (let i = 0; i < data.images.length; i++) {                  
+                        fileMap.set(data.imgUUIDList[i], data.images[i]);
+                    }
 
                     const tempDiv = document.createElement("div");
                     tempDiv.innerHTML = data.content;
@@ -63,16 +70,18 @@
                     const imgElements = tempDiv.querySelectorAll("img");
                     for (let i = 0; i < imgElements.length; i++) {
                         let imgElement = imgElements[i];
-                        imgElement.src = 'data:image/jpeg;charset=utf-8;base64,' + data.images[i];
+                        const uuid = imgElement.id;
+                        imgElement.src = 'data:image/jpeg;charset=utf-8;base64,' + fileMap.get(uuid);
                     }
+                
 
                     // 글 작성폼에서 삽입되는 div 는 contenteditable=true임, pageView 에서는  false로 바꿈
                     const divElements = tempDiv.querySelectorAll("div");
-                    for(let i = 0; i < divElements.length; i++) {
+                    for (let i = 0; i < divElements.length; i++) {
                         let divElement = divElements[i];
                         divElement.setAttribute('contenteditable', 'false');
                     }
-                    
+
                     document.getElementById('editor').appendChild(tempDiv);
                     resizeEditorOnload();
 

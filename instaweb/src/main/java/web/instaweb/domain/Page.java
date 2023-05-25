@@ -33,7 +33,7 @@ public class Page {
     // 이미지
     // orphanRemoval : Image 는 Page 없이 존재할수 없다
     @OneToMany(mappedBy = "page", orphanRemoval = true)
-    @OrderBy("imgIdx asc") // Image 의 imgIdx 기준 오름차순
+    //@OrderBy("imgIdx asc") // Image 의 imgIdx 기준 오름차순
     private List<Image> images = new ArrayList<>();
 
     // 이 Page 를 소유하는 Member

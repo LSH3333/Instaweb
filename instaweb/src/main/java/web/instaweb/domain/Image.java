@@ -25,10 +25,10 @@ public class Image {
     private byte[] image;
 
     // Page.images 리스트에 저장되는 순서
-    private long imgIdx;
+    private String UUID;
 
-    public void setImgIdx(long imgIdx) {
-        this.imgIdx = imgIdx;
+    public void setImgUUID(String UUID) {
+        this.UUID = UUID;
     }
 
     public Image() {}
@@ -71,7 +71,7 @@ public class Image {
         this.image = image;
     }
 
-    public void changeImgIdx(long imgIdx) {
-        this.imgIdx = imgIdx;
+    public void changeImgIdx(String UUID) {
+        this.UUID = UUID;
     }
 }
