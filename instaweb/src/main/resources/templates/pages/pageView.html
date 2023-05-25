@@ -133,12 +133,17 @@
                 // Your additional actions here
                 // This code will run after the element is rendered
                 let height = 62; // editor 기본 padding, border 포함
-                for (let i = 0; i < editor.childNodes.length; i++) {
-                    let childNode = editor.childNodes[i];
+                console.log('editor.childNodes[0] = ' + editor.childNodes[0]);
+                console.log('editor.childNodes[0].length = ' + editor.childNodes[0].childNodes.length)
+                
+                for (let i = 0; i < editor.childNodes[0].childNodes.length; i++) {
+                    let childNode = editor.childNodes[0].childNodes[i];
+                    console.log('childNode.offsetHeight = ' + childNode.offsetHeight)
                     height += childNode.offsetHeight;
                 }
                 editor.style.height = 'auto';
                 editor.style.height = Math.max(500, height) + 'px';
+                console.log('height = ' + height)
             });
         }
 
