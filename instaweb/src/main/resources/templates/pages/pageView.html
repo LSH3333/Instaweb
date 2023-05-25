@@ -70,6 +70,7 @@
                     const imgElements = tempDiv.querySelectorAll("img");
                     for (let i = 0; i < imgElements.length; i++) {
                         let imgElement = imgElements[i];
+                        // img uuid 
                         const uuid = imgElement.id;
                         imgElement.src = 'data:image/jpeg;charset=utf-8;base64,' + fileMap.get(uuid);
                     }
