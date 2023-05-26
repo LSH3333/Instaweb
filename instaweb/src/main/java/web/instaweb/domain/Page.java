@@ -62,7 +62,7 @@ public class Page {
         this.title = title;
         this.content = content;
         this.createdTime = createdTime;
-        this.writingDone = true;
+        this.writingDone = writingDone;
     }
 
     public void addImage(Image image) {

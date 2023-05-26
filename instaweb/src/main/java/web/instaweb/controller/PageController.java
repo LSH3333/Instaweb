@@ -349,13 +349,14 @@ public class PageController {
                                                     @RequestParam("title") String title,
                                                     @RequestParam("content") String content,
                                                     @RequestParam(value="createdTime", required = false) String createdTime,
+                                                    @RequestParam("writingDone") boolean writingDone,
                                                     @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
 
         String message = "";
         Page page = pageService.findOne(Long.parseLong(pageId));
         Long memberId = loginMember.getId();
         System.out.println("handleFileUpload");
-
+        System.out.println("writingDone = " + writingDone);
         try {
             // title, content, createdTime 저장
 
@@ -363,23 +364,15 @@ public class PageController {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
             LocalDateTime localDateTime = LocalDateTime.parse(createdTime, formatter);
 
-            pageService.updatePage(Long.parseLong(pageId), title, content, localDateTime, true);
+            pageService.updatePage(Long.parseLong(pageId), title, content, localDateTime, writingDone);
 
             imageService.deletePagesAllImages(Long.parseLong(pageId));
-
-//            List<Image> images = page.getImages();
-//            // 기존에 존재하던 Image 들
-//            List<String> existingUUIDList = new ArrayList<>();
-//            for (Image image : images) {
-//                existingUUIDList.add(image.getUUID());
-//            }
 
             // 이미지 파일은 없을수도 있음
             if(files != null) {
                 int i = 0;
                 for (MultipartFile file : files) {
                     String uuid = uuids.get(i);
-                    System.out.println("uuid = " + uuid);
                     Image image = new Image(file);
                     image.setImgUUID(uuid);
                     page.addImage(image);
