@@ -63,16 +63,10 @@
             // content
             let aInnerDiv = document.createElement("div");
             aInnerDiv.innerHTML = data.pages[i].content;
-            // // pageBlock 에서 이미지는 디스플레이 하지 않도록 지운다
-            let imgElements = aInnerDiv.querySelectorAll("img");
-            imgElements.forEach((imgElement) => {
-              imgElement.onerror = () => {
-                imgElement.remove();
-              };
-              imgElement.src = "";
-            });
+
             // <div>, <img> 등 엘레먼트 지우고 텍스트만 표시하도록 함
-            let str = extractTextFromContent(aInnerDiv);
+            let imgElements = aInnerDiv.querySelectorAll("img");
+            let str = extractTextFromContent(aInnerDiv, imgElements);
             aInnerDiv.innerHTML = str;
             contentAele.appendChild(aInnerDiv);
 
@@ -112,14 +106,22 @@
       }
     };
 
-    //  서버에서 가져온 content 에서 text 만 추출
-    function extractTextFromContent(content) {
+    //  서버에서 가져온 content 에서 text 추출 
+    function extractTextFromContent(content, imgElements) {
+      // // pageBlock 에서 이미지는 디스플레이 하지 않도록 지운다     
+      imgElements.forEach((imgElement) => {
+        imgElement.onerror = () => {
+          imgElement.remove();
+        };
+        imgElement.src = "";
+      });
+
       let str = "";
       let tmpDiv = document.createElement("div");
       tmpDiv.innerHTML = content.innerHTML;
 
       for (let i = 0; i < tmpDiv.childNodes.length; i++) {
-        str += tmpDiv.childNodes[i].innerText;
+        str += tmpDiv.childNodes[i].innerText + ' ';
       }
 
       return str;

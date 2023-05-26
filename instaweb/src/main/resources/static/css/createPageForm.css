@@ -67,12 +67,10 @@ input[type="file"] {
     color: red;
 }
 
-
-
-
 .title input:focus {
     outline: none;
 }
+
 
 #editor {
     border: 1px solid #D6D6D6;
@@ -83,6 +81,7 @@ input[type="file"] {
     border-left: none;            
     padding-top:30px;
     padding-bottom: 30px;
+    line-height: 1.5;
 }
 
 #editor:focus {
