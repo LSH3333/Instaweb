@@ -1,104 +1,7 @@
-<!-- todo : footer 위치 조절 필요 -->
-<div th:fragment="footer">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            /* width, height에 border, padding 값 포함됨  */
-            box-sizing: border-box;
-        }
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-        ul {
-            list-style-type: none;
-        }
-
-        a {
-            text-decoration: none;
-        }
-
-        /* ////////// FOOTER ///////////// */
-    
-        footer {
-            margin-left: 245px;
-            padding-bottom: 30px;
-            /* background-color: #202032; */
-        }
-
-        footer .minScreen {
-            height: 30px;
-            display: none;      
-            color:gray;   
-            font-weight: bold;
-            line-height: 30px;
-        }
-
-        footer div div {
-            /* background-color: aqua;             */
-            height: 100px;            
-            width:100%;
-            margin: 0 auto;
-        }
-
-        footer div p {
-            padding: 20px 10px 0px;
-            line-height: 20px;
-            color: gray;
-            font-size: 12px;
-            padding: 0 20px;
-        }
-
-        footer div div h1 {
-            /* background-color: blue; */
-            left: -10px;
-            bottom: 5px;
-            color: gray;
-            margin-bottom: 20px;
-            padding: 0 20px;
-            width:100%;
-        }
-
-        footer div div ul {
-            /* background-color: blueviolet; */
-            right: 230px;
-            bottom: 15px;
-            padding: 0 20px;
-            margin: 0 auto;
-            overflow: hidden;
-        }
-
-        footer div div ul li {
-            display: inline-block;
-            margin: 0 auto;
-            color: gray;
-        }
-
-        footer div div ul li a {
-            color: gray;
-        }
-
-        @media(max-width: 1200px) {
-            footer {
-                margin-left: 55px;
-            }
-        }
- 
-        @media(max-width: 955px) {
-            footer {
-                background-color: lightgray;
-                height: 30px;
-            }
-            footer div div{
-                display: none;
-            }
-            footer .minScreen {
-                height: 30px;
-                display: inline-block;
-                text-align: center;
-            }
-        }
-    </style>
-
-<footer>
+<footer th:fragment="footer">
     <div>
         <div class="minScreen">INSTA WEB</div>
         <div>
@@ -115,4 +18,3 @@
         </div>
     </div>
 </footer>
-</div>
