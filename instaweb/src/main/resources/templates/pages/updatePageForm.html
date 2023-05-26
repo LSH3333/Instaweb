@@ -55,83 +55,10 @@
   <!-- footer -->
   <footer th:replace="fragment/footer :: footer"></footer>
 
-  <!-- 작성된 내용 ajax 로 불러옴  -->
-  <script type="text/javascript">
+  <!-- 작성된 titile,content 서버에서 불러서 editor에 디스플레이함 (updatePageForm, createPageForm, pageView 에서 사용)  -->
+  <script th:replace="fragment/editorData :: requestTitleAndContentFromServer"></script>
 
-    let xhr = new XMLHttpRequest();
-
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState == XMLHttpRequest.DONE) {
-        if (xhr.status == 200) {
-          let data = JSON.parse(xhr.responseText);
-
-          const imgCount = data.images.length;
-          let loadedImgCount = 0;
-
-          // key,val = 이미지의 uuid,이미지 File 
-          for (let i = 0; i < data.images.length; i++) {
-            let file = base64ToFile(data.images[i], data.imgUUIDList[i], 'image/');
-            fileMap.set(data.imgUUIDList[i], file);
-          }
-
-          //
-          const tempDiv = document.createElement("div");
-          tempDiv.innerHTML = data.content;
-
-          // Get all <img> elements from the div
-          const imgElements = tempDiv.querySelectorAll("img");
-          // 이미지 디스플레이
-          for (let i = 0; i < imgElements.length; i++) {
-            let imgElement = imgElements[i];
-            imgElement.src = URL.createObjectURL(fileMap.get(data.imgUUIDList[i]));
-
-            imgElement.onload = function () {
-              loadedImgCount++;
-
-              if (loadedImgCount === imgCount) {
-                resizeEditorOnload();
-              }
-            }
-          }
-
-          let editor = document.getElementById("editor");
-          editor.innerHTML = tempDiv.innerHTML;
-
-        } else {
-          console.error("error");
-        }
-      }
-    };
-
-    window.onload = function () {
-      // 페이지 내용 가져옴 
-      xhr.open("GET", "/view/ajaxReq?pageId=" + pageId.toString(), true);
-      xhr.send();
-    };
-
-    function base64ToFile(base64String, fileName, contentType) {
-      const byteCharacters = atob(base64String);
-      const byteArrays = [];
-
-      for (let offset = 0; offset < byteCharacters.length; offset += 512) {
-        const slice = byteCharacters.slice(offset, offset + 512);
-        const byteNumbers = new Array(slice.length);
-
-        for (let i = 0; i < slice.length; i++) {
-          byteNumbers[i] = slice.charCodeAt(i);
-        }
-
-        const byteArray = new Uint8Array(byteNumbers);
-        byteArrays.push(byteArray);
-      }
-
-      const blob = new Blob(byteArrays, { type: contentType });
-      return new File([blob], fileName, { type: contentType });
-    }
-  </script>
-
-
-  <!-- createPageForm, updatePageForm 동일하게 사용 -->
+  <!-- editor 관련 기능들, 서버로 데이터 전송 부분 (createForm, updateForm 에서 사용) -->
   <script th:replace="fragment/editorData :: createAndUpdate"></script>
 
 </body>

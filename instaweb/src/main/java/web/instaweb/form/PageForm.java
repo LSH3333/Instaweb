@@ -27,6 +27,9 @@ public class PageForm {
     // 수정 폼을 위해서 Image 형으로도 저장할수 있도록 함
     private List<Image> byteImages;
 
+    // Member 가 작성중인 (작성 완료 하지 않은) Page 의 id, 작성중인 page 없다면 null
+    private Long writingPageId;
+
     // 시간
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     private LocalDateTime createdTime;

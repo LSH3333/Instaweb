@@ -42,8 +42,8 @@
         <form th:action="@{/pages/new}" th:object="${form}" method="post" enctype="multipart/form-data">
             <!-- title -->
             <div class="title">
-                <input id="titleInput" type="text" th:field="*{title}" placeholder="제목을 입력하세요"
-                    oninput="removePlaceholderRed()" />
+                <!-- <input id="titleInput" type="text" th:field="*{title}" placeholder="제목을 입력하세요" oninput="removePlaceholderRed()" /> -->
+                <input id="titleInput" type="text" name="title" placeholder="제목을 입력하세요" oninput="removePlaceholderRed()">
             </div>
 
             <!-- 유저에게 보이는 div -->
@@ -63,11 +63,13 @@
     <!-- footer -->
     <footer th:replace="fragment/footer :: footer"></footer>
 
+    <!-- 작성된 titile,content 서버에서 불러서 editor에 디스플레이함 (updatePageForm, createPageForm, pageView 에서 사용)  -->
+    <script th:replace="fragment/editorData :: requestTitleAndContentFromServer"></script>
 
 
-    <!-- createPageForm, updatePageForm 동일하게 사용 -->
+    <!-- editor 관련 기능들, 서버로 데이터 전송 부분 (createForm, updateForm 에서 사용) -->
     <script th:replace="fragment/editorData :: createAndUpdate"></script>
-   
+
 
 </body>
 

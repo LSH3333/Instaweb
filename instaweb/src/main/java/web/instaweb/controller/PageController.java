@@ -67,24 +67,31 @@ public class PageController {
 
         // 글 작성폼에서 ajax request 로 이미지 저장할때 id 가 필요하기 때문에, 아무것도 없는 Page 를 여기서 미리 만든다
 
-        // Member 가 작성 중인 Page 가 있는 경우
+
         Page page;
+        PageForm pageForm;
+        // Member 가 작성 중인 Page 가 있는 경우
         if(member.getWritingPageId() != null) {
             page = pageService.findOne(member.getWritingPageId());
-        } // 없는 경우
+            pageForm = new PageForm(page.getId(), page.getCreatedTime());
+            pageForm.setTitle(page.getTitle());
+            pageForm.setContent(page.getContent());
+            pageForm.setWritingPageId(member.getWritingPageId());
+        }
+        // 없는 경우
         else {
             page = new Page();
             page.setCreatedTime(LocalDateTime.now());
+            // Member - Page 연결
+            page.setMember(member);
+            member.addPage(page);
+            pageService.savePage(page);
+            // member 가 작성중 상태인 page id 기억해놓음
+            memberService.setMemberWritingPageId(member.getId(), page.getId());
+            pageForm = new PageForm(page.getId(), page.getCreatedTime());
+            pageForm.setWritingPageId(null);
         }
 
-
-        // Member - Page 연결
-        page.setMember(member);
-        member.addPage(page);
-        pageService.savePage(page);
-        // member 가 작성중 상태인 page id 기억해놓음
-        memberService.setMemberWritingPageId(member.getId(), page.getId());
-        PageForm pageForm = new PageForm(page.getId(), page.getCreatedTime());
         model.addAttribute("form", pageForm);
 
         return "pages/createPageForm";
@@ -274,10 +281,15 @@ public class PageController {
             imgUUIDList.add(image.getUUID());
         }
 
+        // title
+        List<String> title = new ArrayList<>();
+        title.add(page.getTitle());
+
         // content
         List<String> content = new ArrayList<>();
         content.add(page.getContent());
 
+        ret.put("title", title);
         ret.put("content", content);
         ret.put("images", images);
         ret.put("imgUUIDList", imgUUIDList);
