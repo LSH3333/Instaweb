@@ -1,15 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>에러 페이지</title>
+    <link rel="stylesheet" type="text/css" href="/css/universal.css">
+    <!-- page block style -->
+    <link rel="stylesheet" type="text/css" href="/css/pageBlock.css" th:href="@{/css/pageBlock.css}">
+    <link rel="stylesheet" type="text/css" href="/css/loginForm.css" th:href="@{/css/loginForm.css}">
+    <!-- google font (logo) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cedarville+Cursive&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/css/footer.css" th:href="@{/css/footer.css}">
 </head>
+
 <body>
+    <!-- side tab fragment -->
+    <div th:replace="fragment/side-tab-logedOut :: side-tab-logedOut"></div>
 
-    <div>잘못된 요청입니다</div>
+    <!-- Page 들 ajax 에 의해 로드됨 -->
+    <div class="contents">
+        <span>잘못된 요청입니다.</span>
+    </div>
 
-    <div><a href="/">HOME</a></div>
-
+    <!-- footer -->
+    <footer th:replace="fragment/footer :: footer"></footer>
 
 </body>
+
 </html>
