@@ -5,5 +5,10 @@
 
   "scripts": {
     "start": "node server.js"
+  },
+
+  "engines": {
+    "npm": "9.6.7",
+    "node" : "v16.17.0"
   }
 }
