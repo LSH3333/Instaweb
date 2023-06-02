@@ -61,6 +61,8 @@ server:
     session:
       timeout: 1800
 
+  port: ${PORT:5432}
+
   error:
     whitelabel:
       enabled: false
