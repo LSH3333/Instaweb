@@ -51,7 +51,7 @@ spring:
 
 file:
 #  dir: D:/Works/devTools/uploaded/
-  dir: /Users/lsh/Projects/uploaded/
+#  dir: /Users/lsh/Projects/uploaded/
 
 # 세션 타임아웃 설정
 # 세션의 타임아웃 시간은 해당 세션과 관련된 JSESSIONID 를 전달하는 HTTP 요청이 있으면 현재 시간으로
