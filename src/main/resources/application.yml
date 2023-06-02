@@ -16,10 +16,14 @@ spring:
 #  postgresql db
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/instaweb
+#    url: jdbc:postgresql://localhost:5432/instaweb
+    url: jdbc:postgresql://ec2-34-197-91-131.compute-1.amazonaws.com/dckofr3ptkpa9b
     platform: postgres
-    username: admin_jake
-    password: admin_jake
+#    username: admin_jake
+    username: mpcdhjuocwciio
+#    password: admin_jake
+    password: 3fc888680efc3d57d8a90a3f46246d90d6913bf5e1be8bcbffb54c7b616b0b3c
+
 
   jpa:
     hibernate:
