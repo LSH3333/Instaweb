@@ -3,6 +3,9 @@
     "uuid": "^9.0.0"
   },
 
+  "scripts": {
+    "start": "node src/server.js"
+  },
 
   "engines": {
     "npm": "9.6.7",
