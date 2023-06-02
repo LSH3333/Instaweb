@@ -1,1 +1,1 @@
-web: node src/server.js
+web: java -jar build/libs/instaweb-0.0.1-SNAPSHOT.jar
