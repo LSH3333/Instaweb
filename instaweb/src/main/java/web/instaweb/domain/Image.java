@@ -17,7 +17,7 @@ public class Image {
     private Long id;
 
     // Image 기준 Page 와 N:1 관계
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "page_id")
     private Page page;
 

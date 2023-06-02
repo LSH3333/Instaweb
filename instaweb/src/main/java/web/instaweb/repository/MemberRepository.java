@@ -21,8 +21,14 @@ public class MemberRepository {
         em.persist(member);
     }
 
+    // member 를 가져올때는 member.pages 도 fetch 해서 가져가도록함 (fetch eager)
     public Member findById(Long id) {
-        return em.find(Member.class, id);
+//        return em.find(Member.class, id);
+        return em.createQuery(
+                "SELECT m FROM Member m LEFT JOIN FETCH m.pages WHERE m.id = :memberId",
+                Member.class)
+                .setParameter("memberId", id)
+                .getSingleResult();
     }
 
     public List<Member> findAll() {

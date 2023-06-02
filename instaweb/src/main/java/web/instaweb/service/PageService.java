@@ -3,12 +3,14 @@ package web.instaweb.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import web.instaweb.domain.Member;
 import web.instaweb.domain.Page;
 import web.instaweb.dto.PagesAndEndIdxDto;
 import web.instaweb.repository.ImageRepository;
 import web.instaweb.repository.PageRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -17,6 +19,7 @@ import java.util.List;
 public class PageService {
 
     private final PageRepository pageRepository;
+    private final MemberService memberService;
 
     public void savePage(Page page) {
         pageRepository.save(page);
@@ -47,4 +50,25 @@ public class PageService {
     public PagesAndEndIdxDto findRange(int beginIdx, int cnt) {
         return pageRepository.findRange(beginIdx, cnt);
     }
+
+    /**
+     * 이 member 가 작성한 page 들 중 beginIdx 부터 cnt 개 찾는다
+     * @param beginIdx
+     * @param cnt
+     * @return : {다음에 찾기 시작할 idx, 찾은 pages 들}
+     */
+    public PagesAndEndIdxDto getCntPagesFromIdx(int beginIdx, int cnt, Long memberId) {
+        Member member = memberService.findOne(memberId);
+        List<Page> pages = member.getPages();
+        List<Page> retPages = new ArrayList<>();
+        int i;
+        for(i = beginIdx; (i < beginIdx+cnt) && (i < pages.size()) ; i++) {
+            if(pages.get(i).getWritingDone()) {
+                retPages.add(pages.get(i));
+            }
+        }
+        return new PagesAndEndIdxDto(i, retPages);
+    }
+
+
 }

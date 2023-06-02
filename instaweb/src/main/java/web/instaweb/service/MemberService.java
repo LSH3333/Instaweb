@@ -1,11 +1,14 @@
 package web.instaweb.service;
 
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Session;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import web.instaweb.domain.Member;
+import web.instaweb.domain.Page;
 import web.instaweb.repository.MemberRepository;
 
+import javax.persistence.EntityManager;
 import java.util.Optional;
 
 @Service

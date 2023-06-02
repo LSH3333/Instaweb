@@ -2,6 +2,7 @@ package web.instaweb.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import web.instaweb.domain.Member;
 import web.instaweb.domain.Page;
 import web.instaweb.dto.PagesAndEndIdxDto;
 
@@ -19,8 +20,15 @@ public class PageRepository {
         em.persist(page);
     }
 
+    // page 를 가져올때는 images collection 도 모두 가져옴 (fetch eager)
     public Page findOne(Long id) {
-        return em.find(Page.class, id);
+//        return em.find(Page.class, id);
+
+        return em.createQuery(
+                        "SELECT p FROM Page p LEFT JOIN FETCH p.images WHERE p.id = :pageId",
+                        Page.class)
+                .setParameter("pageId", id)
+                .getSingleResult();
     }
 
     public List<Page> findAll() {

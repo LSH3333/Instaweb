@@ -2,6 +2,7 @@ package web.instaweb.domain;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 import web.instaweb.dto.PagesAndEndIdxDto;
 
@@ -28,7 +29,7 @@ public class Member {
     private String password;
 
     // Member 가 갖고 있는 Page 들 리스트
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     @OrderBy("createdTime desc") // Page 의 생성 시간 기준 오름차순으로 저장
     private List<Page> pages = new ArrayList<>();
 
@@ -46,14 +47,14 @@ public class Member {
      * @param cnt
      * @return : {다음에 찾기 시작할 idx, 찾은 pages 들}
      */
-    public PagesAndEndIdxDto getCntPagesFromIdx(int beginIdx, int cnt) {
-        List<Page> retPages = new ArrayList<>();
-        int i;
-        for(i = beginIdx; (i < beginIdx+cnt) && (i < pages.size()) ; i++) {
-            if(pages.get(i).getWritingDone()) {
-                retPages.add(pages.get(i));
-            }
-        }
-        return new PagesAndEndIdxDto(i, retPages);
-    }
+//    public PagesAndEndIdxDto getCntPagesFromIdx(int beginIdx, int cnt) {
+//        List<Page> retPages = new ArrayList<>();
+//        int i;
+//        for(i = beginIdx; (i < beginIdx+cnt) && (i < pages.size()) ; i++) {
+//            if(pages.get(i).getWritingDone()) {
+//                retPages.add(pages.get(i));
+//            }
+//        }
+//        return new PagesAndEndIdxDto(i, retPages);
+//    }
 }

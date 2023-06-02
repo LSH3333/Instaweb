@@ -62,7 +62,7 @@ public class PageController {
     @GetMapping("{memberId}/pages/new")
     public String createForm(Model model, @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
                              HttpServletRequest request, @PathVariable("memberId") Long memberId) {
-        // 영속성 Member 필요하기 때문에 조회해옴
+        // 영속성 Member 필요하기 때문에 조회해옴, 여기서 lazy fetch 에 의해 member.pages 는 가져오지 않는다
         Member member = memberService.findOne(loginMember.getId());
 
         // 글 작성폼에서 ajax request 로 이미지 저장할때 id 가 필요하기 때문에, 아무것도 없는 Page 를 여기서 미리 만든다
@@ -145,10 +145,9 @@ public class PageController {
     public Map<String, ?> loadPagesAndImages(@RequestParam int beginIdx, @RequestParam Long memberId) {
         int cnt = 10; // 최대 10개의 Page 가져오기 시도
         System.out.println("loadPagesAndImages = " + beginIdx + ' ' + cnt);
-        // 로그인 되있는 Member 가 갖는 Page 들
-        Member member = memberService.findOne(memberId);
 
-        PagesAndEndIdxDto pagesAndEndIdxDto = member.getCntPagesFromIdx(beginIdx, cnt);
+//        PagesAndEndIdxDto pagesAndEndIdxDto = member.getCntPagesFromIdx(beginIdx, cnt);
+        PagesAndEndIdxDto pagesAndEndIdxDto = pageService.getCntPagesFromIdx(beginIdx, cnt, memberId);
         // 클라이언트로 보낼 page 목록
         List<Page> pages = pagesAndEndIdxDto.getRetPages();
         // 다음 요청때 page 에서 탐색 시작할 idx
@@ -168,7 +167,8 @@ public class PageController {
         // 각 페이지의 첫번째 이미지(존재한다면)를 base64 로 인코딩 후 리스트에 저장
         List<String> images = new ArrayList<>();
         for (Page page : pages) {
-            List<Image> pageImages = page.getImages();
+//            List<Image> pageImages = page.getImages();
+            List<Image> pageImages = imageService.findAllImageFromPage(page.getId());
             String base64Image;
             if (!pageImages.isEmpty()) {
                 base64Image = pageImages.get(0).generateBase64Image();
@@ -223,7 +223,7 @@ public class PageController {
         // 각 페이지의 첫번째 이미지(존재한다면)를 base64 로 인코딩 후 리스트에 저장
         List<String> images = new ArrayList<>();
         for (Page page : pages) {
-            List<Image> pageImages = page.getImages();
+            List<Image> pageImages = imageService.findAllImageFromPage(page.getId());
             String base64Image;
             if (!pageImages.isEmpty()) {
                 base64Image = pageImages.get(0).generateBase64Image();
@@ -262,7 +262,7 @@ public class PageController {
         return "pages/pageView";
     }
 
-    // view 의 내용과 이미지는 ajax 로 받아서 동적으로 디스플레이한다, 수정폼에서도 사용
+    // view 의 내용과 이미지는 ajax 로 받아서 동적으로 디스플레이한다, 수정폼, 작성폼에서도 사용
     @ResponseBody
     @GetMapping("/view/ajaxReq")
     public Map<String,?> viewPageSendData(@RequestParam long pageId) {

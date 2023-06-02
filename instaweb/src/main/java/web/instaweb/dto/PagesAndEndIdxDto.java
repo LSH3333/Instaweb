@@ -11,8 +11,8 @@ public class PagesAndEndIdxDto {
     private int endIdx;
     private List<Page> retPages;
 
-    public PagesAndEndIdxDto(int i, List<Page> retPages) {
-        this.endIdx = i;
+    public PagesAndEndIdxDto(int endIdx, List<Page> retPages) {
+        this.endIdx = endIdx;
         this.retPages = retPages;
     }
 }

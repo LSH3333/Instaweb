@@ -38,6 +38,11 @@ public class ImageService {
         imageRepository.deleteImage(id);
     }
 
+    public List<Image> findAllImageFromPage(Long pageId) {
+        Page page = pageService.findOne(pageId);
+        return page.getImages();
+    }
+
     /**
      * @param id : db 에서 찾을 Image 의 id
      * @param base64String : base64 string 형식의 이미지 파일
