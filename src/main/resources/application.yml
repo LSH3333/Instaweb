@@ -33,7 +33,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update # When you launch the application for the first time - switch "none" at "create" (최초값 update)
+      ddl-auto: create # When you launch the application for the first time - switch "none" at "create" (최초값 update)
       dialect: org.hibernate.dialect.PostgreSQL10Dialect
     properties:
       hibernate:
