@@ -23,7 +23,7 @@ public class MemberController {
 
     @GetMapping("/members/register")
     public String registerForm(@ModelAttribute("member") Member member) {
-        return "/members/registerForm";
+        return "members/registerForm";
     }
 
     @PostMapping("members/register")
