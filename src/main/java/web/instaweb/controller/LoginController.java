@@ -25,7 +25,7 @@ public class LoginController {
 
     @GetMapping("/login")
     public String loginForm(@ModelAttribute("loginForm") LoginForm form) {
-        return "/login/loginForm";
+        return "login/loginForm";
     }
 
     @PostMapping("/login")
@@ -35,14 +35,14 @@ public class LoginController {
                         HttpServletRequest request) {
 
         if (bindingResult.hasErrors()) {
-            return "/login/loginForm";
+            return "login/loginForm";
         }
 
         Member loginMember = loginService.login(form.getLoginId(), form.getPassword());
 
         if(loginMember == null) {
             bindingResult.reject("loginFail", "아이디 또는 비밀번호가 맞지 않습니다");
-            return "/login/loginForm";
+            return "login/loginForm";
         }
 
         // request 에 세션 있으면 있는 세션 반환, 없으면 신규 세션 생성

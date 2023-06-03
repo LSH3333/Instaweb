@@ -47,7 +47,7 @@ public class MemberController {
         }
 
         if (bindingResult.hasErrors()) {
-            return "/members/registerForm";
+            return "members/registerForm";
         }
 
         memberService.saveMember(member);

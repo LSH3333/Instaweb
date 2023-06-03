@@ -131,7 +131,7 @@ public class PageController {
         getNoImgFile();
 
         model.addAttribute("memberId", memberId);
-        return "/pages/pageList";
+        return "pages/pageList";
     }
 
     /**
@@ -196,7 +196,7 @@ public class PageController {
      */
     @GetMapping("/allPages")
     public String allList(Model model) {
-        return "/pages/home";
+        return "pages/home";
     }
 
     @ResponseBody
