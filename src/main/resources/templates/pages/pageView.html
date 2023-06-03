@@ -73,24 +73,32 @@
 
                     // 이미지 src 서버에서 가져온걸로 변경
                     const imgElements = tempDiv.querySelectorAll("img");
-                    for (let i = 0; i < imgElements.length; i++) {
-                        let imgElement = imgElements[i];
-                        // img uuid 
-                        const uuid = imgElement.id;
-                        // imgElement.src = 'data:image/jpeg;charset=utf-8;base64,' + fileMap.get(uuid);
+                    // 이미지 없는 경우 editor 내 child 들 모두 로드될때까지 대기 후 resize editor                    
+                    if (imgCount === 0) {
+                        waitForEditorChildren().then((height) => {
+                            resizeEditorOnload();
+                        });
+                    }
+                    // 이미지 있는 경우 editor 내 image 모두 로드될때까지 대기 후 resize editor 
+                    else {
+                        for (let i = 0; i < imgElements.length; i++) {
+                            let imgElement = imgElements[i];
+                            // img uuid 
+                            const uuid = imgElement.id;
+                            // imgElement.src = 'data:image/jpeg;charset=utf-8;base64,' + fileMap.get(uuid);
 
-                        let url = URL.createObjectURL(fileMap.get(uuid));
-                        imgElement.src = url;
+                            let url = URL.createObjectURL(fileMap.get(uuid));
+                            imgElement.src = url;
 
-                        imgElement.onload = function () {
-                            loadedImgCount++;
-
-                            if (loadedImgCount === imgCount) {
-                                resizeEditorOnload();
+                            imgElement.onload = function () {
+                                loadedImgCount++;
+                                
+                                if (loadedImgCount === imgCount) {
+                                    resizeEditorOnload();
+                                }
                             }
                         }
                     }
-
 
                     // 글 작성폼에서 삽입되는 div 는 contenteditable=true임, pageView 에서는  false로 바꿈
                     const divElements = tempDiv.querySelectorAll("div");
@@ -137,6 +145,38 @@
     </script>
 
     <script>
+        // editor 의 children 모두 로드 될때까지 대기
+        function waitForEditorChildren() {
+            return new Promise((resolve) => {
+                // Check if all child elements are loaded
+                function checkChildrenLoaded() {
+                    const editor = document.getElementById('editor');
+                    const childNodes = editor.childNodes;
+
+                    let allChildrenLoaded = true;
+                    let height = 62; // editor's default padding and border
+
+                    for (let i = 0; i < childNodes.length; i++) {
+                        const childNode = childNodes[i];
+                        if (childNode.offsetHeight === 0) {
+                            allChildrenLoaded = false;
+                            break;
+                        }
+                        height += childNode.offsetHeight;
+                    }
+
+                    if (allChildrenLoaded) {
+                        resolve(height); // Resolve the Promise with the total height
+                    } else {
+                        // Wait for a brief moment and check again
+                        setTimeout(checkChildrenLoaded, 100);
+                    }
+                }
+
+                checkChildrenLoaded(); // Start checking for loaded children
+            });
+        }
+
         // page onload 시 editor 크기 조절 
         function resizeEditorOnload() {
             let editor = document.getElementById('editor');
@@ -151,6 +191,8 @@
             editor.style.height = "auto";
             editor.style.height = Math.max(500, height) + 'px';
         }
+
+
 
         // change "yyyy-MM-dd'T'HH:mm:ss.SSS" to "yyyy-MM-dd HH:ss"
         function changeCreatedTimePattern() {

@@ -309,6 +309,38 @@
         });
     }
 
+     // editor 의 children 모두 로드 될때까지 대기
+    function waitForEditorChildren() {
+        return new Promise((resolve) => {
+            // Check if all child elements are loaded
+            function checkChildrenLoaded() {
+                const editor = document.getElementById('editor');
+                const childNodes = editor.childNodes;
+
+                let allChildrenLoaded = true;
+                let height = 62; // editor's default padding and border
+
+                for (let i = 0; i < childNodes.length; i++) {
+                    const childNode = childNodes[i];
+                    if (childNode.offsetHeight === 0) {
+                        allChildrenLoaded = false;
+                        break;
+                    }
+                    height += childNode.offsetHeight;
+                }
+
+                if (allChildrenLoaded) {
+                    resolve(height); // Resolve the Promise with the total height
+                } else {
+                    // Wait for a brief moment and check again
+                    setTimeout(checkChildrenLoaded, 100);
+                }
+            }
+
+            checkChildrenLoaded(); // Start checking for loaded children
+        });
+    }
+
 
     // submit 버튼 이외 다른 페이지로 navigate 시도 시 경고 메시지 
     window.addEventListener('beforeunload', async function (event) {
@@ -337,7 +369,7 @@
 <!-- 작성된 titile,content 서버에서 불러서 editor에 디스플레이함 (updatePageForm, createPageForm 에서 사용)  -->
 <script th:fragment="requestTitleAndContentFromServer">
     let writingPageId = "[[${form.writingPageId}]]"
-    
+
     let xhr = new XMLHttpRequest();
 
     xhr.onreadystatechange = function () {
@@ -352,10 +384,10 @@
                 for (let i = 0; i < data.images.length; i++) {
                     let file = base64ToFile(data.images[i], data.imgUUIDList[i], 'image/');
                     fileMap.set(data.imgUUIDList[i], file);
-                }                
-                
+                }
+
                 // title
-                document.getElementById('titleInput').value = data.title;                
+                document.getElementById('titleInput').value = data.title;
 
                 // content 
                 const tempDiv = document.createElement("div");
@@ -363,16 +395,29 @@
 
                 // Get all <img> elements from the div
                 const imgElements = tempDiv.querySelectorAll("img");
-                // 이미지 디스플레이
-                for (let i = 0; i < imgElements.length; i++) {
-                    let imgElement = imgElements[i];
-                    imgElement.src = URL.createObjectURL(fileMap.get(data.imgUUIDList[i]));
+                // 이미지 없는 경우 editor 내 child 들 모두 로드될때까지 대기 후 resize editor                    
+                if (imgCount === 0) {
+                    waitForEditorChildren().then((height) => {
+                        resizeEditorOnload();
+                    });
+                }
+                // 이미지 있는 경우 editor 내 image 모두 로드될때까지 대기 후 resize editor 
+                else {
+                    for (let i = 0; i < imgElements.length; i++) {
+                        let imgElement = imgElements[i];
+                        // img uuid 
+                        const uuid = imgElement.id;
+                        // imgElement.src = 'data:image/jpeg;charset=utf-8;base64,' + fileMap.get(uuid);
 
-                    imgElement.onload = function () {
-                        loadedImgCount++;
+                        let url = URL.createObjectURL(fileMap.get(uuid));
+                        imgElement.src = url;
 
-                        if (loadedImgCount === imgCount) {
-                            resizeEditorOnload();
+                        imgElement.onload = function () {
+                            loadedImgCount++;
+
+                            if (loadedImgCount === imgCount) {
+                                resizeEditorOnload();
+                            }
                         }
                     }
                 }
@@ -392,11 +437,11 @@
         var confirmation;
         let titleVal;
 
-       // 현재 member 가 작성중인 page 존재하지 않음 
+        // 현재 member 가 작성중인 page 존재하지 않음 
         if (writingPageId == null || writingPageId == '') {
             confirmation = true;
         }
-         // 현재 member 가 작성중인 page 존재함 
+        // 현재 member 가 작성중인 page 존재함 
         else {
             // click yes or no 
             confirmation = confirm('페이지 전체가 로드되었습니다. Do you want to continue?');
