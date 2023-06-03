@@ -17,7 +17,15 @@
 
 <body>
     <!-- side tab fragment -->
-    <div th:replace="fragment/side-tab-logedOut :: side-tab-logedOut"></div>
+    <!-- <div th:replace="fragment/side-tab-logedOut :: side-tab-logedOut"></div> -->
+
+    <!-- side-tab fragment -->
+    <div th:if="${loginMemberId == null}">
+        <div th:replace="fragment/side-tab-logedOut :: side-tab-logedOut"></div>
+    </div>
+    <div th:unless="${loginMemberId == null}">
+        <div th:replace="fragment/side-tab :: side-tab"></div>
+    </div>
 
     <!-- Page 들 ajax 에 의해 로드됨 -->
     <div class="contents">
