@@ -1,40 +1,23 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Create Page</title>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link
-      rel="stylesheet"
-      href="/css/universal.css"
-      th:href="@{/css/universal.css}"
-    />
-    <link
-      rel="stylesheet"
-      href="/css/createPageForm.css"
-      th:href="@{/css/createPageForm.css}"
-    />
-    <!-- page block style -->
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="/css/pageBlock.css"
-      th:href="@{/css/pageBlock.css}"
-    />
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="/css/footer.css"
-      th:href="@{/css/footer.css}"
-    />
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <title>Create Page</title>
 
-  <body>
-    <!-- side tab fragment -->
-    <div th:replace="fragment/side-tab :: side-tab"></div>
-    <header th:replace="fragment/editorHeader :: header"></header>
-    <!-- <div id="header">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/css/universal.css" th:href="@{/css/universal.css}" />
+  <link rel="stylesheet" href="/css/createPageForm.css" th:href="@{/css/createPageForm.css}" />
+  <!-- page block style -->
+  <link rel="stylesheet" type="text/css" href="/css/pageBlock.css" th:href="@{/css/pageBlock.css}" />
+  <link rel="stylesheet" type="text/css" href="/css/footer.css" th:href="@{/css/footer.css}" />
+</head>
+
+<body>
+  <!-- side tab fragment -->
+  <div th:replace="fragment/side-tab :: side-tab"></div>
+  <header th:replace="fragment/editorHeader :: header"></header>
+  <!-- <div id="header">
         <div class="editor-menu">
             <button id="btn-bold" type="button">
                 <b>B</b>
@@ -54,57 +37,40 @@
         </div>
     </div> -->
 
-    <!-- Page 들 ajax 에 의해 로드됨 -->
-    <div class="contents">
-      <form
-        th:action="@{/pages/new}"
-        th:object="${form}"
-        method="post"
-        enctype="multipart/form-data"
-      >
-        <!-- title -->
-        <div class="title">
-          <!-- <input id="titleInput" type="text" th:field="*{title}" placeholder="제목을 입력하세요" oninput="removePlaceholderRed()" /> -->
-          <input
-            id="titleInput"
-            type="text"
-            name="title"
-            placeholder="제목을 입력하세요"
-            oninput="removePlaceholderRed()"
-          />
-        </div>
+  <!-- Page 들 ajax 에 의해 로드됨 -->
+  <div class="contents">
+    <form th:action="@{/pages/new}" th:object="${form}" method="post" enctype="multipart/form-data">
+      <!-- title -->
+      <div class="title">
+        <!-- <input id="titleInput" type="text" th:field="*{title}" placeholder="제목을 입력하세요" oninput="removePlaceholderRed()" /> -->
+        <input id="titleInput" type="text" name="title" placeholder="제목을 입력하세요" oninput="removePlaceholderRed()" />
+      </div>
 
-        <!-- 유저에게 보이는 div -->
-        <div
-          id="editor"
-          contenteditable="true"
-          oninput="resizeEditorWhenTyped()"
-        ></div>
-        <!-- 실제 content 저장용 -->
-        <textarea
-          id="my-textarea"
-          style="display: none"
-          th:field="*{content}"
-        ></textarea>
+      <!-- 유저에게 보이는 div -->
+      <div id="editor" contenteditable="true" oninput="resizeEditorWhenTyped()"></div>
+      <!-- 실제 content 저장용 -->
+      <textarea id="my-textarea" style="display: none" th:field="*{content}"></textarea>
 
-        <input id="img-selector" type="file" accept="image/*" />
+      <input id="img-selector" type="file" accept="image/*" />
 
-        <input type="hidden" th:field="*{id}" />
-        <input type="hidden" th:field="*{createdTime}" />
-        <input type="hidden" name="imageOrder" id="imageOrder" value="" />
-        <button id="submitBtn" type="submit">완료</button>
-      </form>
-    </div>
+      <input type="hidden" th:field="*{id}" />
+      <input type="hidden" th:field="*{createdTime}" />
+      <input type="hidden" name="imageOrder" id="imageOrder" value="" />
+      <button id="submitBtn" type="submit">완료</button>
+    </form>
+  </div>
 
-    <!-- footer -->
-    <footer th:replace="fragment/footer :: footer"></footer>
+  <!-- footer -->
+  <footer th:replace="fragment/footer :: footer"></footer>
 
-    <!-- 작성된 titile,content 서버에서 불러서 editor에 디스플레이함 (updatePageForm, createPageForm, pageView 에서 사용)  -->
-    <script
-      th:replace="fragment/editorData :: requestTitleAndContentFromServer"
-    ></script>
+  <!-- 작성된 titile,content 서버에서 불러서 editor에 디스플레이함 (updatePageForm, createPageForm, pageView 에서 사용)  -->
+  <script th:replace="fragment/editorData :: requestTitleAndContentFromServer"></script>
 
-    <!-- editor 관련 기능들, 서버로 데이터 전송 부분 (createForm, updateForm 에서 사용) -->
-    <script th:replace="fragment/editorData :: createAndUpdate"></script>
-  </body>
+  <!-- editor 관련 기능들, 서버로 데이터 전송 부분 (createForm, updateForm 에서 사용) -->
+  <script th:replace="fragment/editorData :: createAndUpdate"></script>
+
+
+
+</body>
+
 </html>
