@@ -18,13 +18,19 @@
 
     let isFormSubmitting = false;
 
+    // 이전 focus 한 editor 내부 element 기억 
+    let previousFocusedElement = null;
 
     const btnBold = document.getElementById("btn-bold");
     const btnItalic = document.getElementById("btn-italic");
     const btnUnderline = document.getElementById("btn-underline");
     const btnStrike = document.getElementById("btn-strike");
-    const btnTextSizeMainMid = document.getElementById('text-size-main-mid');
-
+    const btnTextSizeMain1 = document.getElementById('text-size-main-1');
+    const btnTextSizeMain2 = document.getElementById('text-size-main-2');
+    const btnTextSizeMain3 = document.getElementById('text-size-main-3');
+    const btnTextSizeTitle1 = document.getElementById('text-size-title-1');
+    const btnTextSizeTitle2 = document.getElementById('text-size-title-2');
+    const btnTextSizeTitle3 = document.getElementById('text-size-title-3');
 
     btnBold.addEventListener("click", function () {
         setStyle("bold");
@@ -42,9 +48,34 @@
         setStyle("strikeThrough");
     });
 
-    btnTextSizeMainMid.addEventListener("click", function () {
+    btnTextSizeMain1.addEventListener("click", function () {
         if (previousFocusedElement != null) {
             previousFocusedElement.style = "font-size: 18px;";
+        }
+        focusEditor();
+    });
+
+    btnTextSizeMain2.addEventListener("click", function () {
+        if (previousFocusedElement != null) {
+            previousFocusedElement.style = "font-size: 16px;";
+        }
+        focusEditor();
+    });
+
+    btnTextSizeMain3.addEventListener("click", function () {
+        if (previousFocusedElement != null) {
+            previousFocusedElement.style = "font-size: 14px;";
+        }
+        focusEditor();
+    });
+
+    btnTextSizeTitle1.addEventListener("click", function () {
+        if (previousFocusedElement != null) {
+            let h2Ele = document.createElement('h2');
+            h2Ele.style = "font-size: 26px";
+            h2Ele.innerHTML = previousFocusedElement.innerHTML;
+            
+            previousFocusedElement.replaceWith(h2Ele)
         }
         focusEditor();
     });
@@ -83,8 +114,7 @@
     });
 
 
-    // 이전 focus 한 editor 내부 element 기억 
-    let previousFocusedElement = null;
+
 
     editor.addEventListener('mousedown', function (event) {
         let clickedElement = event.target;
@@ -418,7 +448,7 @@
             let divtmp = document.createElement('div');
             let brtmp = document.createElement('br')
             divtmp.appendChild(brtmp);
-            editor.prepend(divtmp);            
+            editor.prepend(divtmp);
 
             previousFocusedElement = divtmp;
         }
