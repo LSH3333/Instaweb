@@ -71,14 +71,25 @@
 
     btnTextSizeTitle1.addEventListener("click", function () {
         if (previousFocusedElement != null) {
-            let h2Ele = document.createElement('h2');
-            h2Ele.style = "font-size: 26px";
-            h2Ele.innerHTML = previousFocusedElement.innerHTML;
-            
-            previousFocusedElement.replaceWith(h2Ele)
+            previousFocusedElement.style = "font-size: 26px; font-weight:normal; color: #000; margin:1em 0 20px; line-height:1.46;";
         }
         focusEditor();
     });
+
+    btnTextSizeTitle2.addEventListener("click", function () {
+        if (previousFocusedElement != null) {
+            previousFocusedElement.style = "font-size: 23px; font-weight:normal; color: #000; margin:1em 0 20px; line-height:1.48;";
+        }
+        focusEditor();
+    });
+
+    btnTextSizeTitle3.addEventListener("click", function () {
+        if (previousFocusedElement != null) {
+            previousFocusedElement.style = "font-size: 20px; font-weight:normal; color: #000; margin:1em 0 20px; line-height:1.55;";
+        }
+        focusEditor();
+    });
+
 
     function setStyle(style) {
         document.execCommand(style);
@@ -111,6 +122,16 @@
             sel.removeAllRanges();
             sel.addRange(range);
         }
+    });
+
+    editor.addEventListener('paste', function (event) {
+        event.preventDefault(); // Prevent the default paste behavior
+
+        const clipboardData = event.clipboardData || window.clipboardData;
+        const pastedText = clipboardData.getData('text/plain');
+
+        // Insert the cleaned text into the editor
+        document.execCommand('insertHTML', false, pastedText);
     });
 
 

@@ -93,6 +93,10 @@ input[type="file"] {
   margin: 20px 0;
 }
 
+#editor div {
+  font-size: 16px;
+}
+
 form {
   /* background-color: blueviolet; */
   margin: 0 auto;
