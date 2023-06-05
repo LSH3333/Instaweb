@@ -1,28 +1,33 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-  <header th:fragment="header" id="header">
-    <div class="editor-menu">
-      <button id="btn-bold" type="button">
-        <b>B</b>
-      </button>
-      <button id="btn-italic" type="button">
-        <i>I</i>
-      </button>
-      <button id="btn-underline" type="button">
-        <u>U</u>
-      </button>
-      <button id="btn-strike" type="button">
-        <s>S</s>
-      </button>
-      <button id="btn-image" type="button" style="width: 45px">IMG</button>
-      <button id="text-size-main-1" type="button">본문1</button>
-      <button id="text-size-main-2" type="button">본문2</button>
-      <button id="text-size-main-3" type="button">본문3</button>
-      <button id="text-size-title-1" type="button">제목1</button>
-      <button id="text-size-title-2" type="button">제목2</button>
-      <button id="text-size-title-3" type="button">제목3</button>
-    </div>
-  </header>
+<header th:fragment="header" id="header">
+  <div class="editor-menu">
+    <button id="btn-bold" type="button">
+      <b>B</b>
+    </button>
+    <button id="btn-italic" type="button">
+      <i>I</i>
+    </button>
+    <button id="btn-underline" type="button">
+      <u>U</u>
+    </button>
+    <button id="btn-strike" type="button">
+      <s>S</s>
+    </button>
+    <button id="btn-image" type="button" style="width: 45px">IMG</button>
+    <details>
+      <summary>font-size</summary>
+      <ul>
+        <li><button id="text-size-main-1" type="button" style="font-size:18px;">본문1</button></li>
+        <li><button id="text-size-main-2" type="button" style="font-size:16px;">본문2</button></li>
+        <li><button id="text-size-main-3" type="button" style="font-size:14px;">본문3</button></li>
+        <li><button id="text-size-title-1" type="button" style="font-size:26px;">제목1</button></li>
+        <li><button id="text-size-title-2" type="button" style="font-size:23px;">제목2</button></li>
+        <li><button id="text-size-title-3" type="button" style="font-size:20px;">제목3</button></li>
+      </ul>
+    </details>
+  </div>
+</header>
 
 </html>
