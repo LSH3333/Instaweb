@@ -25,6 +25,7 @@
     const btnStrike = document.getElementById("btn-strike");
     const btnTextSizeMainMid = document.getElementById('text-size-main-mid');
 
+
     btnBold.addEventListener("click", function () {
         setStyle("bold");
     });
@@ -42,7 +43,10 @@
     });
 
     btnTextSizeMainMid.addEventListener("click", function () {
-
+        if (previousFocusedElement != null) {
+            previousFocusedElement.style = "font-size: 18px;";
+        }
+        focusEditor();
     });
 
     function setStyle(style) {
@@ -54,6 +58,43 @@
     function focusEditor() {
         editor.focus({ preventScroll: true });
     }
+
+    // editor 내부에서 enter 눌렀을시 <div><br></div> 삽입 
+    editor.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
+            event.preventDefault(); // Prevent the default behavior
+
+            // Create a new line without the addedClass element
+            let newLine = document.createElement('div');
+            let tmpBr = document.createElement('br');
+            newLine.appendChild(tmpBr);
+            editor.appendChild(newLine);
+
+            previousFocusedElement = newLine;
+
+            // Move the cursor to the new line
+            var range = document.createRange();
+            var sel = window.getSelection();
+            range.setStart(newLine, 0);
+            range.collapse(true);
+            sel.removeAllRanges();
+            sel.addRange(range);
+        }
+    });
+
+
+    // 이전 focus 한 editor 내부 element 기억 
+    let previousFocusedElement = null;
+
+    editor.addEventListener('mousedown', function (event) {
+        let clickedElement = event.target;
+        console.log(clickedElement);
+
+        if (clickedElement.parentNode == editor) {
+            console.log('previousFocusedElement = ' + previousFocusedElement)
+            previousFocusedElement = clickedElement;
+        }
+    });
 
     btnImage.addEventListener("click", function () {
         imageSelector.click();
@@ -272,16 +313,9 @@
         const editor = document.getElementById("editor");
         const minHeight = 500; // Set the desired minimum height
         editor.style.height = "auto"; // Reset the height to auto to recalculate the height based on content
-        editor.style.height = Math.max(minHeight, editor.scrollHeight) + "px"; // Set the height to the maximum of minHeight and scroll height
-        // console.log('editor.firstChild = ' + editor.firstChild.textContent)
-        // if(editor.firstChild != Element.div) {
-        //     console.log(' editor.firstChild.innerHTML = ' +  editor.firstChild.textContent);
-        //     let firstLineDiv = document.createElement("div").innerHTML = editor.firstChild.textContent;
-        //     console.log('firstLineDiv = ' + firstLineDiv)
+        editor.style.height = Math.max(minHeight, editor.scrollHeight) + "px"; // Set the height to the maximum of minHeight and scroll height    
 
-        //     editor.firstChild.remove();
-        //     editor.prepend(firstLineDiv);            
-        // }
+        prependDivFirstLineOfEditor();
     }
 
     // 이미지 editor 에 삽입 하고, 그 높이 만큼 editor 의 높이 조절함
@@ -377,6 +411,22 @@
         }
     });
 
+
+    function prependDivFirstLineOfEditor() {
+        // contenteditable div의 첫 line <div><br></div> 삽입
+        if (editor.childNodes.length == 0) {
+            let divtmp = document.createElement('div');
+            let brtmp = document.createElement('br')
+            divtmp.appendChild(brtmp);
+            editor.prepend(divtmp);            
+
+            previousFocusedElement = divtmp;
+        }
+
+        if (editor.firstChild.nodeName === 'BR') {
+            editor.firstChild.remove(); // Remove the <br> element if it's the only child
+        }
+    }
 </script>
 
 
@@ -442,12 +492,7 @@
                 editor.innerHTML = tempDiv.innerHTML;
 
                 // contenteditable div의 첫 line <div><br></div> 삽입                 
-                if (editor.childNodes.length == 0) {
-                    let divtmp = document.createElement('div');
-                    let brtmp = document.createElement('br')
-                    divtmp.appendChild(brtmp);
-                    editor.prepend(divtmp);
-                }
+                prependDivFirstLineOfEditor();
 
             } else {
                 console.error("error");
@@ -481,16 +526,13 @@
         } else {
             console.log('User clicked "No"');
             // contenteditable div의 첫 line <div><br></div> 삽입                 
-            if (editor.childNodes.length == 0) {
-                let divtmp = document.createElement('div');
-                let brtmp = document.createElement('br')
-                divtmp.appendChild(brtmp);
-                editor.prepend(divtmp);
-            }
+            prependDivFirstLineOfEditor();
         }
 
 
     };
+
+
 
     function base64ToFile(base64String, fileName, contentType) {
         const byteCharacters = atob(base64String);

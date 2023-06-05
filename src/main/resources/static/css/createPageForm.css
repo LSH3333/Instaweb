@@ -39,7 +39,7 @@ input[type="file"] {
   border: none;
   background-color: white;
   /* background-color: blue; */
-  margin: 0 5px;
+  margin: 0 5px;  
 }
 #header .editor-menu button:hover {
   cursor: pointer;

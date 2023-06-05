@@ -17,25 +17,7 @@
   <!-- side tab fragment -->
   <div th:replace="fragment/side-tab :: side-tab"></div>
   <header th:replace="fragment/editorHeader :: header"></header>
-  <!-- <div id="header">
-        <div class="editor-menu">
-            <button id="btn-bold" type="button">
-                <b>B</b>
-            </button>
-            <button id="btn-italic" type="button">
-                <i>I</i>
-            </button>
-            <button id="btn-underline" type="button">
-                <u>U</u>
-            </button>
-            <button id="btn-strike" type="button">
-                <s>S</s>
-            </button>
-            <button id="btn-image" type="button" style="width:45px;">
-                IMG
-            </button>
-        </div>
-    </div> -->
+ 
 
   <!-- Page 들 ajax 에 의해 로드됨 -->
   <div class="contents">
@@ -47,7 +29,7 @@
       </div>
 
       <!-- 유저에게 보이는 div -->
-      <div id="editor" contenteditable="true" oninput="resizeEditorWhenTyped()"></div>
+      <div id="editor" contenteditable="true" oninput="resizeEditorWhenTyped()" onkeydown="prependDivFirstLineOfEditor()"></div>
       <!-- 실제 content 저장용 -->
       <textarea id="my-textarea" style="display: none" th:field="*{content}"></textarea>
 
