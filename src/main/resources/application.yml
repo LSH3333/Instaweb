@@ -67,7 +67,7 @@ server:
     session:
       timeout: 1800
 
-  # heroku deploy 시 명시 필수   
+  # heroku deploy 시 명시 필수
   port: ${PORT:5432}
 
   error:
