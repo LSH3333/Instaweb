@@ -166,15 +166,37 @@
     });
 
     // 에디터에 붙여넣을 경우 defalut behaviour 는 <span>을 삽입하는데 이를 방지함  
+    // editor.addEventListener('paste', function (event) {
+    //     event.preventDefault(); // Prevent the default paste behavior
+
+    //     const clipboardData = event.clipboardData || window.clipboardData;
+    //     const pastedText = clipboardData.getData('text/plain');
+
+    //     // Insert the cleaned text into the editor
+    //     document.execCommand('insertHTML', false, pastedText);
+    // });
+
+
     editor.addEventListener('paste', function (event) {
-        event.preventDefault(); // Prevent the default paste behavior
+        // Access the pasted content from the event
+        var clipboardData = event.clipboardData || window.clipboardData;
+        var pastedText = clipboardData.getData('text/plain');
 
-        const clipboardData = event.clipboardData || window.clipboardData;
-        const pastedText = clipboardData.getData('text/plain');
-
-        // Insert the cleaned text into the editor
-        document.execCommand('insertHTML', false, pastedText);
+        // Do something with the pasted text
+        // For example, you can insert it into the editor at the current cursor position
+        var selection = window.getSelection();
+        var range = selection.getRangeAt(0);
+        var newNode = document.createTextNode(pastedText);
+        range.insertNode(newNode);
+        
+        console.log(newNode.childNodes.length);
+        for(let i = 0; i < newNode.childNodes.length; i++) {
+            let childNode = newNode.childNodes[i];
+            console.log(childNode);
+        }
     });
+
+
 
 
     // 에디터 내부 클릭(선택)한 엘레먼트 previousFocusedElement 에 기억해놓음 

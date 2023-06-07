@@ -17,6 +17,9 @@ a {
     border-right: 1px solid darkgray;
 }
 
+.side-tab * {
+    font-size: 20px;
+}
 
 
 .side-tab .logo {
