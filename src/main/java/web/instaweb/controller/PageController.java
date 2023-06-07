@@ -54,10 +54,9 @@ public class PageController {
 
     /**
      * 글 작성 폼
-     * createPageForm.html 에서 사용자가 선택, 변경한 이미지의 순서를 기억하려면 form 이 서버로 전달되기 전에 ajax request 로 Image 객체 만들어야 하기 때문에
-     * createPageForm 으로 넘어가기 전에 Page 객체 미리 만들어서 id 생성해놓고, 생성된 id 값도 PageForm 에 포함시켜서 전달
      *
-     * 작성폼에서 유저가 작성한 내용들 저장은 ajax 로 처리, 수정폼이랑 같은 ajax 사용, handleFileUpload() 에서 처리*
+     * 비어있는 PageForm 만들어 놓고, 실제 내용은 프론트에서 ajax 로 보내오면 업데이트하는 방식으로 처리
+     * 현재 로그인한 Member 가 작성중인 글이 있는 경우에는 해당 내용을 토대로 PageForm 생성, 아닐 경우 새로 생성
      */
     @GetMapping("{memberId}/pages/new")
     public String createForm(Model model, @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
@@ -100,6 +99,9 @@ public class PageController {
     /**
      * 글 작성
      * 페이지폼에서 작성 후 submit 버튼
+     *
+     * 폼에서 작성된 내용 저장은 ajax로 handleFileUpload() 에서 처리
+     * 글 작성 후에는 로그인 맴버의 작성목록 으로 리다이렉트
      */
     @PostMapping("/pages/new")
     public String create(@Valid @ModelAttribute("form") PageForm form, BindingResult result, HttpServletRequest request)  {
@@ -122,7 +124,8 @@ public class PageController {
     // 페이지 리스트
 
     /**
-     * {memberId} 의 글 목록
+     * 작성 목록
+     * {memberId} 를 갖는 Member 의 글 목록
      */
     @GetMapping("{memberId}/pages")
     public String list(Model model, @PathVariable("memberId") Long memberId,
@@ -144,9 +147,7 @@ public class PageController {
     @GetMapping("/pages/ajaxReq")
     public Map<String, ?> loadPagesAndImages(@RequestParam int beginIdx, @RequestParam Long memberId) {
         int cnt = 10; // 최대 10개의 Page 가져오기 시도
-        System.out.println("loadPagesAndImages = " + beginIdx + ' ' + cnt);
 
-//        PagesAndEndIdxDto pagesAndEndIdxDto = member.getCntPagesFromIdx(beginIdx, cnt);
         PagesAndEndIdxDto pagesAndEndIdxDto = pageService.getCntPagesFromIdx(beginIdx, cnt, memberId);
         // 클라이언트로 보낼 page 목록
         List<Page> pages = pagesAndEndIdxDto.getRetPages();
@@ -167,7 +168,6 @@ public class PageController {
         // 각 페이지의 첫번째 이미지(존재한다면)를 base64 로 인코딩 후 리스트에 저장
         List<String> images = new ArrayList<>();
         for (Page page : pages) {
-//            List<Image> pageImages = page.getImages();
             List<Image> pageImages = imageService.findAllImageFromPage(page.getId());
             String base64Image;
             if (!pageImages.isEmpty()) {
@@ -192,13 +192,26 @@ public class PageController {
     }
 
     /**
+     * 홈
      * 존재하는 모든 page 의 목록 (login 안해도 볼수있음)
      */
-    @GetMapping("/allPages")
-    public String allList(Model model) {
-        return "pages/home";
+    @GetMapping("/")
+    public String home(
+            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
+            Model model) {
+
+        if(loginMember == null) {
+            return "home";
+        }
+        model.addAttribute("loginMemberId", loginMember.getId());
+        model.addAttribute("member", loginMember);
+        return "home";
     }
 
+    /**
+     * ajax request from home.html
+     * db에 존재하는 모든 Page 10개씩 클라이언트로 보냄 (모든 Member)
+     */
     @ResponseBody
     @GetMapping("/allPages/ajaxReq")
     public Map<String, ?> loadAllPagesAndImages(@RequestParam int beginIdx)  {
@@ -262,7 +275,10 @@ public class PageController {
         return "pages/pageView";
     }
 
-    // view 의 내용과 이미지는 ajax 로 받아서 동적으로 디스플레이한다, 수정폼, 작성폼에서도 사용
+    /**
+     * ajax request from pageView.html, updatePageForm.html, createPageForm.html
+     * Page 의 저장되있는 내용들 ajax 로 보냄
+     */
     @ResponseBody
     @GetMapping("/view/ajaxReq")
     public Map<String,?> viewPageSendData(@RequestParam long pageId) {
@@ -334,9 +350,7 @@ public class PageController {
 
     /**
      * 글 수정
-     * 전달받은 폼을 기반으로 Page update
-     * 이 과정에서 변경 감지 후 update 된다
-     * Image handleEditImagesRequest() 에서 업데이트 된다
+     * 실제 데이터 db 업로드는 ajax req 에 의해 handleFileUpload() 에서 이루어짐
      */
     @PostMapping("/pages/{id}/edit")
     public String updatePage(@PathVariable("id") Long id, @Valid @ModelAttribute("form") PageForm form, BindingResult result,
@@ -366,8 +380,7 @@ public class PageController {
         String message = "";
         Page page = pageService.findOne(Long.parseLong(pageId));
         Long memberId = loginMember.getId();
-        System.out.println("handleFileUpload");
-        System.out.println("writingDone = " + writingDone);
+
         try {
             // title, content, createdTime 저장
 
@@ -417,7 +430,6 @@ public class PageController {
         pageService.deletePage(id);
         return "redirect:/" + memberId + "/pages";
     }
-
 
 
 }

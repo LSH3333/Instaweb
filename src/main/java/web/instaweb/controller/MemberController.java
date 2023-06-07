@@ -21,11 +21,18 @@ public class MemberController {
 
     private final MemberService memberService;
 
+    /**
+     * 회원 가입
+     */
     @GetMapping("/members/register")
     public String registerForm(@ModelAttribute("member") Member member) {
         return "members/registerForm";
     }
 
+    /**
+     * 회원가입 에서 사용자가 작성 한 내용 검토 후 에러 있다면 반려함
+     * 에러 없을시 Member 등록 후 리다이렉트
+     */
     @PostMapping("members/register")
     public String register(@Valid @ModelAttribute("member") Member member, BindingResult bindingResult) {
         // member loginId, name 중복 체크

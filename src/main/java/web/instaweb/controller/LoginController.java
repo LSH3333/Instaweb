@@ -23,11 +23,17 @@ public class LoginController {
 
     private final LoginService loginService;
 
+    /**
+     * 로그인
+     */
     @GetMapping("/login")
     public String loginForm(@ModelAttribute("loginForm") LoginForm form) {
         return "login/loginForm";
     }
 
+    /**
+     * 로그인에 오류 있을시 반려 없을시 로그인 (세션에 등록)
+     */
     @PostMapping("/login")
     public String login(@Valid @ModelAttribute("loginForm") LoginForm form,
                         BindingResult bindingResult,
@@ -53,6 +59,10 @@ public class LoginController {
         return "redirect:" + redirectURL;
     }
 
+    /**
+     * 로그아웃
+     * 세션 파기
+     */
     @GetMapping("/logout")
     public String logout(HttpServletRequest request) {
         // false 시 session 없으면 null 반환
