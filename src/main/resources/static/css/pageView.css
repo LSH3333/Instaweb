@@ -116,6 +116,51 @@
     margin: 20px 0;
 }
 
+/* 에디터 내부 글자 크기 조절용 클래스 */
+#editor {
+    font-size: 16px;
+}
+
+#editor .textSizeMain1,
+.textSizeMain1 * {
+    font-size: 18px;
+}
+
+#editor .textSizeMain2,
+.textSizeMain2 * {
+    font-size: 16px;
+}
+
+#editor .textSizeMain3,
+.textSizeMain3 * {
+    font-size: 14px;
+}
+
+#editor .textSizeTitle1,
+.textSizeTitle1 * {
+    font-size: 26px;
+    color: #000;
+    margin: 1em 0 20px;
+    line-height: 1.46;
+}
+
+#editor .textSizeTitle2,
+.textSizeTitle2 * {
+    font-size: 23px;
+    color: #000;
+    margin: 1em 0 20px;
+    line-height: 1.48;
+}
+
+#editor .textSizeTitle3,
+.textSizeTitle3 * {
+    font-size: 20px;
+    color: #000;
+    margin: 1em 0 20px;
+    line-height: 1.55;
+}
+
+
 .contents>div {
     /* background-color: blueviolet; */
     margin: 0 auto;
