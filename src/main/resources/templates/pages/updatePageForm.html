@@ -28,7 +28,7 @@
       <!-- 실제 content 저장용 -->
       <textarea id="my-textarea" style="display: none" th:field="*{content}"></textarea>
       <!-- 유저에게 보이는 div -->
-      <div id="editor" contenteditable="true" oninput="resizeEditorWhenTyped()"></div>
+      <div id="editor" contenteditable="true" oninput="resizeEditor()"></div>
 
       <input id="img-selector" type="file" accept="image/*" />
 

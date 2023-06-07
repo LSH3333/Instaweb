@@ -56,6 +56,7 @@
             previousFocusedElement.classList.add('textSizeMain1');
             changeSummaryTextAndCloseDetails(this);
             setCursorPositionToEnd(previousFocusedElement);
+            resizeEditor();
         }
     });
 
@@ -65,6 +66,7 @@
             previousFocusedElement.classList.add('textSizeMain2');
             changeSummaryTextAndCloseDetails(this);
             setCursorPositionToEnd(previousFocusedElement);
+            resizeEditor();
         }
     });
 
@@ -74,6 +76,7 @@
             previousFocusedElement.classList.add('textSizeMain3');
             changeSummaryTextAndCloseDetails(this);
             setCursorPositionToEnd(previousFocusedElement);
+            resizeEditor();
         }
     });
 
@@ -83,6 +86,7 @@
             previousFocusedElement.classList.add('textSizeTitle1');
             changeSummaryTextAndCloseDetails(this);
             setCursorPositionToEnd(previousFocusedElement);
+            resizeEditor();
         }
     });
 
@@ -92,6 +96,7 @@
             previousFocusedElement.classList.add('textSizeTitle2');
             changeSummaryTextAndCloseDetails(this);
             setCursorPositionToEnd(previousFocusedElement);
+            resizeEditor();
         }
     });
 
@@ -101,6 +106,7 @@
             previousFocusedElement.classList.add('textSizeTitle3');
             changeSummaryTextAndCloseDetails(this);
             setCursorPositionToEnd(previousFocusedElement);
+            resizeEditor();
         }
     });
 
@@ -154,6 +160,8 @@
             range.collapse(true);
             sel.removeAllRanges();
             sel.addRange(range);
+
+            resizeEditor();
         }
     });
 
@@ -419,8 +427,8 @@
     }
 
     // text editor 에 입력시 editor 크기 조절 
-    function resizeEditorWhenTyped() {
-        const editor = document.getElementById("editor");
+    function resizeEditor() {
+        // const editor = document.getElementById("editor");
         const minHeight = 500; // Set the desired minimum height
         editor.style.height = "auto"; // Reset the height to auto to recalculate the height based on content
         editor.style.height = Math.max(minHeight, editor.scrollHeight) + "px"; // Set the height to the maximum of minHeight and scroll height    

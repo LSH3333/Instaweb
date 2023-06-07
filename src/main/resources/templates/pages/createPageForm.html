@@ -30,7 +30,7 @@
       </div>
 
       <!-- 유저에게 보이는 div -->
-      <div id="editor" contenteditable="true" oninput="resizeEditorWhenTyped()" onkeydown="prependDivFirstLineOfEditor()"></div>
+      <div id="editor" contenteditable="true" oninput="resizeEditor()" onkeydown="prependDivFirstLineOfEditor()"></div>
       <!-- 실제 content 저장용 -->
       <textarea id="my-textarea" style="display: none" th:field="*{content}"></textarea>
 
