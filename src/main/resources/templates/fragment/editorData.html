@@ -31,6 +31,8 @@
     const btnTextSizeTitle1 = document.getElementById('text-size-title-1');
     const btnTextSizeTitle2 = document.getElementById('text-size-title-2');
     const btnTextSizeTitle3 = document.getElementById('text-size-title-3');
+    const textSizeSumarry = document.getElementById('text-size-summary');
+    const textSizeDetails = document.getElementById('text-size-details');
 
     btnBold.addEventListener("click", function () {
         setStyle("bold");
@@ -51,6 +53,7 @@
     btnTextSizeMain1.addEventListener("click", function () {
         if (previousFocusedElement != null) {
             previousFocusedElement.style = "font-size: 18px;";
+            changeDetailsTextAndClose(this);
         }
         focusEditor();
     });
@@ -58,6 +61,7 @@
     btnTextSizeMain2.addEventListener("click", function () {
         if (previousFocusedElement != null) {
             previousFocusedElement.style = "font-size: 16px;";
+            changeDetailsTextAndClose(this);
         }
         focusEditor();
     });
@@ -65,6 +69,7 @@
     btnTextSizeMain3.addEventListener("click", function () {
         if (previousFocusedElement != null) {
             previousFocusedElement.style = "font-size: 14px;";
+            changeDetailsTextAndClose(this);
         }
         focusEditor();
     });
@@ -72,6 +77,7 @@
     btnTextSizeTitle1.addEventListener("click", function () {
         if (previousFocusedElement != null) {
             previousFocusedElement.style = "font-size: 26px; font-weight:normal; color: #000; margin:1em 0 20px; line-height:1.46;";
+            changeDetailsTextAndClose(this);
         }
         focusEditor();
     });
@@ -79,6 +85,7 @@
     btnTextSizeTitle2.addEventListener("click", function () {
         if (previousFocusedElement != null) {
             previousFocusedElement.style = "font-size: 23px; font-weight:normal; color: #000; margin:1em 0 20px; line-height:1.48;";
+            changeDetailsTextAndClose(this);
         }
         focusEditor();
     });
@@ -86,6 +93,7 @@
     btnTextSizeTitle3.addEventListener("click", function () {
         if (previousFocusedElement != null) {
             previousFocusedElement.style = "font-size: 20px; font-weight:normal; color: #000; margin:1em 0 20px; line-height:1.55;";
+            changeDetailsTextAndClose(this);
         }
         focusEditor();
     });
@@ -94,6 +102,11 @@
     function setStyle(style) {
         document.execCommand(style);
         focusEditor();
+    }
+
+    function changeDetailsTextAndClose(element) {
+        textSizeSumarry.textContent = element.innerText;
+        textSizeDetails.open = false;
     }
 
     // 버튼 클릭 시 에디터가 포커스를 잃기 때문에 다시 에디터에 포커스를 해줌
@@ -124,6 +137,7 @@
         }
     });
 
+    // 에디터에 붙여넣을 경우 defalut behaviour 는 <span>을 삽입하는데 이를 방지함  
     editor.addEventListener('paste', function (event) {
         event.preventDefault(); // Prevent the default paste behavior
 
@@ -135,14 +149,11 @@
     });
 
 
-
-
+    // 에디터 내부 클릭(선택)한 엘레먼트 previousFocusedElement 에 기억해놓음 
     editor.addEventListener('mousedown', function (event) {
         let clickedElement = event.target;
-        console.log(clickedElement);
 
         if (clickedElement.parentNode == editor) {
-            console.log('previousFocusedElement = ' + previousFocusedElement)
             previousFocusedElement = clickedElement;
         }
     });
