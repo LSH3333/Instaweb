@@ -1,94 +1,52 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Update Page</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link
-      rel="stylesheet"
-      href="/css/universal.css"
-      th:href="@{/css/universal.css}"
-    />
-    <!-- 수정폼은 글 작성폼이랑 스타일은 같기 때문에 css 파일 글 작성폼꺼 그대로 사용 -->
-    <link
-      rel="stylesheet"
-      href="/css/createPageForm.css"
-      th:href="@{/css/createPageForm.css}"
-    />
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="/css/footer.css"
-      th:href="@{/css/footer.css}"
-    />
-  </head>
 
-  <body>
-    <!-- side tab fragment -->
-    <div th:replace="fragment/side-tab :: side-tab"></div>
-    <header th:replace="fragment/editorHeader :: header"></header>
+<head>
+  <meta charset="UTF-8" />
+  <title>Update Page</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/css/universal.css" th:href="@{/css/universal.css}" />
+  <!-- 수정폼은 글 작성폼이랑 스타일은 같기 때문에 css 파일 글 작성폼꺼 그대로 사용 -->
+  <link rel="stylesheet" href="/css/createPageForm.css" th:href="@{/css/createPageForm.css}" />
+  <link rel="stylesheet" type="text/css" href="/css/footer.css" th:href="@{/css/footer.css}" />
+  <link rel="stylesheet" type="text/css" href="/css/side-tab.css" th:href="@{/css/side-tab.css}" />
+</head>
 
-    <!-- <div id="header">
-    <div class="editor-menu">
-      <button id="btn-bold" type="button">
-        <b>B</b>
-      </button>
-      <button id="btn-italic" type="button">
-        <i>I</i>
-      </button>
-      <button id="btn-underline" type="button">
-        <u>U</u>
-      </button>
-      <button id="btn-strike" type="button">
-        <s>S</s>
-      </button>
-      <button id="btn-image" type="button" style="width: 45px">IMG</button>
-    </div>
-  </div> -->
-    <!-- Page 들 ajax 에 의해 로드됨 -->
-    <div class="contents">
-      <form th:object="${form}" method="post" enctype="multipart/form-data">
-        <!-- title -->
-        <div class="title">
-          <input
-            id="titleInput"
-            type="text"
-            th:field="*{title}"
-            placeholder="제목을 입력하세요"
-            oninput="removePlaceholderRed()"
-          />
-        </div>
-        <!-- 실제 content 저장용 -->
-        <textarea
-          id="my-textarea"
-          style="display: none"
-          th:field="*{content}"
-        ></textarea>
-        <!-- 유저에게 보이는 div -->
-        <div
-          id="editor"
-          contenteditable="true"
-          oninput="resizeEditorWhenTyped()"
-        ></div>
+<body>
+  <!-- side tab fragment -->
+  <div th:replace="fragment/side-tab :: side-tab"></div>
+  <header th:replace="fragment/editorHeader :: header"></header>
 
-        <input id="img-selector" type="file" accept="image/*" />
+  <!-- Page 들 ajax 에 의해 로드됨 -->
+  <div class="contents">
+    <form th:object="${form}" method="post" enctype="multipart/form-data">
+      <!-- title -->
+      <div class="title">
+        <input id="titleInput" type="text" th:field="*{title}" placeholder="제목을 입력하세요"
+          oninput="removePlaceholderRed()" />
+      </div>
+      <!-- 실제 content 저장용 -->
+      <textarea id="my-textarea" style="display: none" th:field="*{content}"></textarea>
+      <!-- 유저에게 보이는 div -->
+      <div id="editor" contenteditable="true" oninput="resizeEditorWhenTyped()"></div>
 
-        <!-- type="hidden" 으로 안넘겨주면 null 됨 -->
-        <input type="hidden" th:field="*{id}" />
-        <input type="hidden" th:field="*{createdTime}" />
-        <button id="submitBtn" type="submit">완료</button>
-      </form>
-    </div>
+      <input id="img-selector" type="file" accept="image/*" />
 
-    <!-- footer -->
-    <footer th:replace="fragment/footer :: footer"></footer>
+      <!-- type="hidden" 으로 안넘겨주면 null 됨 -->
+      <input type="hidden" th:field="*{id}" />
+      <input type="hidden" th:field="*{createdTime}" />
+      <button id="submitBtn" type="submit">완료</button>
+    </form>
+  </div>
 
-    <!-- 작성된 titile,content 서버에서 불러서 editor에 디스플레이함 (updatePageForm, createPageForm, pageView 에서 사용)  -->
-    <script
-      th:replace="fragment/editorData :: requestTitleAndContentFromServer"
-    ></script>
+  <!-- footer -->
+  <footer th:replace="fragment/footer :: footer"></footer>
 
-    <!-- editor 관련 기능들, 서버로 데이터 전송 부분 (createForm, updateForm 에서 사용) -->
-    <script th:replace="fragment/editorData :: createAndUpdate"></script>
-  </body>
+  <!-- 작성된 titile,content 서버에서 불러서 editor에 디스플레이함 (updatePageForm, createPageForm, pageView 에서 사용)  -->
+  <script th:replace="fragment/editorData :: requestTitleAndContentFromServer"></script>
+
+  <!-- editor 관련 기능들, 서버로 데이터 전송 부분 (createForm, updateForm 에서 사용) -->
+  <script th:replace="fragment/editorData :: createAndUpdate"></script>
+</body>
+
 </html>

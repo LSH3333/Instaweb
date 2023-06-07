@@ -1,9 +1,3 @@
-* {
-    margin: 0;
-    padding: 0;
-    /* width, height에 border, padding 값 포함됨  */
-    box-sizing: border-box;
-}
 
 ul {
     list-style-type: none;
