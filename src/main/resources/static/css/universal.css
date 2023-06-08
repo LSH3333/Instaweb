@@ -3,7 +3,7 @@
     padding: 0;
     /* width, height에 border, padding 값 포함됨  */
     box-sizing: border-box;
-    font-size: 20px;
+    font-size: 16px;
 }
 
 html,

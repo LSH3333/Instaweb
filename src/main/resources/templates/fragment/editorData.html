@@ -138,35 +138,9 @@
     }
 
 
-    // editor 내부에서 enter 눌렀을시 <div><br></div> 삽입 
-    editor.addEventListener('keydown', function (event) {
-        if (event.key === 'Enter') {
-            event.preventDefault(); // Prevent the default behavior
-
-            // Create a new line without the addedClass element
-            let newLine = document.createElement('div');
-            let tmpBr = document.createElement('br');
-            newLine.appendChild(tmpBr);
-            editor.appendChild(newLine);
-
-            previousFocusedElement = newLine;
-
-            textSizeSumarry.textContent = '본문2';
-
-            // Move the cursor to the new line
-            var range = document.createRange();
-            var sel = window.getSelection();
-            range.setStart(newLine, 0);
-            range.collapse(true);
-            sel.removeAllRanges();
-            sel.addRange(range);
-
-            resizeEditor();
-        }
-    });
-
     // 에디터에 붙여넣을 경우 defalut behaviour 는 <span>을 삽입하는데 이를 방지함  
     editor.addEventListener('paste', function (event) {
+
         event.preventDefault(); // Prevent the default paste behavior
 
         const clipboardData = event.clipboardData || window.clipboardData;
@@ -285,7 +259,7 @@
         selection.addRange(range);
     }
 
-    // todo : 컨텐츠, 이미지 모두 ajax 로 전달
+
     // submit button event listener
     let button = document.getElementById("submitBtn");
     button.addEventListener("click", async function (event) {
@@ -529,11 +503,11 @@
         }
     });
 
-
+    // contenteditable div의 첫 line <div><br></div> 삽입
     function prependDivFirstLineOfEditor() {
-        // contenteditable div의 첫 line <div><br></div> 삽입
         if (editor.childNodes.length == 0) {
             let divtmp = document.createElement('div');
+            divtmp.classList.add('brDiv')
             let brtmp = document.createElement('br')
             divtmp.appendChild(brtmp);
             editor.prepend(divtmp);
@@ -545,6 +519,7 @@
             editor.firstChild.remove(); // Remove the <br> element if it's the only child
         }
     }
+
 </script>
 
 
@@ -669,6 +644,9 @@
         const blob = new Blob(byteArrays, { type: contentType });
         return new File([blob], fileName, { type: contentType });
     }
+
+
+
 </script>
 
 </html>
