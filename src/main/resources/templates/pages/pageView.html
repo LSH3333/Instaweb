@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>View Page</title>
+    <title>페이지</title>
     <link rel="stylesheet" href="/css/universal.css" th:href="@{/css/universal.css}">
     <link rel="stylesheet" href="/css/pageView.css" th:href="@{/css/pageView.css}">
     <!-- page block style -->
@@ -50,6 +50,7 @@
     <!-- ajax 요청으로 내용 가져와서 <img> 삽입  -->
     <script type="text/javascript">
         let pageId = "[[${page.id}]]";
+        let pageTitle = "[[${page.title}]]";
 
         let xhr = new XMLHttpRequest();
 
@@ -93,7 +94,7 @@
 
                             imgElement.onload = function () {
                                 loadedImgCount++;
-                                
+
                                 if (loadedImgCount === imgCount) {
                                     resizeEditorOnload();
                                 }
@@ -121,7 +122,12 @@
             xhr.open('GET', '/view/ajaxReq?pageId=' + pageId.toString(), true);
             xhr.send();
             changeCreatedTimePattern();
+            changeTitle();
         };
+
+        function changeTitle() {
+            document.title = pageTitle;
+        }
 
         function base64ToFile(base64String, fileName, contentType) {
             const byteCharacters = atob(base64String);

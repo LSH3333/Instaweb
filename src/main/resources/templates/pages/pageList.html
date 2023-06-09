@@ -12,9 +12,26 @@
   <link rel="stylesheet" type="text/css" href="/css/pageBlock.css" th:href="@{/css/pageBlock.css}" />
   <link rel="stylesheet" type="text/css" href="/css/footer.css" th:href="@{/css/footer.css}">
   <link rel="stylesheet" type="text/css" href="/css/side-tab.css" th:href="@{/css/side-tab.css}" />
-  
+
+</head>
+
+<body>
+  <!-- side tab fragment -->
+  <div th:replace="fragment/side-tab :: side-tab"></div>
+
+  <!-- Page 들 ajax 에 의해 로드됨 -->
+  <div class="contents">
+    <div id="contentContainer"></div>
+  </div>
+
+  <!-- footer -->
+  <footer th:replace="fragment/footer :: footer"></footer>
+
+
+
   <script type="text/javascript">
     let memberId = "[[${memberId}]]";
+    let memberName = "[[${memberName}]]";
 
     // ajax request
     var xhr = new XMLHttpRequest();
@@ -163,21 +180,15 @@
         true
       );
       xhr.send();
+
+      changeTitle();
     };
+
+    function changeTitle() {
+      document.title = memberName;
+    }
+
   </script>
-</head>
-
-<body>
-  <!-- side tab fragment -->
-  <div th:replace="fragment/side-tab :: side-tab"></div>
-
-  <!-- Page 들 ajax 에 의해 로드됨 -->
-  <div class="contents">
-    <div id="contentContainer"></div>
-  </div>
-
-  <!-- footer -->
-  <footer th:replace="fragment/footer :: footer"></footer>
 </body>
 
 </html>

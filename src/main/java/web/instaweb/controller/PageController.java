@@ -134,6 +134,7 @@ public class PageController {
         getNoImgFile();
 
         model.addAttribute("memberId", memberId);
+        model.addAttribute("memberName", memberService.findOne(memberId).getName());
         return "pages/pageList";
     }
 

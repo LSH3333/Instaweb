@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>게임</title>
+    <link rel="stylesheet" type="text/css" href="/css/universal.css" th:href="@{/css/universal.css}" />
+    <link rel="stylesheet" type="text/css" href="/css/footer.css" th:href="@{/css/footer.css}" />
+    <link rel="stylesheet" type="text/css" href="/css/side-tab.css" th:href="@{/css/side-tab.css}" />
+
+    <style>
+        .contents>div {
+            margin: 0 auto;
+            width: 800px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- side-tab fragment -->
+    <div th:if="${loginMemberId == null}">
+        <div th:replace="fragment/side-tab-logedOut :: side-tab-logedOut"></div>
+    </div>
+    <div th:unless="${loginMemberId == null}">
+        <div th:replace="fragment/side-tab :: side-tab"></div>
+    </div>
+
+    <div class="contents">
+        <div>
+            <iframe src="https://itch.io/embed/2109732" width="552" height="167" frameborder="0"><a
+                    href="https://lsh3333.itch.io/galaga">galga by LSH3333</a></iframe>
+            <iframe frameborder="0" src="https://itch.io/embed/2109662" width="552" height="167"><a
+                    href="https://lsh3333.itch.io/manygames">ManyGames by LSH3333</a></iframe>
+        </div>
+    </div>
+
+    <!-- footer -->
+    <footer th:replace="fragment/footer :: footer"></footer>
+
+</body>
+
+</html>
