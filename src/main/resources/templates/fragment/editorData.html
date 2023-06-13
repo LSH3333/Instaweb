@@ -139,26 +139,105 @@
 
 
     // 에디터에 붙여넣을 경우 defalut behaviour 는 <span>을 삽입하는데 이를 방지함  
-    editor.addEventListener('paste', function (event) {
+    // editor.addEventListener('paste', function (event) {
 
-        event.preventDefault(); // Prevent the default paste behavior
+    //     event.preventDefault(); // Prevent the default paste behavior
+
+    //     const clipboardData = event.clipboardData || window.clipboardData;
+    //     const pastedText = clipboardData.getData('text/plain');
+
+    //     // Insert the cleaned text into the editor
+    //     document.execCommand('insertHTML', false, pastedText);
+    // });
+
+    // editor.addEventListener('paste', function (event) {
+    //     event.preventDefault(); // Prevent default paste behavior
+
+    //     const clipboardData = event.clipboardData || window.clipboardData;
+    //     const pastedData = clipboardData.getData('text/html');
+
+    //     // Create a temporary div element to extract the copied content
+    //     const tempDiv = document.createElement('textarea');
+    //     tempDiv.innerHTML = pastedData;
+
+    // });
+
+
+
+    editor.addEventListener('paste', function (event) {
+        event.preventDefault(); // Prevent default paste behavior
 
         const clipboardData = event.clipboardData || window.clipboardData;
-        const pastedText = clipboardData.getData('text/plain');
+        const pastedData = clipboardData.getData('text/html');
 
-        // Insert the cleaned text into the editor
-        document.execCommand('insertHTML', false, pastedText);
+        // Create a temporary div element to extract the copied content
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = pastedData;
+
+        // Create a document fragment and append the temporary div contents to it
+        const fragment = document.createDocumentFragment();
+        while (tempDiv.firstChild) {
+            fragment.appendChild(tempDiv.firstChild);
+        }
+
+        // Get all elements from the document fragment
+        const copiedElements = Array.from(fragment.childNodes).filter(function (node) {
+            return node.nodeType === Node.ELEMENT_NODE;
+        });
+
+
+        // Get the current selection
+        const selection = window.getSelection();
+        if (selection.rangeCount > 0) {
+            // Get the current range
+            const range = selection.getRangeAt(0);
+
+            for (let i = 0; i < copiedElements.length; i++) {
+                console.log(copiedElements[i]);
+                removeElementAndChildrenStyle(copiedElements[i]);
+                // Insert the copied elements at the current cursor position
+                range.insertNode(copiedElements[i]);
+                parentElement = copiedElements[i].parentElement;
+                // Adjust the range to the end of the inserted content
+                range.setStartAfter(copiedElements[i]);
+                range.collapse(true);
+
+                // Update the selection to the adjusted range
+                selection.removeAllRanges();
+                selection.addRange(range);
+            }
+        }
     });
 
+    // recursive 하게 element 아래 존재하는 모든 엘레먼트 돌면서 style 지움 
+    function removeElementAndChildrenStyle(element) {
+        element.style = '';
+        const children = element.children;
+        for(let i = 0; i < children.length; i++) {
+            const child = children[i];
+            child.style = '';
 
-    // 에디터 내부 클릭(선택)한 엘레먼트 previousFocusedElement 에 기억해놓음 
+            removeElementAndChildrenStyle(child);
+        }
+    }
+
+
+
+
+    // 에디터 내부 클릭(선택)한 brDiv 엘레먼트 previousFocusedElement 에 기억해놓음 
     editor.addEventListener('mousedown', function (event) {
         let clickedElement = event.target;
-
-        if (clickedElement.parentNode == editor) {
-            previousFocusedElement = clickedElement;
-            changeSumarryText(clickedElement);
+        if(clickedElement == editor) {
+            clickedElement = editor.firstChild;
         }
+        
+        let brDivElement = clickedElement;
+        while(brDivElement.id != 'brDiv') {
+            brDivElement = brDivElement.parentElement;
+        }
+        
+        previousFocusedElement = brDivElement;
+        changeSumarryText(brDivElement);
     });
 
 
@@ -507,7 +586,8 @@
     function prependDivFirstLineOfEditor() {
         if (editor.childNodes.length == 0) {
             let divtmp = document.createElement('div');
-            divtmp.classList.add('brDiv')
+            // divtmp.classList.add('brDiv')
+            divtmp.id = 'brDiv';
             let brtmp = document.createElement('br')
             divtmp.appendChild(brtmp);
             editor.prepend(divtmp);
