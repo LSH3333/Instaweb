@@ -36,18 +36,42 @@
 
     btnBold.addEventListener("click", function () {
         setStyle("bold");
+        if (btnBold.classList.contains('btnPressed')) {
+            btnBold.classList.remove('btnPressed');
+        }
+        else {
+            btnBold.classList.add('btnPressed');
+        }
     });
 
     btnItalic.addEventListener("click", function () {
         setStyle("italic");
+        if (btnItalic.classList.contains('btnPressed')) {
+            btnItalic.classList.remove('btnPressed');
+        }
+        else {
+            btnItalic.classList.add('btnPressed');
+        }
     });
 
     btnUnderline.addEventListener("click", function () {
         setStyle("underline");
+        if (btnUnderline.classList.contains('btnPressed')) {
+            btnUnderline.classList.remove('btnPressed');
+        }
+        else {
+            btnUnderline.classList.add('btnPressed');
+        }
     });
 
     btnStrike.addEventListener("click", function () {
         setStyle("strikeThrough");
+        if (btnStrike.classList.contains('btnPressed')) {
+            btnStrike.classList.remove('btnPressed');
+        }
+        else {
+            btnStrike.classList.add('btnPressed');
+        }
     });
 
     btnTextSizeMain1.addEventListener("click", function () {
@@ -193,11 +217,11 @@
             const range = selection.getRangeAt(0);
 
             for (let i = 0; i < copiedElements.length; i++) {
-                console.log(copiedElements[i]);
+                // console.log(copiedElements[i]);
                 removeElementAndChildrenStyle(copiedElements[i]);
                 // Insert the copied elements at the current cursor position
                 range.insertNode(copiedElements[i]);
-                parentElement = copiedElements[i].parentElement;
+                // parentElement = copiedElements[i].parentElement;
                 // Adjust the range to the end of the inserted content
                 range.setStartAfter(copiedElements[i]);
                 range.collapse(true);
@@ -213,7 +237,7 @@
     function removeElementAndChildrenStyle(element) {
         element.style = '';
         const children = element.children;
-        for(let i = 0; i < children.length; i++) {
+        for (let i = 0; i < children.length; i++) {
             const child = children[i];
             child.style = '';
 
@@ -225,20 +249,64 @@
     // 에디터 내부 클릭(선택)한 brDiv 엘레먼트 previousFocusedElement 에 기억해놓음 
     editor.addEventListener('mousedown', function (event) {
         let clickedElement = event.target;
-        if(clickedElement == editor) {
+        if (clickedElement == editor) {
             clickedElement = editor.firstChild;
         }
-        
+
+        resetUI();
+
         let brDivElement = clickedElement;
-        while(brDivElement.id != 'brDiv') {
+        while (brDivElement.id != 'brDiv') {
+            changeUI(brDivElement);
             brDivElement = brDivElement.parentElement;
         }
-        
+
         previousFocusedElement = brDivElement;
         changeSumarryText(brDivElement);
     });
 
-    
+
+
+    editor.addEventListener('keyup', function (event) {
+        let range = window.getSelection().getRangeAt(0);
+        let element = range.commonAncestorContainer;
+        // console.log('element = ' + element)
+        let parentElement = element.parentElement;
+        // console.log('parent = ' + parentElement);
+        // console.log('inner = ' + parentElement.innerHTML)
+
+        resetUI();
+
+        while (element.id != 'brDiv') {
+            changeUI(element);
+            element = element.parentElement;
+        }
+    });
+
+
+    function changeUI(element) {
+        if (element.tagName === 'B') {
+            btnBold.classList.add('btnPressed')
+        } else if (element.tagName === 'I') {
+            btnItalic.classList.add('btnPressed')
+        }
+        else if (element.tagName === 'U') {
+            btnUnderline.classList.add('btnPressed')
+        } else if (element.tagName === 'STRIKE') {
+            btnStrike.classList.add('btnPressed')
+        }
+        else if (element.tagName === 'DIV' && element.id == 'brDiv') {
+            changeSumarryText(element);
+        }
+    }
+
+    function resetUI() {
+        btnBold.classList.remove('btnPressed');
+        btnItalic.classList.remove('btnPressed');
+        btnUnderline.classList.remove('btnPressed');
+        btnStrike.classList.remove('btnPressed');
+    }
+
 
     // 포커스된 엘레먼트의 글자크기 상태에 따라 sumarry 의 text 표시 변경 
     function changeSumarryText(clickedElement) {
