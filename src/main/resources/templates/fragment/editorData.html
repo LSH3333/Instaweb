@@ -222,8 +222,6 @@
     }
 
 
-
-
     // 에디터 내부 클릭(선택)한 brDiv 엘레먼트 previousFocusedElement 에 기억해놓음 
     editor.addEventListener('mousedown', function (event) {
         let clickedElement = event.target;
@@ -240,6 +238,7 @@
         changeSumarryText(brDivElement);
     });
 
+    
 
     // 포커스된 엘레먼트의 글자크기 상태에 따라 sumarry 의 text 표시 변경 
     function changeSumarryText(clickedElement) {
