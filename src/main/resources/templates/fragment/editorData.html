@@ -267,23 +267,22 @@
 
 
 
+    // 키보드로 커서 위치 움직였을때 현재 커서 위치의 텍스트의 특성(bold,글자크기 등)에 따라 버튼 ui 변경 
     editor.addEventListener('keyup', function (event) {
         let range = window.getSelection().getRangeAt(0);
-        let element = range.commonAncestorContainer;
-        // console.log('element = ' + element)
-        let parentElement = element.parentElement;
-        // console.log('parent = ' + parentElement);
-        // console.log('inner = ' + parentElement.innerHTML)
+        let element = range.commonAncestorContainer;    
+        // let parentElement = element.parentElement;
 
         resetUI();
 
-        while (element.id != 'brDiv') {
+        // 현재 엘레먼트 에서 editor 이전까지 부모로 거슬러 올라가며 엘레먼트 분석 
+        while (element.id != 'editor') {
             changeUI(element);
             element = element.parentElement;
         }
     });
 
-
+    // element 에 따라 버튼을 누름 처리 
     function changeUI(element) {
         if (element.tagName === 'B') {
             btnBold.classList.add('btnPressed')
@@ -300,6 +299,7 @@
         }
     }
 
+    // header ui 리셋 
     function resetUI() {
         btnBold.classList.remove('btnPressed');
         btnItalic.classList.remove('btnPressed');
