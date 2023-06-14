@@ -199,6 +199,7 @@
                 for (let i = 0; i < copiedElements.length; i++) {
                     removeElementAndChildrenStyle(copiedElements[i]);
                     // 첫번째 라인은 현재 라인에 포함시킴 
+                    // 커서 위치 파악해서 해당 위치에 추가하도록 수정 필요, 현재는 그냥 끝에 추가됨 
                     if (i == 0) {
                         selection.anchorNode.textContent += copiedElements[i].textContent;
                         previousElement = selection.anchorNode.parentElement;
