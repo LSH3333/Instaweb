@@ -36,18 +36,42 @@
 
     btnBold.addEventListener("click", function () {
         setStyle("bold");
+        if (btnBold.classList.contains('btnPressed')) {
+            btnBold.classList.remove('btnPressed');
+        }
+        else {
+            btnBold.classList.add('btnPressed');
+        }
     });
 
     btnItalic.addEventListener("click", function () {
         setStyle("italic");
+        if (btnItalic.classList.contains('btnPressed')) {
+            btnItalic.classList.remove('btnPressed');
+        }
+        else {
+            btnItalic.classList.add('btnPressed');
+        }
     });
 
     btnUnderline.addEventListener("click", function () {
         setStyle("underline");
+        if (btnUnderline.classList.contains('btnPressed')) {
+            btnUnderline.classList.remove('btnPressed');
+        }
+        else {
+            btnUnderline.classList.add('btnPressed');
+        }
     });
 
     btnStrike.addEventListener("click", function () {
         setStyle("strikeThrough");
+        if (btnStrike.classList.contains('btnPressed')) {
+            btnStrike.classList.remove('btnPressed');
+        }
+        else {
+            btnStrike.classList.add('btnPressed');
+        }
     });
 
     btnTextSizeMain1.addEventListener("click", function () {
@@ -138,28 +162,133 @@
     }
 
 
-    // 에디터에 붙여넣을 경우 defalut behaviour 는 <span>을 삽입하는데 이를 방지함  
-    editor.addEventListener('paste', function (event) {
 
-        event.preventDefault(); // Prevent the default paste behavior
+    // editor paste event     
+    editor.addEventListener('paste', function (event) {
+        event.preventDefault(); // Prevent default paste behavior
 
         const clipboardData = event.clipboardData || window.clipboardData;
-        const pastedText = clipboardData.getData('text/plain');
+        const pastedData = clipboardData.getData('text/html');
 
-        // Insert the cleaned text into the editor
-        document.execCommand('insertHTML', false, pastedText);
+        // Create a temporary div element to extract the copied content
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = pastedData;
+
+        // Create a document fragment and append the temporary div contents to it
+        const fragment = document.createDocumentFragment();
+        while (tempDiv.firstChild) {
+            fragment.appendChild(tempDiv.firstChild);
+        }
+
+        // Get all elements from the document fragment
+        const copiedElements = Array.from(fragment.childNodes).filter(function (node) {
+            return node.nodeType === Node.ELEMENT_NODE;
+        });
+
+
+        // Get the current selection
+        const selection = window.getSelection();
+        if (selection.rangeCount > 0) {
+            // Get the current range
+            const range = selection.getRangeAt(0);
+
+            for (let i = 0; i < copiedElements.length; i++) {
+                // console.log(copiedElements[i]);
+                removeElementAndChildrenStyle(copiedElements[i]);
+                // Insert the copied elements at the current cursor position
+                range.insertNode(copiedElements[i]);
+                // parentElement = copiedElements[i].parentElement;
+                // Adjust the range to the end of the inserted content
+                range.setStartAfter(copiedElements[i]);
+                range.collapse(true);
+
+                // Update the selection to the adjusted range
+                selection.removeAllRanges();
+                selection.addRange(range);
+            }
+        }
+
+        // 복사 붙여 넣기 후 에디터 크기 조절 
+        resizeEditorAllElements();
     });
 
+    // recursive 하게 element 아래 존재하는 모든 엘레먼트 돌면서 style 지움 
+    function removeElementAndChildrenStyle(element) {
+        element.style = '';
+        const children = element.children;
+        for (let i = 0; i < children.length; i++) {
+            const child = children[i];
+            child.style = '';
 
-    // 에디터 내부 클릭(선택)한 엘레먼트 previousFocusedElement 에 기억해놓음 
+            removeElementAndChildrenStyle(child);
+        }
+    }
+
+
+    // 에디터 내부 클릭(선택)한 brDiv 엘레먼트 previousFocusedElement 에 기억해놓음 
     editor.addEventListener('mousedown', function (event) {
         let clickedElement = event.target;
+        if (clickedElement == editor) {
+            clickedElement = editor.firstChild;
+        }
 
-        if (clickedElement.parentNode == editor) {
-            previousFocusedElement = clickedElement;
-            changeSumarryText(clickedElement);
+        resetUI();
+
+        let brDivElement = clickedElement;
+        while (brDivElement.id != 'brDiv') {
+            changeUI(brDivElement);
+            brDivElement = brDivElement.parentElement;
+        }
+
+        previousFocusedElement = brDivElement;
+        changeSumarryText(brDivElement);
+    });
+
+
+
+    // 키보드로 커서 위치 움직였을때 현재 커서 위치의 텍스트의 특성(bold,글자크기 등)에 따라 버튼 ui 변경     
+    editor.addEventListener('keyup', function (event) {
+        // 여기서 element 는 가장 리프 노드를 가르킨다 
+        let range = window.getSelection().getRangeAt(0);
+        let element = range.commonAncestorContainer;
+
+        resetUI();
+
+        // 현재 엘레먼트 에서 editor 이전까지 부모로 거슬러 올라가며 엘레먼트 분석 
+        let foundBrDiv = false;
+        while (element.id != 'editor') {
+            // brDiv 일 경우 previousFocusedElement 에 저장 (글자 크기 변경 용)
+            if (!foundBrDiv && element.id == 'brDiv') {
+                foundBrDiv = true;
+                changeSumarryText(element);
+            }
+
+            changeUI(element);
+            element = element.parentElement;
         }
     });
+
+    // element 에 따라 버튼을 누름 처리 
+    function changeUI(element) {
+        if (element.tagName === 'B') {
+            btnBold.classList.add('btnPressed')
+        } else if (element.tagName === 'I') {
+            btnItalic.classList.add('btnPressed')
+        }
+        else if (element.tagName === 'U') {
+            btnUnderline.classList.add('btnPressed')
+        } else if (element.tagName === 'STRIKE') {
+            btnStrike.classList.add('btnPressed')
+        }
+    }
+
+    // header ui 리셋 
+    function resetUI() {
+        btnBold.classList.remove('btnPressed');
+        btnItalic.classList.remove('btnPressed');
+        btnUnderline.classList.remove('btnPressed');
+        btnStrike.classList.remove('btnPressed');
+    }
 
 
     // 포커스된 엘레먼트의 글자크기 상태에 따라 sumarry 의 text 표시 변경 
@@ -402,7 +531,6 @@
 
     // text editor 에 입력시 editor 크기 조절 
     function resizeEditor() {
-        // const editor = document.getElementById("editor");
         const minHeight = 500; // Set the desired minimum height
         editor.style.height = "auto"; // Reset the height to auto to recalculate the height based on content
         editor.style.height = Math.max(minHeight, editor.scrollHeight) + "px"; // Set the height to the maximum of minHeight and scroll height    
@@ -434,9 +562,9 @@
         reader.readAsDataURL(file);
     }
 
-    // page onload 시 editor 크기 조절 
-    function resizeEditorOnload() {
-
+    // 에디터 크기 조절     
+    // 에디터 내부 모든 엘레먼트 높이 계산후 조절 (onload, paste 시)
+    function resizeEditorAllElements() {
         // Perform additional actions after the element is displayed
         window.requestAnimationFrame(function () {
             // Your additional actions here
@@ -507,7 +635,8 @@
     function prependDivFirstLineOfEditor() {
         if (editor.childNodes.length == 0) {
             let divtmp = document.createElement('div');
-            divtmp.classList.add('brDiv')
+            // divtmp.classList.add('brDiv')
+            divtmp.id = 'brDiv';
             let brtmp = document.createElement('br')
             divtmp.appendChild(brtmp);
             editor.prepend(divtmp);
@@ -555,7 +684,7 @@
                 // 이미지 없는 경우 editor 내 child 들 모두 로드될때까지 대기 후 resize editor                    
                 if (imgCount === 0) {
                     waitForEditorChildren().then((height) => {
-                        resizeEditorOnload();
+                        resizeEditorAllElements();
                     });
                 }
                 // 이미지 있는 경우 editor 내 image 모두 로드될때까지 대기 후 resize editor 
@@ -573,7 +702,7 @@
                             loadedImgCount++;
 
                             if (loadedImgCount === imgCount) {
-                                resizeEditorOnload();
+                                resizeEditorAllElements();
                             }
                         }
                     }

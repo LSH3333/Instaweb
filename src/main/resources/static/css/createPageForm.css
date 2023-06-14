@@ -46,6 +46,12 @@ input[type="file"] {
   margin: 0 5px;
 }
 
+#header .editor-menu .btnPressed {
+  background-color: black;
+  color: white;
+}
+
+
 #header .editor-menu button:hover {
   cursor: pointer;
   background-color: #ccc;
