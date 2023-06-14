@@ -25,6 +25,12 @@
     const btnItalic = document.getElementById("btn-italic");
     const btnUnderline = document.getElementById("btn-underline");
     const btnStrike = document.getElementById("btn-strike");
+    const btnTextAlignLeft = document.getElementById('btn-text-align-left');
+    const btnTextAlignCenter = document.getElementById('btn-text-align-center');
+    const btnTextAlignRight = document.getElementById('btn-text-align-right');
+
+    const AllBtnList = [btnBold, btnItalic, btnUnderline, btnStrike, btnTextAlignLeft, btnTextAlignCenter, btnTextAlignRight]
+
     const btnTextSizeMain1 = document.getElementById('text-size-main-1');
     const btnTextSizeMain2 = document.getElementById('text-size-main-2');
     const btnTextSizeMain3 = document.getElementById('text-size-main-3');
@@ -33,6 +39,7 @@
     const btnTextSizeTitle3 = document.getElementById('text-size-title-3');
     const textSizeSumarry = document.getElementById('text-size-summary');
     const textSizeDetails = document.getElementById('text-size-details');
+
 
     btnBold.addEventListener("click", function () {
         setStyle("bold");
@@ -74,64 +81,82 @@
         }
     });
 
-    btnTextSizeMain1.addEventListener("click", function () {
-        if (previousFocusedElement != null) {
-            previousFocusedElement.classList.remove(previousFocusedElement.classList[0]);
-            previousFocusedElement.classList.add('textSizeMain1');
-            changeSummaryTextAndCloseDetails(this);
-            setCursorPositionToEnd(previousFocusedElement);
-            resizeEditor();
-        }
+    // text-align left or center or right 처리 
+    function alignText(element, alignment, textAlignBtn) {
+        // element 에서 선택한 align 클래스는 추가, 나머지는 제거 
+        const alignments = ['textAlignLeft', 'textAlignCenter', 'textAlignRight'];
+        alignments.forEach((className) => {
+            if (element.classList.contains(className)) {
+                element.classList.remove(className);
+            }
+        });
+
+        element.classList.add(alignment);
+        setCursorPositionToEnd(previousFocusedElement);
+
+        // 현재 선택한 textAlignBtn 은 btnPressed 처리, 나머지는 해제 처리 
+        const allBtns = [btnTextAlignLeft, btnTextAlignCenter, btnTextAlignRight];
+        allBtns.forEach((btn) => {
+            if (btn != textAlignBtn) {
+                btn.classList.remove('btnPressed');
+            } else {
+                btn.classList.add('btnPressed');
+            }
+        })
+    }
+
+    btnTextAlignLeft.addEventListener('click', function () {
+        if (previousFocusedElement == null) return;
+        alignText(previousFocusedElement, 'textAlignLeft', btnTextAlignLeft);
+    });
+
+    btnTextAlignCenter.addEventListener('click', function () {
+        if (previousFocusedElement == null) return;
+        alignText(previousFocusedElement, 'textAlignCenter', btnTextAlignCenter);
+    });
+
+    btnTextAlignRight.addEventListener('click', function () {
+        if (previousFocusedElement == null) return;
+        alignText(previousFocusedElement, 'textAlignRight', btnTextAlignRight);
+    });
+
+    function pressTextSizeBtn(textSizeType, btn) {
+        if(previousFocusedElement == null) return;
+        const textSizeList = ['textSizeMain1', 'textSizeMain2', 'textSizeMain3', 'textSizeTitle1', 'textSizeTitle2', 'textSizeTitle3'];
+        textSizeList.forEach((type) => {
+            if (type === textSizeType) {
+                previousFocusedElement.classList.add(textSizeType);
+            } else {
+                previousFocusedElement.classList.remove(type);
+            }
+        })
+        changeSummaryTextAndCloseDetails(btn);
+        setCursorPositionToEnd(previousFocusedElement);
+        resizeEditor();
+    }
+
+    btnTextSizeMain1.addEventListener("click", function () {    
+        pressTextSizeBtn('textSizeMain1', this);
     });
 
     btnTextSizeMain2.addEventListener("click", function () {
-        if (previousFocusedElement != null) {
-            previousFocusedElement.classList.remove(previousFocusedElement.classList[0]);
-            previousFocusedElement.classList.add('textSizeMain2');
-            changeSummaryTextAndCloseDetails(this);
-            setCursorPositionToEnd(previousFocusedElement);
-            resizeEditor();
-        }
+        pressTextSizeBtn('textSizeMain2', this);
     });
 
     btnTextSizeMain3.addEventListener("click", function () {
-        if (previousFocusedElement != null) {
-            previousFocusedElement.classList.remove(previousFocusedElement.classList[0]);
-            previousFocusedElement.classList.add('textSizeMain3');
-            changeSummaryTextAndCloseDetails(this);
-            setCursorPositionToEnd(previousFocusedElement);
-            resizeEditor();
-        }
+        pressTextSizeBtn('textSizeMain3', this);
     });
 
     btnTextSizeTitle1.addEventListener("click", function () {
-        if (previousFocusedElement != null) {
-            previousFocusedElement.classList.remove(previousFocusedElement.classList[0]);
-            previousFocusedElement.classList.add('textSizeTitle1');
-            changeSummaryTextAndCloseDetails(this);
-            setCursorPositionToEnd(previousFocusedElement);
-            resizeEditor();
-        }
+        pressTextSizeBtn('textSizeTitle1', this);
     });
 
     btnTextSizeTitle2.addEventListener("click", function () {
-        if (previousFocusedElement != null) {
-            previousFocusedElement.classList.remove(previousFocusedElement.classList[0]);
-            previousFocusedElement.classList.add('textSizeTitle2');
-            changeSummaryTextAndCloseDetails(this);
-            setCursorPositionToEnd(previousFocusedElement);
-            resizeEditor();
-        }
+        pressTextSizeBtn('textSizeTitle2', this);
     });
 
     btnTextSizeTitle3.addEventListener("click", function () {
-        if (previousFocusedElement != null) {
-            previousFocusedElement.classList.remove(previousFocusedElement.classList[0]);
-            previousFocusedElement.classList.add('textSizeTitle3');
-            changeSummaryTextAndCloseDetails(this);
-            setCursorPositionToEnd(previousFocusedElement);
-            resizeEditor();
-        }
+        pressTextSizeBtn('textSizeTitle3', this);
     });
 
     function setStyle(style) {
@@ -140,8 +165,8 @@
     }
 
     // sumarry 의 표시된 글자 (본문2, 제목1..) 바꾸고, open 된 details 닫음 
-    function changeSummaryTextAndCloseDetails(element) {
-        textSizeSumarry.textContent = element.innerText;
+    function changeSummaryTextAndCloseDetails(btn) {
+        textSizeSumarry.textContent = btn.innerText;
         textSizeDetails.open = false;
     }
 
@@ -244,24 +269,47 @@
 
 
     // 에디터 내부 클릭(선택)한 brDiv 엘레먼트 previousFocusedElement 에 기억해놓음 
-    editor.addEventListener('mousedown', function (event) {
-        let clickedElement = event.target;
-        if (clickedElement == editor) {
-            clickedElement = editor.firstChild;
-        }
+    // editor.addEventListener('mousedown', function (event) {
+    //     let clickedElement = event.target;
+    //     if (clickedElement == editor) {
+    //         clickedElement = editor.firstChild;
+    //     }
+
+    //     resetUI();
+
+    //     let brDivElement = clickedElement;
+    //     while (brDivElement.id != 'brDiv') {
+    //         changeUI(brDivElement);            
+    //         brDivElement = brDivElement.parentElement;
+    //     }
+    //     changeAlignBtn(brDivElement);
+
+    //     previousFocusedElement = brDivElement;
+    //     changeSumarryText(brDivElement);
+    // });
+
+    editor.addEventListener('mouseup', function (event) {
+        let range = window.getSelection().getRangeAt(0);
+        // 여기서 element 는 가장 리프 노드를 가르킨다 
+        let element = range.commonAncestorContainer;
 
         resetUI();
 
-        let brDivElement = clickedElement;
-        while (brDivElement.id != 'brDiv') {
-            changeUI(brDivElement);
-            brDivElement = brDivElement.parentElement;
+        // 현재 엘레먼트 에서 editor 이전까지 부모로 거슬러 올라가며 엘레먼트 분석 
+        let foundBrDiv = false;
+        while (element.id != 'editor') {
+            // brDiv 일 경우 previousFocusedElement 에 저장 (글자 크기 변경 용)
+            if (!foundBrDiv && element.id == 'brDiv') {
+                foundBrDiv = true;
+                previousFocusedElement = element;
+                changeSumarryText(element);
+                changeAlignBtn(element);
+            }
+
+            changeUI(element);
+            element = element.parentElement;
         }
-
-        previousFocusedElement = brDivElement;
-        changeSumarryText(brDivElement);
     });
-
 
 
     // 키보드로 커서 위치 움직였을때 현재 커서 위치의 텍스트의 특성(bold,글자크기 등)에 따라 버튼 ui 변경     
@@ -280,6 +328,7 @@
                 foundBrDiv = true;
                 previousFocusedElement = element;
                 changeSumarryText(element);
+                changeAlignBtn(element);
             }
 
             changeUI(element);
@@ -301,12 +350,21 @@
         }
     }
 
+    function changeAlignBtn(element) {
+        if (element.classList.contains('textAlignLeft')) {
+            btnTextAlignLeft.classList.add('btnPressed');
+        } else if (element.classList.contains('textAlignCenter')) {
+            btnTextAlignCenter.classList.add('btnPressed');
+        } else if (element.classList.contains('textAlignRight')) {
+            btnTextAlignRight.classList.add('btnPressed');
+        }
+    }
+
     // header ui 리셋 
     function resetUI() {
-        btnBold.classList.remove('btnPressed');
-        btnItalic.classList.remove('btnPressed');
-        btnUnderline.classList.remove('btnPressed');
-        btnStrike.classList.remove('btnPressed');
+        AllBtnList.forEach((btn) => {
+            btn.classList.remove('btnPressed');
+        });
     }
 
 
