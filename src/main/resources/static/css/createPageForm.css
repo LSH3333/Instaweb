@@ -93,6 +93,7 @@ input[type="file"] {
   padding-top: 30px;
   padding-bottom: 30px;
   line-height: 1.5;
+  box-sizing: content-box;
 }
 
 #editor:focus {

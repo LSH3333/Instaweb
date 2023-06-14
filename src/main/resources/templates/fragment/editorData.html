@@ -191,21 +191,36 @@
         if (selection.rangeCount > 0) {
             // Get the current range
             const range = selection.getRangeAt(0);
+            let element = range.commonAncestorContainer;
 
-            for (let i = 0; i < copiedElements.length; i++) {
-                // console.log(copiedElements[i]);
-                removeElementAndChildrenStyle(copiedElements[i]);
-                // Insert the copied elements at the current cursor position
-                range.insertNode(copiedElements[i]);
-                // parentElement = copiedElements[i].parentElement;
-                // Adjust the range to the end of the inserted content
-                range.setStartAfter(copiedElements[i]);
-                range.collapse(true);
-
-                // Update the selection to the adjusted range
-                selection.removeAllRanges();
-                selection.addRange(range);
+            // 현재 라인에 붙여넣기 하는 경우 
+            if (selection.anchorNode instanceof Text) {
+                let previousElement;
+                for (let i = 0; i < copiedElements.length; i++) {
+                    removeElementAndChildrenStyle(copiedElements[i]);
+                    // 첫번째 라인은 현재 라인에 포함시킴 
+                    if (i == 0) {
+                        selection.anchorNode.textContent += copiedElements[i].textContent;
+                        previousElement = selection.anchorNode.parentElement;
+                    }
+                    else {
+                        previousElement.insertAdjacentElement('afterend', copiedElements[i]);
+                        previousElement = copiedElements[i];
+                    }
+                }
             }
+            // 새로운 라인에 붙여넣기 하는 경우 
+            else {
+                let previousElement = element.previousElementSibling;
+                for (let i = 0; i < copiedElements.length; i++) {
+                    removeElementAndChildrenStyle(copiedElements[i]);
+
+                    previousElement.insertAdjacentElement('afterend', copiedElements[i]);
+                    previousElement = copiedElements[i];
+                }
+            }
+
+
         }
 
         // 복사 붙여 넣기 후 에디터 크기 조절 
@@ -248,8 +263,8 @@
 
     // 키보드로 커서 위치 움직였을때 현재 커서 위치의 텍스트의 특성(bold,글자크기 등)에 따라 버튼 ui 변경     
     editor.addEventListener('keyup', function (event) {
-        // 여기서 element 는 가장 리프 노드를 가르킨다 
         let range = window.getSelection().getRangeAt(0);
+        // 여기서 element 는 가장 리프 노드를 가르킨다 
         let element = range.commonAncestorContainer;
 
         resetUI();
@@ -573,11 +588,25 @@
             let height = 62; // editor 기본 padding, border 포함
             for (let i = 0; i < editor.childNodes.length; i++) {
                 let childNode = editor.childNodes[i];
-                height += childNode.offsetHeight;
+                height += getTotalHeightOfElement(childNode)
             }
             editor.style.height = 'auto';
             editor.style.height = Math.max(500, height) + 'px';
         });
+    }
+
+    // 엘러먼트의 content,margin,padding,border 모두 포함하는 높이 구함
+    function getTotalHeightOfElement(element) {
+        const styles = window.getComputedStyle(element);
+        const height = element.offsetHeight;
+        const marginTop = parseFloat(styles.marginTop);
+        const marginBottom = parseFloat(styles.marginBottom);
+        const paddingTop = parseFloat(styles.paddingTop);
+        const paddingBottom = parseFloat(styles.paddingBottom);
+        const borderTop = parseFloat(styles.borderTop);
+        const borderBottom = parseFloat(styles.borderBottom);
+        const totalHeight = height + marginTop + marginBottom + paddingTop + paddingBottom + borderTop + borderBottom;
+        return totalHeight;
     }
 
     // editor 의 children 모두 로드 될때까지 대기
@@ -611,6 +640,8 @@
             checkChildrenLoaded(); // Start checking for loaded children
         });
     }
+
+
 
 
     // submit 버튼 이외 다른 페이지로 navigate 시도 시 경고 메시지 
@@ -775,7 +806,12 @@
         return new File([blob], fileName, { type: contentType });
     }
 
-
+    function logElement(element) {
+        let string = '';
+        string += element.tagName + ','
+        string += element.innerHTML
+        return string;
+    }
 
 </script>
 
