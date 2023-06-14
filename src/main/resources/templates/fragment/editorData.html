@@ -260,6 +260,7 @@
             // brDiv 일 경우 previousFocusedElement 에 저장 (글자 크기 변경 용)
             if (!foundBrDiv && element.id == 'brDiv') {
                 foundBrDiv = true;
+                previousFocusedElement = element;
                 changeSumarryText(element);
             }
 
