@@ -162,32 +162,8 @@
     }
 
 
-    // 에디터에 붙여넣을 경우 defalut behaviour 는 <span>을 삽입하는데 이를 방지함  
-    // editor.addEventListener('paste', function (event) {
 
-    //     event.preventDefault(); // Prevent the default paste behavior
-
-    //     const clipboardData = event.clipboardData || window.clipboardData;
-    //     const pastedText = clipboardData.getData('text/plain');
-
-    //     // Insert the cleaned text into the editor
-    //     document.execCommand('insertHTML', false, pastedText);
-    // });
-
-    // editor.addEventListener('paste', function (event) {
-    //     event.preventDefault(); // Prevent default paste behavior
-
-    //     const clipboardData = event.clipboardData || window.clipboardData;
-    //     const pastedData = clipboardData.getData('text/html');
-
-    //     // Create a temporary div element to extract the copied content
-    //     const tempDiv = document.createElement('textarea');
-    //     tempDiv.innerHTML = pastedData;
-
-    // });
-
-
-
+    // editor paste event     
     editor.addEventListener('paste', function (event) {
         event.preventDefault(); // Prevent default paste behavior
 
@@ -231,6 +207,9 @@
                 selection.addRange(range);
             }
         }
+
+        // 복사 붙여 넣기 후 에디터 크기 조절 
+        resizeEditorAllElements();
     });
 
     // recursive 하게 element 아래 존재하는 모든 엘레먼트 돌면서 style 지움 
@@ -267,18 +246,21 @@
 
 
 
-    // 키보드로 커서 위치 움직였을때 현재 커서 위치의 텍스트의 특성(bold,글자크기 등)에 따라 버튼 ui 변경 
+    // 키보드로 커서 위치 움직였을때 현재 커서 위치의 텍스트의 특성(bold,글자크기 등)에 따라 버튼 ui 변경     
     editor.addEventListener('keyup', function (event) {
+        // 여기서 element 는 가장 리프 노드를 가르킨다 
         let range = window.getSelection().getRangeAt(0);
         let element = range.commonAncestorContainer;
 
         resetUI();
 
         // 현재 엘레먼트 에서 editor 이전까지 부모로 거슬러 올라가며 엘레먼트 분석 
+        let foundBrDiv = false;
         while (element.id != 'editor') {
             // brDiv 일 경우 previousFocusedElement 에 저장 (글자 크기 변경 용)
-            if (element.id == 'brDiv') {
-                previousFocusedElement = element;
+            if (!foundBrDiv && element.id == 'brDiv') {
+                foundBrDiv = true;
+                changeSumarryText(element);
             }
 
             changeUI(element);
@@ -297,9 +279,6 @@
             btnUnderline.classList.add('btnPressed')
         } else if (element.tagName === 'STRIKE') {
             btnStrike.classList.add('btnPressed')
-        }
-        else if (element.tagName === 'DIV' && element.id == 'brDiv') {
-            changeSumarryText(element);
         }
     }
 
@@ -552,7 +531,6 @@
 
     // text editor 에 입력시 editor 크기 조절 
     function resizeEditor() {
-        // const editor = document.getElementById("editor");
         const minHeight = 500; // Set the desired minimum height
         editor.style.height = "auto"; // Reset the height to auto to recalculate the height based on content
         editor.style.height = Math.max(minHeight, editor.scrollHeight) + "px"; // Set the height to the maximum of minHeight and scroll height    
@@ -584,9 +562,9 @@
         reader.readAsDataURL(file);
     }
 
-    // page onload 시 editor 크기 조절 
-    function resizeEditorOnload() {
-
+    // 에디터 크기 조절     
+    // 에디터 내부 모든 엘레먼트 높이 계산후 조절 (onload, paste 시)
+    function resizeEditorAllElements() {
         // Perform additional actions after the element is displayed
         window.requestAnimationFrame(function () {
             // Your additional actions here
@@ -706,7 +684,7 @@
                 // 이미지 없는 경우 editor 내 child 들 모두 로드될때까지 대기 후 resize editor                    
                 if (imgCount === 0) {
                     waitForEditorChildren().then((height) => {
-                        resizeEditorOnload();
+                        resizeEditorAllElements();
                     });
                 }
                 // 이미지 있는 경우 editor 내 image 모두 로드될때까지 대기 후 resize editor 
@@ -724,7 +702,7 @@
                             loadedImgCount++;
 
                             if (loadedImgCount === imgCount) {
-                                resizeEditorOnload();
+                                resizeEditorAllElements();
                             }
                         }
                     }
