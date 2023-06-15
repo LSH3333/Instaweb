@@ -55,11 +55,9 @@ public class MemberController {
         }
         // member loginId, name 은 영어만 가능
         if(!CheckIfItIsEng(member.getLoginId())) {
-            System.out.println("eng loginId");
             bindingResult.addError(new FieldError("member", "loginId", member.getLoginId(), false, null, null, "아이디는 영어만 가능합니다"));
         }
         if(!CheckIfItIsEng(member.getName())) {
-            System.out.println("eng name");
             bindingResult.addError(new FieldError("member", "name", member.getName(), false, null, null, "이름은 영어만 가능합니다"));
         }
 
@@ -75,12 +73,14 @@ public class MemberController {
      * str 에 영어가 아닌 레터가 하나라도 포함되어 있으면 false 리턴
      */
     boolean CheckIfItIsEng(String str) {
-        System.out.println("str = " + str);
         for(int i = 0; i < str.length(); i++) {
             char ch = str.charAt(i);
-            System.out.println("ch = " + ch);
-            if(!Character.isLetter((ch))) {
-                System.out.println("here");
+
+            if (Character.isLetter(ch)) {
+                if (Character.UnicodeBlock.of(ch) != Character.UnicodeBlock.BASIC_LATIN) {
+                    return false;
+                }
+            } else {
                 return false;
             }
         }
