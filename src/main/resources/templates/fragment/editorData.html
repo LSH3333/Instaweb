@@ -452,6 +452,7 @@
     }
   }
 
+
   btnImage.addEventListener("click", function () {
     imageSelector.click();
   });
@@ -483,9 +484,6 @@
     divImgEle.appendChild(imgEle);
 
     let selection = window.getSelection();
-    // console.log('selection.anchorOffset = ' + selection.anchorOffset);
-    // console.log('selection.anchorNode = ' + selection.anchorNode);
-    // console.log('selection.anchorNode.parentNode = ' + selection.anchorNode.parentNode);
 
     // 지정하지 않은 경우 editor 영역에 img 삽입
     if (selection.anchorNode == null) {
@@ -788,7 +786,6 @@
   function prependDivFirstLineOfEditor() {
     if (editor.childNodes.length == 0) {
       let divtmp = document.createElement("div");
-      // divtmp.classList.add('brDiv')
       divtmp.id = "brDiv";
       let brtmp = document.createElement("br");
       divtmp.appendChild(brtmp);
