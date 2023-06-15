@@ -78,7 +78,7 @@
                     // 이미지 없는 경우 editor 내 child 들 모두 로드될때까지 대기 후 resize editor                    
                     if (imgCount === 0) {
                         waitForEditorChildren().then((height) => {
-                            resizeEditorOnload();
+                            resizeEditorAllElements();
                         });
                     }
                     // 이미지 있는 경우 editor 내 image 모두 로드될때까지 대기 후 resize editor 
@@ -96,7 +96,7 @@
                                 loadedImgCount++;
 
                                 if (loadedImgCount === imgCount) {
-                                    resizeEditorOnload();
+                                    resizeEditorAllElements();
                                 }
                             }
                         }
@@ -185,18 +185,34 @@
         }
 
         // page onload 시 editor 크기 조절 
-        function resizeEditorOnload() {
-            let editor = document.getElementById('editor');
+        // 에디터 내부 모든 엘레먼트 높이 계산후 조절 (onload, paste 시)
+        function resizeEditorAllElements() {
+            // Perform additional actions after the element is displayed
+            window.requestAnimationFrame(function () {
+                // Your additional actions here
+                // This code will run after the element is rendered
+                let height = 62; // editor 기본 padding, border 포함
+                for (let i = 0; i < editor.childNodes.length; i++) {
+                    let childNode = editor.childNodes[i];
+                    height += getTotalHeightOfElement(childNode)
+                }
+                editor.style.height = 'auto';
+                editor.style.height = Math.max(500, height) + 'px';
+            });
+        }
 
-            let height = 62; // editor 기본 padding, border 포함
-
-            for (let i = 0; i < editor.childNodes.length; i++) {
-                let childNode = editor.childNodes[i];
-                height += childNode.offsetHeight;
-            }
-
-            editor.style.height = "auto";
-            editor.style.height = Math.max(500, height) + 'px';
+        // 엘러먼트의 content,margin,padding,border 모두 포함하는 높이 구함
+        function getTotalHeightOfElement(element) {
+            const styles = window.getComputedStyle(element);
+            const height = element.offsetHeight;
+            const marginTop = parseFloat(styles.marginTop);
+            const marginBottom = parseFloat(styles.marginBottom);
+            const paddingTop = parseFloat(styles.paddingTop);
+            const paddingBottom = parseFloat(styles.paddingBottom);
+            const borderTop = parseFloat(styles.borderTop);
+            const borderBottom = parseFloat(styles.borderBottom);
+            const totalHeight = height + marginTop + marginBottom + paddingTop + paddingBottom + borderTop + borderBottom;
+            return totalHeight;
         }
 
 

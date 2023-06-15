@@ -35,6 +35,7 @@ public class MemberController {
      */
     @PostMapping("members/register")
     public String register(@Valid @ModelAttribute("member") Member member, BindingResult bindingResult) {
+        System.out.println("--register");
         // member loginId, name 중복 체크
         if (memberService.checkLoginIdDuplication(member)) {
             bindingResult.addError(new FieldError("member", "loginId", member.getLoginId(), false, null, null, "이미 존재하는 아이디 입니다."));
@@ -52,6 +53,13 @@ public class MemberController {
         if(member.getPassword().length() < 4 || member.getLoginId().length() > 10) {
             bindingResult.addError(new FieldError("member", "password", member.getPassword(), false, null, null,"비밀번호는 4글자 이상 10글자 이하여야 합니다."));
         }
+        // member loginId, name 은 영어만 가능
+        if(!CheckIfItIsEng(member.getLoginId())) {
+            bindingResult.addError(new FieldError("member", "loginId", member.getLoginId(), false, null, null, "아이디는 영어만 가능합니다"));
+        }
+        if(!CheckIfItIsEng(member.getName())) {
+            bindingResult.addError(new FieldError("member", "name", member.getName(), false, null, null, "이름은 영어만 가능합니다"));
+        }
 
         if (bindingResult.hasErrors()) {
             return "members/registerForm";
@@ -61,6 +69,22 @@ public class MemberController {
         return "redirect:/";
     }
 
+    /**
+     * str 에 영어가 아닌 레터가 하나라도 포함되어 있으면 false 리턴
+     */
+    boolean CheckIfItIsEng(String str) {
+        for(int i = 0; i < str.length(); i++) {
+            char ch = str.charAt(i);
 
+            if (Character.isLetter(ch)) {
+                if (Character.UnicodeBlock.of(ch) != Character.UnicodeBlock.BASIC_LATIN) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
 
 }
