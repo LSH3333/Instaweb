@@ -19,6 +19,8 @@
 
   // 이전 focus 한 editor 내부 element 기억
   let previousFocusedElement = null;
+  // 드래그 해서 선택된 brDiv elements 
+  let draggedElements = [];
 
   const btnBold = document.getElementById("btn-bold");
   const btnItalic = document.getElementById("btn-italic");
@@ -111,24 +113,21 @@
     draggedElements.forEach((draggedElement) => {
       alignText(draggedElement, "textAlignLeft", btnTextAlignLeft);
     })
-    // if (previousFocusedElement == null) return;
-    // alignText(previousFocusedElement, "textAlignLeft", btnTextAlignLeft);
+    alignText(previousFocusedElement, "textAlignLeft", btnTextAlignLeft);
   });
 
   btnTextAlignCenter.addEventListener("click", function () {
     draggedElements.forEach((draggedElement) => {
       alignText(draggedElement, "textAlignCenter", btnTextAlignCenter);
     })
-    // if (previousFocusedElement == null) return;
-    // alignText(previousFocusedElement, "textAlignCenter", btnTextAlignCenter);
+    alignText(previousFocusedElement, "textAlignCenter", btnTextAlignCenter);
   });
 
   btnTextAlignRight.addEventListener("click", function () {
     draggedElements.forEach((draggedElement) => {
       alignText(draggedElement, "textAlignRight", btnTextAlignRight);
     })
-    // if (previousFocusedElement == null) return;
-    // alignText(previousFocusedElement, "textAlignRight", btnTextAlignRight);
+    alignText(previousFocusedElement, "textAlignRight", btnTextAlignRight);
   });
 
   function pressTextSizeBtn(textSizeType, btn) {
@@ -293,28 +292,8 @@
     }
   }
 
-  // 에디터 내부 클릭(선택)한 brDiv 엘레먼트 previousFocusedElement 에 기억해놓음
-  // editor.addEventListener('mousedown', function (event) {
-  //     let clickedElement = event.target;
-  //     if (clickedElement == editor) {
-  //         clickedElement = editor.firstChild;
-  //     }
 
-  //     resetUI();
-
-  //     let brDivElement = clickedElement;
-  //     while (brDivElement.id != 'brDiv') {
-  //         changeUI(brDivElement);
-  //         brDivElement = brDivElement.parentElement;
-  //     }
-  //     changeAlignBtn(brDivElement);
-
-  //     previousFocusedElement = brDivElement;
-  //     changeSumarryText(brDivElement);
-  // });
-
-
-  let draggedElements = [];
+  ///////// MOUSE EVENT ////////////
 
   editor.addEventListener('mousedown', function (event) {
     // console.log('mousedown = ' + logElement(event.target))
@@ -340,18 +319,8 @@
   });
 
   editor.addEventListener("mouseup", function (event) {
-    if (draggedElements.length > 1) {
-      draggedElements.forEach((draggedElement) => {
-
-      });
-    }
-    else {
-      // let range = window.getSelection().getRangeAt(0);
-      // 여기서 element 는 가장 리프 노드를 가르킨다
-      // let element = range.commonAncestorContainer;
+    if (draggedElements.length === 1) {
       let element = event.target;
-      console.log('event.target = ' + logElement(event.target))
-      console.log('range = ' + logElement(element));
 
       resetUI();
 
@@ -372,33 +341,69 @@
     }
   });
 
+  ///////// END OF MOUSE EVENT ////////////
 
 
   // 키보드로 커서 위치 움직였을때 현재 커서 위치의 텍스트의 특성(bold,글자크기 등)에 따라 버튼 ui 변경
   editor.addEventListener("keyup", function (event) {
-    let range = window.getSelection().getRangeAt(0);
-    // 여기서 element 는 가장 리프 노드를 가르킨다
-    let element = range.commonAncestorContainer;
-
-    resetUI();
-
-    // 현재 엘레먼트 에서 editor 이전까지 부모로 거슬러 올라가며 엘레먼트 분석
-    let foundBrDiv = false;
-    while (element.id != "editor") {
-      // brDiv 일 경우 previousFocusedElement 에 저장 (글자 크기 변경 용)
-      if (!foundBrDiv && element.id == "brDiv") {
-        foundBrDiv = true;
-        previousFocusedElement = element;
-        changeSumarryText(element);
-        changeAlignBtn(element);
-      }
-
-      changeUI(element);
-      element = element.parentElement;
+    if (event.shiftKey) {
+      return;
     }
+
+    let range = window.getSelection().getRangeAt(0);
+
+    draggedElements = [];
+    let startContainer = getParentBrDiv(range.startContainer);
+    let endContainer = getParentBrDiv(range.endContainer);
+
+    // 드래그된 경우 
+    if (startContainer != endContainer) {
+      let container = startContainer;
+      do {
+        draggedElements.push(container);
+        container = container.nextSibling;
+      } while (container != endContainer)
+      draggedElements.push(container);
+    }
+    // 아닌 경우
+    else {
+      // 여기서 element 는 가장 리프 노드를 가르킨다
+      let element = range.commonAncestorContainer;
+
+      resetUI();
+
+      // 현재 엘레먼트 에서 editor 이전까지 부모로 거슬러 올라가며 엘레먼트 분석
+      let foundBrDiv = false;
+      while (element.id != "editor") {
+        // brDiv 일 경우 previousFocusedElement 에 저장 (글자 크기 변경 용)
+        if (!foundBrDiv && element.id == "brDiv") {
+          foundBrDiv = true;
+          previousFocusedElement = element;
+          changeSumarryText(element);
+          changeAlignBtn(element);
+        }
+
+        changeUI(element);
+        element = element.parentElement;
+      }
+    }
+
   });
 
-  // element 에 따라 버튼을 누름 처리
+  function getParentBrDiv(node) {
+    if (node.nodeType !== Node.ELEMENT_NODE || node.id === null) {
+      return getParentBrDiv(node.parentNode);
+    }
+
+    if (node.id === 'brDiv') {
+      return node;
+    }
+    else {
+      return getParentBrDiv(node.parentNode);
+    }
+  }
+
+  // 선택된 element 태그 분석후(bold,italic 등) 해당 버튼을 누름 처리
   function changeUI(element) {
     if (element.tagName === "B") {
       btnBold.classList.add("btnPressed");
@@ -921,12 +926,18 @@
     return new File([blob], fileName, { type: contentType });
   }
 
-  function logElement(element) {
-    let string = "";
-    string += element.tagName + ",";
-    if (element.id != null) string += element.id + ",";
-    string += element.innerHTML;
-    return string;
+  function logElement(node) {
+    if (node.nodeType == Node.ELEMENT_NODE) {
+      let string = "";
+      string += node.tagName + ",";
+      if (node.id != null) string += node.id + ",";
+      string += node.innerHTML;
+      return string;
+    }
+    else {
+      let string = "";
+      return node.textContent;
+    }
   }
 </script>
 
