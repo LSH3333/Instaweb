@@ -1,879 +1,933 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-
 <!-- editor 관련 기능들, 서버로 데이터 전송 부분 (createForm, updateForm 에서 사용) -->
 <script th:fragment="createAndUpdate">
-    let pageId = "[[${form.id}]]";
-    // key = Image 의 url, value = Image File
-    // let fileList = []; // 유저가 선택한 file 이 담김
-    const fileMap = new Map();
-    // key,value = UUID,File
-    const uploadMap = new Map();
+  let pageId = "[[${form.id}]]";
+  // key = Image 의 url, value = Image File
+  // let fileList = []; // 유저가 선택한 file 이 담김
+  const fileMap = new Map();
+  // key,value = UUID,File
+  const uploadMap = new Map();
 
-    const form = document.querySelector("form");
-    const editor = document.getElementById("editor");
+  const form = document.querySelector("form");
+  const editor = document.getElementById("editor");
 
-    const btnImage = document.getElementById("btn-image");
-    const imageSelector = document.getElementById("img-selector");
+  const btnImage = document.getElementById("btn-image");
+  const imageSelector = document.getElementById("img-selector");
 
-    let isFormSubmitting = false;
+  let isFormSubmitting = false;
 
-    // 이전 focus 한 editor 내부 element 기억 
-    let previousFocusedElement = null;
+  // 이전 focus 한 editor 내부 element 기억
+  let previousFocusedElement = null;
 
-    const btnBold = document.getElementById("btn-bold");
-    const btnItalic = document.getElementById("btn-italic");
-    const btnUnderline = document.getElementById("btn-underline");
-    const btnStrike = document.getElementById("btn-strike");
-    const btnTextAlignLeft = document.getElementById('btn-text-align-left');
-    const btnTextAlignCenter = document.getElementById('btn-text-align-center');
-    const btnTextAlignRight = document.getElementById('btn-text-align-right');
+  const btnBold = document.getElementById("btn-bold");
+  const btnItalic = document.getElementById("btn-italic");
+  const btnUnderline = document.getElementById("btn-underline");
+  const btnStrike = document.getElementById("btn-strike");
+  const btnTextAlignLeft = document.getElementById("btn-text-align-left");
+  const btnTextAlignCenter = document.getElementById("btn-text-align-center");
+  const btnTextAlignRight = document.getElementById("btn-text-align-right");
 
-    const AllBtnList = [btnBold, btnItalic, btnUnderline, btnStrike, btnTextAlignLeft, btnTextAlignCenter, btnTextAlignRight]
+  const AllBtnList = [
+    btnBold,
+    btnItalic,
+    btnUnderline,
+    btnStrike,
+    btnTextAlignLeft,
+    btnTextAlignCenter,
+    btnTextAlignRight,
+  ];
 
-    const btnTextSizeMain1 = document.getElementById('text-size-main-1');
-    const btnTextSizeMain2 = document.getElementById('text-size-main-2');
-    const btnTextSizeMain3 = document.getElementById('text-size-main-3');
-    const btnTextSizeTitle1 = document.getElementById('text-size-title-1');
-    const btnTextSizeTitle2 = document.getElementById('text-size-title-2');
-    const btnTextSizeTitle3 = document.getElementById('text-size-title-3');
-    const textSizeSumarry = document.getElementById('text-size-summary');
-    const textSizeDetails = document.getElementById('text-size-details');
+  const btnTextSizeMain1 = document.getElementById("text-size-main-1");
+  const btnTextSizeMain2 = document.getElementById("text-size-main-2");
+  const btnTextSizeMain3 = document.getElementById("text-size-main-3");
+  const btnTextSizeTitle1 = document.getElementById("text-size-title-1");
+  const btnTextSizeTitle2 = document.getElementById("text-size-title-2");
+  const btnTextSizeTitle3 = document.getElementById("text-size-title-3");
+  const textSizeSumarry = document.getElementById("text-size-summary");
+  const textSizeDetails = document.getElementById("text-size-details");
 
+  btnBold.addEventListener("click", function () {
+    setStyle("bold");
+    if (btnBold.classList.contains("btnPressed")) {
+      btnBold.classList.remove("btnPressed");
+    } else {
+      btnBold.classList.add("btnPressed");
+    }
+  });
 
-    btnBold.addEventListener("click", function () {
-        setStyle("bold");
-        if (btnBold.classList.contains('btnPressed')) {
-            btnBold.classList.remove('btnPressed');
-        }
-        else {
-            btnBold.classList.add('btnPressed');
-        }
+  btnItalic.addEventListener("click", function () {
+    setStyle("italic");
+    if (btnItalic.classList.contains("btnPressed")) {
+      btnItalic.classList.remove("btnPressed");
+    } else {
+      btnItalic.classList.add("btnPressed");
+    }
+  });
+
+  btnUnderline.addEventListener("click", function () {
+    setStyle("underline");
+    if (btnUnderline.classList.contains("btnPressed")) {
+      btnUnderline.classList.remove("btnPressed");
+    } else {
+      btnUnderline.classList.add("btnPressed");
+    }
+  });
+
+  btnStrike.addEventListener("click", function () {
+    setStyle("strikeThrough");
+    if (btnStrike.classList.contains("btnPressed")) {
+      btnStrike.classList.remove("btnPressed");
+    } else {
+      btnStrike.classList.add("btnPressed");
+    }
+  });
+
+  // text-align left or center or right 처리
+  function alignText(element, alignment, textAlignBtn) {
+    // element 에서 선택한 align 클래스는 추가, 나머지는 제거
+    const alignments = ["textAlignLeft", "textAlignCenter", "textAlignRight"];
+    alignments.forEach((className) => {
+      if (element.classList.contains(className)) {
+        element.classList.remove(className);
+      }
     });
 
-    btnItalic.addEventListener("click", function () {
-        setStyle("italic");
-        if (btnItalic.classList.contains('btnPressed')) {
-            btnItalic.classList.remove('btnPressed');
-        }
-        else {
-            btnItalic.classList.add('btnPressed');
-        }
+    element.classList.add(alignment);
+    setCursorPositionToEnd(previousFocusedElement);
+
+    // 현재 선택한 textAlignBtn 은 btnPressed 처리, 나머지는 해제 처리
+    const allBtns = [btnTextAlignLeft, btnTextAlignCenter, btnTextAlignRight];
+    allBtns.forEach((btn) => {
+      if (btn != textAlignBtn) {
+        btn.classList.remove("btnPressed");
+      } else {
+        btn.classList.add("btnPressed");
+      }
     });
+  }
 
-    btnUnderline.addEventListener("click", function () {
-        setStyle("underline");
-        if (btnUnderline.classList.contains('btnPressed')) {
-            btnUnderline.classList.remove('btnPressed');
-        }
-        else {
-            btnUnderline.classList.add('btnPressed');
-        }
-    });
+  btnTextAlignLeft.addEventListener("click", function () {
+    draggedElements.forEach((draggedElement) => {
+      alignText(draggedElement, "textAlignLeft", btnTextAlignLeft);
+    })
+    // if (previousFocusedElement == null) return;
+    // alignText(previousFocusedElement, "textAlignLeft", btnTextAlignLeft);
+  });
 
-    btnStrike.addEventListener("click", function () {
-        setStyle("strikeThrough");
-        if (btnStrike.classList.contains('btnPressed')) {
-            btnStrike.classList.remove('btnPressed');
-        }
-        else {
-            btnStrike.classList.add('btnPressed');
-        }
-    });
+  btnTextAlignCenter.addEventListener("click", function () {
+    draggedElements.forEach((draggedElement) => {
+      alignText(draggedElement, "textAlignCenter", btnTextAlignCenter);
+    })
+    // if (previousFocusedElement == null) return;
+    // alignText(previousFocusedElement, "textAlignCenter", btnTextAlignCenter);
+  });
 
-    // text-align left or center or right 처리 
-    function alignText(element, alignment, textAlignBtn) {
-        // element 에서 선택한 align 클래스는 추가, 나머지는 제거 
-        const alignments = ['textAlignLeft', 'textAlignCenter', 'textAlignRight'];
-        alignments.forEach((className) => {
-            if (element.classList.contains(className)) {
-                element.classList.remove(className);
-            }
-        });
+  btnTextAlignRight.addEventListener("click", function () {
+    draggedElements.forEach((draggedElement) => {
+      alignText(draggedElement, "textAlignRight", btnTextAlignRight);
+    })
+    // if (previousFocusedElement == null) return;
+    // alignText(previousFocusedElement, "textAlignRight", btnTextAlignRight);
+  });
 
-        element.classList.add(alignment);
-        setCursorPositionToEnd(previousFocusedElement);
-
-        // 현재 선택한 textAlignBtn 은 btnPressed 처리, 나머지는 해제 처리 
-        const allBtns = [btnTextAlignLeft, btnTextAlignCenter, btnTextAlignRight];
-        allBtns.forEach((btn) => {
-            if (btn != textAlignBtn) {
-                btn.classList.remove('btnPressed');
-            } else {
-                btn.classList.add('btnPressed');
-            }
+  function pressTextSizeBtn(textSizeType, btn) {
+    if (previousFocusedElement == null) return;
+    const textSizeList = [
+      "textSizeMain1",
+      "textSizeMain2",
+      "textSizeMain3",
+      "textSizeTitle1",
+      "textSizeTitle2",
+      "textSizeTitle3",
+    ];
+    textSizeList.forEach((type) => {
+      if (type === textSizeType) {
+        draggedElements.forEach((draggedElement) => {
+          draggedElement.classList.add(textSizeType)
         })
-    }
-
-    btnTextAlignLeft.addEventListener('click', function () {
-        if (previousFocusedElement == null) return;
-        alignText(previousFocusedElement, 'textAlignLeft', btnTextAlignLeft);
-    });
-
-    btnTextAlignCenter.addEventListener('click', function () {
-        if (previousFocusedElement == null) return;
-        alignText(previousFocusedElement, 'textAlignCenter', btnTextAlignCenter);
-    });
-
-    btnTextAlignRight.addEventListener('click', function () {
-        if (previousFocusedElement == null) return;
-        alignText(previousFocusedElement, 'textAlignRight', btnTextAlignRight);
-    });
-
-    function pressTextSizeBtn(textSizeType, btn) {
-        if(previousFocusedElement == null) return;
-        const textSizeList = ['textSizeMain1', 'textSizeMain2', 'textSizeMain3', 'textSizeTitle1', 'textSizeTitle2', 'textSizeTitle3'];
-        textSizeList.forEach((type) => {
-            if (type === textSizeType) {
-                previousFocusedElement.classList.add(textSizeType);
-            } else {
-                previousFocusedElement.classList.remove(type);
-            }
+        // previousFocusedElement.classList.add(textSizeType);
+      } else {
+        draggedElements.forEach((draggedElement) => {
+          draggedElement.classList.remove(type)
         })
-        changeSummaryTextAndCloseDetails(btn);
-        setCursorPositionToEnd(previousFocusedElement);
-        resizeEditor();
+        // previousFocusedElement.classList.remove(type);
+      }
+    });
+    changeSummaryTextAndCloseDetails(btn);
+    setCursorPositionToEnd(previousFocusedElement);
+    resizeEditor();
+  }
+
+  btnTextSizeMain1.addEventListener("click", function () {
+    pressTextSizeBtn("textSizeMain1", this);
+  });
+
+  btnTextSizeMain2.addEventListener("click", function () {
+    pressTextSizeBtn("textSizeMain2", this);
+  });
+
+  btnTextSizeMain3.addEventListener("click", function () {
+    pressTextSizeBtn("textSizeMain3", this);
+  });
+
+  btnTextSizeTitle1.addEventListener("click", function () {
+    pressTextSizeBtn("textSizeTitle1", this);
+  });
+
+  btnTextSizeTitle2.addEventListener("click", function () {
+    pressTextSizeBtn("textSizeTitle2", this);
+  });
+
+  btnTextSizeTitle3.addEventListener("click", function () {
+    pressTextSizeBtn("textSizeTitle3", this);
+  });
+
+  function setStyle(style) {
+    document.execCommand(style);
+    focusEditor();
+  }
+
+  // sumarry 의 표시된 글자 (본문2, 제목1..) 바꾸고, open 된 details 닫음
+  function changeSummaryTextAndCloseDetails(btn) {
+    textSizeSumarry.textContent = btn.innerText;
+    textSizeDetails.open = false;
+  }
+
+  // 버튼 클릭 시 에디터가 포커스를 잃기 때문에 다시 에디터에 포커스를 해줌
+  function focusEditor() {
+    editor.focus({ preventScroll: true });
+  }
+
+  function setCursorPositionToEnd(element) {
+    var range = document.createRange();
+    var selection = window.getSelection();
+
+    range.selectNodeContents(element);
+    range.collapse(false);
+
+    selection.removeAllRanges();
+    selection.addRange(range);
+  }
+
+  // editor paste event
+  editor.addEventListener("paste", function (event) {
+    event.preventDefault(); // Prevent default paste behavior
+
+    const clipboardData = event.clipboardData || window.clipboardData;
+    const pastedData = clipboardData.getData("text/html");
+
+    // Create a temporary div element to extract the copied content
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = pastedData;
+
+    // Create a document fragment and append the temporary div contents to it
+    const fragment = document.createDocumentFragment();
+    while (tempDiv.firstChild) {
+      fragment.appendChild(tempDiv.firstChild);
     }
 
-    btnTextSizeMain1.addEventListener("click", function () {    
-        pressTextSizeBtn('textSizeMain1', this);
+    // Get all elements from the document fragment
+    const copiedElements = Array.from(fragment.childNodes).filter(function (
+      node
+    ) {
+      return node.nodeType === Node.ELEMENT_NODE;
     });
 
-    btnTextSizeMain2.addEventListener("click", function () {
-        pressTextSizeBtn('textSizeMain2', this);
-    });
+    // Get the current selection
+    const selection = window.getSelection();
+    if (selection.rangeCount > 0) {
+      // Get the current range
+      const range = selection.getRangeAt(0);
+      let element = range.commonAncestorContainer;
 
-    btnTextSizeMain3.addEventListener("click", function () {
-        pressTextSizeBtn('textSizeMain3', this);
-    });
+      // 현재 라인에 붙여넣기 하는 경우
+      if (selection.anchorNode instanceof Text) {
+        let previousElement;
+        for (let i = 0; i < copiedElements.length; i++) {
+          removeElementAndChildrenStyle(copiedElements[i]);
+          // 첫번째 라인은 현재 라인에 포함시킴
+          if (i == 0) {
+            const textNode = selection.anchorNode;
+            const offset = selection.anchorOffset;
+            textNode.insertData(offset, copiedElements[i].textContent);
 
-    btnTextSizeTitle1.addEventListener("click", function () {
-        pressTextSizeBtn('textSizeTitle1', this);
-    });
+            previousElement = selection.anchorNode.parentElement;
+          } else {
+            previousElement.insertAdjacentElement(
+              "afterend",
+              copiedElements[i]
+            );
+            previousElement = copiedElements[i];
+          }
+        }
+      }
+      // 새로운 라인에 붙여넣기 하는 경우
+      else {
+        let previousElement = element.previousElementSibling;
+        for (let i = 0; i < copiedElements.length; i++) {
+          removeElementAndChildrenStyle(copiedElements[i]);
 
-    btnTextSizeTitle2.addEventListener("click", function () {
-        pressTextSizeBtn('textSizeTitle2', this);
-    });
-
-    btnTextSizeTitle3.addEventListener("click", function () {
-        pressTextSizeBtn('textSizeTitle3', this);
-    });
-
-    function setStyle(style) {
-        document.execCommand(style);
-        focusEditor();
+          previousElement.insertAdjacentElement(
+            "afterend",
+            copiedElements[i]
+          );
+          previousElement = copiedElements[i];
+        }
+      }
     }
 
-    // sumarry 의 표시된 글자 (본문2, 제목1..) 바꾸고, open 된 details 닫음 
-    function changeSummaryTextAndCloseDetails(btn) {
-        textSizeSumarry.textContent = btn.innerText;
-        textSizeDetails.open = false;
+    // 복사 붙여 넣기 후 에디터 크기 조절
+    resizeEditorAllElements();
+  });
+
+  // recursive 하게 element 아래 존재하는 모든 엘레먼트 돌면서 style 지움
+  function removeElementAndChildrenStyle(element) {
+    element.style = "";
+    const children = element.children;
+    for (let i = 0; i < children.length; i++) {
+      const child = children[i];
+      child.style = "";
+
+      removeElementAndChildrenStyle(child);
     }
+  }
 
-    // 버튼 클릭 시 에디터가 포커스를 잃기 때문에 다시 에디터에 포커스를 해줌
-    function focusEditor() {
-        editor.focus({ preventScroll: true });
+  // 에디터 내부 클릭(선택)한 brDiv 엘레먼트 previousFocusedElement 에 기억해놓음
+  // editor.addEventListener('mousedown', function (event) {
+  //     let clickedElement = event.target;
+  //     if (clickedElement == editor) {
+  //         clickedElement = editor.firstChild;
+  //     }
+
+  //     resetUI();
+
+  //     let brDivElement = clickedElement;
+  //     while (brDivElement.id != 'brDiv') {
+  //         changeUI(brDivElement);
+  //         brDivElement = brDivElement.parentElement;
+  //     }
+  //     changeAlignBtn(brDivElement);
+
+  //     previousFocusedElement = brDivElement;
+  //     changeSumarryText(brDivElement);
+  // });
+
+
+  let draggedElements = [];
+
+  editor.addEventListener('mousedown', function (event) {
+    // console.log('mousedown = ' + logElement(event.target))
+    // Clear the selected elements array
+    draggedElements = [];
+
+    let element = event.target;
+
+    if (element.id !== null && element.id === 'brDiv') {
+      draggedElements.push(event.target);
     }
+  });
 
-    function setCursorPositionToEnd(element) {
-        var range = document.createRange();
-        var selection = window.getSelection();
-
-        range.selectNodeContents(element);
-        range.collapse(false);
-
-        selection.removeAllRanges();
-        selection.addRange(range);
+  editor.addEventListener('mousemove', function (event) {
+    let element = event.target;
+    if (event.buttons === 1) {
+      // If the left mouse button is pressed (dragging)
+      // Add the current target element to the selected elements array
+      if (!draggedElements.includes(element) && element.id !== null && element.id == 'brDiv') {
+        draggedElements.push(element);
+      }
     }
+  });
 
+  editor.addEventListener("mouseup", function (event) {
+    if (draggedElements.length > 1) {
+      draggedElements.forEach((draggedElement) => {
 
+      });
+    }
+    else {
+      // let range = window.getSelection().getRangeAt(0);
+      // 여기서 element 는 가장 리프 노드를 가르킨다
+      // let element = range.commonAncestorContainer;
+      let element = event.target;
+      console.log('event.target = ' + logElement(event.target))
+      console.log('range = ' + logElement(element));
 
-    // editor paste event     
-    editor.addEventListener('paste', function (event) {
-        event.preventDefault(); // Prevent default paste behavior
+      resetUI();
 
-        const clipboardData = event.clipboardData || window.clipboardData;
-        const pastedData = clipboardData.getData('text/html');
-
-        // Create a temporary div element to extract the copied content
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = pastedData;
-
-        // Create a document fragment and append the temporary div contents to it
-        const fragment = document.createDocumentFragment();
-        while (tempDiv.firstChild) {
-            fragment.appendChild(tempDiv.firstChild);
+      // 현재 엘레먼트 에서 editor 이전까지 부모로 거슬러 올라가며 엘레먼트 분석
+      let foundBrDiv = false;
+      while (element.id != "editor") {
+        // brDiv 일 경우 previousFocusedElement 에 저장 (글자 크기 변경 용)
+        if (!foundBrDiv && element.id == "brDiv") {
+          foundBrDiv = true;
+          previousFocusedElement = element;
+          changeSumarryText(element);
+          changeAlignBtn(element);
         }
 
-        // Get all elements from the document fragment
-        const copiedElements = Array.from(fragment.childNodes).filter(function (node) {
-            return node.nodeType === Node.ELEMENT_NODE;
-        });
+        changeUI(element);
+        element = element.parentElement;
+      }
+    }
+  });
 
 
-        // Get the current selection
-        const selection = window.getSelection();
-        if (selection.rangeCount > 0) {
-            // Get the current range
-            const range = selection.getRangeAt(0);
-            let element = range.commonAncestorContainer;
 
-            // 현재 라인에 붙여넣기 하는 경우 
-            if (selection.anchorNode instanceof Text) {
-                let previousElement;
-                for (let i = 0; i < copiedElements.length; i++) {
-                    removeElementAndChildrenStyle(copiedElements[i]);
-                    // 첫번째 라인은 현재 라인에 포함시킴 
-                    if (i == 0) {
-                        const textNode = selection.anchorNode;
-                        const offset = selection.anchorOffset;
-                        textNode.insertData(offset, copiedElements[i].textContent);
+  // 키보드로 커서 위치 움직였을때 현재 커서 위치의 텍스트의 특성(bold,글자크기 등)에 따라 버튼 ui 변경
+  editor.addEventListener("keyup", function (event) {
+    let range = window.getSelection().getRangeAt(0);
+    // 여기서 element 는 가장 리프 노드를 가르킨다
+    let element = range.commonAncestorContainer;
 
-                        previousElement = selection.anchorNode.parentElement;
-                    }
-                    else {
-                        previousElement.insertAdjacentElement('afterend', copiedElements[i]);
-                        previousElement = copiedElements[i];
-                    }
-                }
-            }
-            // 새로운 라인에 붙여넣기 하는 경우 
-            else {
-                let previousElement = element.previousElementSibling;
-                for (let i = 0; i < copiedElements.length; i++) {
-                    removeElementAndChildrenStyle(copiedElements[i]);
+    resetUI();
 
-                    previousElement.insertAdjacentElement('afterend', copiedElements[i]);
-                    previousElement = copiedElements[i];
-                }
-            }
+    // 현재 엘레먼트 에서 editor 이전까지 부모로 거슬러 올라가며 엘레먼트 분석
+    let foundBrDiv = false;
+    while (element.id != "editor") {
+      // brDiv 일 경우 previousFocusedElement 에 저장 (글자 크기 변경 용)
+      if (!foundBrDiv && element.id == "brDiv") {
+        foundBrDiv = true;
+        previousFocusedElement = element;
+        changeSumarryText(element);
+        changeAlignBtn(element);
+      }
 
+      changeUI(element);
+      element = element.parentElement;
+    }
+  });
 
-        }
+  // element 에 따라 버튼을 누름 처리
+  function changeUI(element) {
+    if (element.tagName === "B") {
+      btnBold.classList.add("btnPressed");
+    } else if (element.tagName === "I") {
+      btnItalic.classList.add("btnPressed");
+    } else if (element.tagName === "U") {
+      btnUnderline.classList.add("btnPressed");
+    } else if (element.tagName === "STRIKE") {
+      btnStrike.classList.add("btnPressed");
+    }
+  }
 
-        // 복사 붙여 넣기 후 에디터 크기 조절 
-        resizeEditorAllElements();
+  function changeAlignBtn(element) {
+    if (element.classList.contains("textAlignLeft")) {
+      btnTextAlignLeft.classList.add("btnPressed");
+    } else if (element.classList.contains("textAlignCenter")) {
+      btnTextAlignCenter.classList.add("btnPressed");
+    } else if (element.classList.contains("textAlignRight")) {
+      btnTextAlignRight.classList.add("btnPressed");
+    }
+  }
+
+  // header ui 리셋
+  function resetUI() {
+    AllBtnList.forEach((btn) => {
+      btn.classList.remove("btnPressed");
     });
+  }
 
-    // recursive 하게 element 아래 존재하는 모든 엘레먼트 돌면서 style 지움 
-    function removeElementAndChildrenStyle(element) {
-        element.style = '';
-        const children = element.children;
-        for (let i = 0; i < children.length; i++) {
-            const child = children[i];
-            child.style = '';
+  // 포커스된 엘레먼트의 글자크기 상태에 따라 sumarry 의 text 표시 변경
+  function changeSumarryText(clickedElement) {
+    if (clickedElement.classList.contains("textSizeMain1")) {
+      textSizeSumarry.textContent = "본문1";
+    } else if (clickedElement.classList.contains("textSizeMain2")) {
+      textSizeSumarry.textContent = "본문2";
+    } else if (clickedElement.classList.contains("textSizeMain3")) {
+      textSizeSumarry.textContent = "본문3";
+    } else if (clickedElement.classList.contains("textSizeTitle1")) {
+      textSizeSumarry.textContent = "제목1";
+    } else if (clickedElement.classList.contains("textSizeTitle2")) {
+      textSizeSumarry.textContent = "제목2";
+    } else if (clickedElement.classList.contains("textSizeTitle3")) {
+      textSizeSumarry.textContent = "제목3";
+    } else {
+      textSizeSumarry.textContent = "본문2";
+    }
+  }
 
-            removeElementAndChildrenStyle(child);
-        }
+  btnImage.addEventListener("click", function () {
+    imageSelector.click();
+  });
+
+  imageSelector.addEventListener("change", function (e) {
+    const files = e.target.files;
+    if (!!files) {
+      insertImg(files[0]);
+    }
+    // 비워주지 않으면 같은 이미지 연속 선택시 imageSelector 'change' triggered 되지 않을 가능성 있음
+    this.value = null;
+  });
+
+  // 선택한 이미지 editor 에 삽입
+  let imgEleCnt = 0;
+  function insertImg(file) {
+    const reader = new FileReader();
+    let url = URL.createObjectURL(file);
+    // fileMap.set(url, file);
+    // const imgUUID = uuidv4(); // 이미지의 고유 UUID 값
+    const imgUUID = self.crypto.randomUUID();
+    fileMap.set(imgUUID, file);
+
+    let imgEle = document.createElement("img");
+    imgEle.src = url;
+    // imgEle.classList.add(imgEleCnt++);
+    imgEle.id = imgUUID;
+    let divImgEle = document.createElement("div");
+    divImgEle.appendChild(imgEle);
+
+    let selection = window.getSelection();
+    // console.log('selection.anchorOffset = ' + selection.anchorOffset);
+    // console.log('selection.anchorNode = ' + selection.anchorNode);
+    // console.log('selection.anchorNode.parentNode = ' + selection.anchorNode.parentNode);
+
+    // 지정하지 않은 경우 editor 영역에 img 삽입
+    if (selection.anchorNode == null) {
+      let targetElement = document.getElementById("editor");
+      targetElement.appendChild(divImgEle);
+    }
+    // 글 작성하는 editor 영역에 커서 위치할경우
+    else if (selection.anchorNode.parentNode.id === "editor") {
+      let range = selection.getRangeAt(0);
+      range.insertNode(divImgEle);
+    } else {
+      // 아닌 경우에는 editor 영역에 img 삽입
+      let targetElement = document.getElementById("editor");
+      targetElement.appendChild(divImgEle);
     }
 
+    // 이미지 삽입함에 따라 그만큼 editor 의 높이 늘림
+    resizeEditorAfterImgInserted(divImgEle, file);
+    focusAfterImgInserted();
+  }
 
-    // 에디터 내부 클릭(선택)한 brDiv 엘레먼트 previousFocusedElement 에 기억해놓음 
-    // editor.addEventListener('mousedown', function (event) {
-    //     let clickedElement = event.target;
-    //     if (clickedElement == editor) {
-    //         clickedElement = editor.firstChild;
-    //     }
+  function focusAfterImgInserted() {
+    let newLineDiv = document.createElement("div");
+    // Set the content editable attribute of the new <div> to true
+    newLineDiv.setAttribute("contenteditable", "true");
+    let br = document.createElement("br");
+    newLineDiv.appendChild(br);
+    editor.appendChild(newLineDiv);
 
-    //     resetUI();
+    // Set the focus on the inner text of the new <div>
+    const range = document.createRange();
+    const selection = window.getSelection();
+    range.selectNodeContents(br);
+    selection.removeAllRanges();
+    selection.addRange(range);
+  }
 
-    //     let brDivElement = clickedElement;
-    //     while (brDivElement.id != 'brDiv') {
-    //         changeUI(brDivElement);            
-    //         brDivElement = brDivElement.parentElement;
-    //     }
-    //     changeAlignBtn(brDivElement);
-
-    //     previousFocusedElement = brDivElement;
-    //     changeSumarryText(brDivElement);
-    // });
-
-    editor.addEventListener('mouseup', function (event) {
-        let range = window.getSelection().getRangeAt(0);
-        // 여기서 element 는 가장 리프 노드를 가르킨다 
-        let element = range.commonAncestorContainer;
-
-        resetUI();
-
-        // 현재 엘레먼트 에서 editor 이전까지 부모로 거슬러 올라가며 엘레먼트 분석 
-        let foundBrDiv = false;
-        while (element.id != 'editor') {
-            // brDiv 일 경우 previousFocusedElement 에 저장 (글자 크기 변경 용)
-            if (!foundBrDiv && element.id == 'brDiv') {
-                foundBrDiv = true;
-                previousFocusedElement = element;
-                changeSumarryText(element);
-                changeAlignBtn(element);
-            }
-
-            changeUI(element);
-            element = element.parentElement;
-        }
-    });
-
-
-    // 키보드로 커서 위치 움직였을때 현재 커서 위치의 텍스트의 특성(bold,글자크기 등)에 따라 버튼 ui 변경     
-    editor.addEventListener('keyup', function (event) {
-        let range = window.getSelection().getRangeAt(0);
-        // 여기서 element 는 가장 리프 노드를 가르킨다 
-        let element = range.commonAncestorContainer;
-
-        resetUI();
-
-        // 현재 엘레먼트 에서 editor 이전까지 부모로 거슬러 올라가며 엘레먼트 분석 
-        let foundBrDiv = false;
-        while (element.id != 'editor') {
-            // brDiv 일 경우 previousFocusedElement 에 저장 (글자 크기 변경 용)
-            if (!foundBrDiv && element.id == 'brDiv') {
-                foundBrDiv = true;
-                previousFocusedElement = element;
-                changeSumarryText(element);
-                changeAlignBtn(element);
-            }
-
-            changeUI(element);
-            element = element.parentElement;
-        }
-    });
-
-    // element 에 따라 버튼을 누름 처리 
-    function changeUI(element) {
-        if (element.tagName === 'B') {
-            btnBold.classList.add('btnPressed')
-        } else if (element.tagName === 'I') {
-            btnItalic.classList.add('btnPressed')
-        }
-        else if (element.tagName === 'U') {
-            btnUnderline.classList.add('btnPressed')
-        } else if (element.tagName === 'STRIKE') {
-            btnStrike.classList.add('btnPressed')
-        }
+  // submit button event listener
+  let button = document.getElementById("submitBtn");
+  button.addEventListener("click", async function (event) {
+    // Prevent the default form submission behavior (버튼 클릭시 서버로 폼 전송 방지)
+    event.preventDefault();
+    // error check, error 없을시 데이터 서버로 전송 시작
+    if (!checkErrors()) {
+      try {
+        isFormSubmitting = true;
+        // 이미지 정보 먼저 ajax로 보내고 폼 데이터 이후 보냄, 완료될때까지 대기
+        await uploadToServer(true);
+        form.submit();
+      } catch (error) {
+        console.log("error uploading files", error);
+      }
     }
+  });
 
-    function changeAlignBtn(element) {
-        if (element.classList.contains('textAlignLeft')) {
-            btnTextAlignLeft.classList.add('btnPressed');
-        } else if (element.classList.contains('textAlignCenter')) {
-            btnTextAlignCenter.classList.add('btnPressed');
-        } else if (element.classList.contains('textAlignRight')) {
-            btnTextAlignRight.classList.add('btnPressed');
-        }
+  // page 에 error 존재 시 true return
+  function checkErrors() {
+    // title 미입력시 에러
+    let title = document.getElementById("titleInput");
+    if (title.value.length == 0) {
+      title.classList.add("placeholder-red");
+      title.focus({ preventScroll: false });
+      return true;
     }
+    return false;
+  }
 
-    // header ui 리셋 
-    function resetUI() {
-        AllBtnList.forEach((btn) => {
-            btn.classList.remove('btnPressed');
-        });
-    }
+  function removePlaceholderRed() {
+    document.getElementById("titleInput").classList.remove("placeholder-red");
+  }
 
+  // files 에 담긴 파일들 formData 에 담아 서버에 ajax request 보냄
+  // 페이지 id 도 같이 보냄
+  function uploadToServer(writingDone) {
+    return new Promise(function (resolve, reject) {
+      // <div contenteditable=true> 에 있는 내용 <textarea> 에 복사
+      getContent();
 
-    // 포커스된 엘레먼트의 글자크기 상태에 따라 sumarry 의 text 표시 변경 
-    function changeSumarryText(clickedElement) {
-        if (clickedElement.classList.contains('textSizeMain1')) {
-            textSizeSumarry.textContent = '본문1';
-        }
-        else if (clickedElement.classList.contains('textSizeMain2')) {
-            textSizeSumarry.textContent = '본문2';
-        }
-        else if (clickedElement.classList.contains('textSizeMain3')) {
-            textSizeSumarry.textContent = '본문3';
-        }
-        else if (clickedElement.classList.contains('textSizeTitle1')) {
-            textSizeSumarry.textContent = '제목1';
-        }
-        else if (clickedElement.classList.contains('textSizeTitle2')) {
-            textSizeSumarry.textContent = '제목2';
-        }
-        else if (clickedElement.classList.contains('textSizeTitle3')) {
-            textSizeSumarry.textContent = '제목3';
-        }
-        else {
-            textSizeSumarry.textContent = '본문2';
-        }
-    }
+      const form = document.querySelector("form");
+      const formData = new FormData();
 
+      // key:pageId, pageId formData 에 추가
+      let pageId = "[[${form.id}]]";
+      formData.append("pageId", pageId);
 
-    btnImage.addEventListener("click", function () {
-        imageSelector.click();
-    });
+      // key:createdTime
+      let createdTime = "[[${form.createdTime}]]";
+      // pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS";
+      createdTime = createdTime.substring(0, 23);
+      formData.append("createdTime", createdTime);
 
-    imageSelector.addEventListener("change", function (e) {
-        const files = e.target.files;
-        if (!!files) {
-            insertImg(files[0]);
-        }
-        // 비워주지 않으면 같은 이미지 연속 선택시 imageSelector 'change' triggered 되지 않을 가능성 있음
-        this.value = null;
-    });
+      // key: files
+      // key: uuid
+      uploadMap.forEach((value, key) => {
+        formData.append("files", value);
+        formData.append("uuids", key);
+      });
 
-    // 선택한 이미지 editor 에 삽입
-    let imgEleCnt = 0;
-    function insertImg(file) {
-        const reader = new FileReader();
-        let url = URL.createObjectURL(file);
-        // fileMap.set(url, file);
-        // const imgUUID = uuidv4(); // 이미지의 고유 UUID 값
-        const imgUUID = self.crypto.randomUUID();
-        fileMap.set(imgUUID, file);
+      // key:title
+      let title = document.getElementById("titleInput").value;
+      formData.append("title", title);
 
-        let imgEle = document.createElement("img");
-        imgEle.src = url;
-        // imgEle.classList.add(imgEleCnt++);
-        imgEle.id = imgUUID;
-        let divImgEle = document.createElement("div");
-        divImgEle.appendChild(imgEle);
+      // key:content
+      formData.append(
+        "content",
+        document.getElementById("my-textarea").value
+      );
 
-        let selection = window.getSelection();
-        // console.log('selection.anchorOffset = ' + selection.anchorOffset);
-        // console.log('selection.anchorNode = ' + selection.anchorNode);
-        // console.log('selection.anchorNode.parentNode = ' + selection.anchorNode.parentNode);
+      // key:wrtingDone
+      formData.append("writingDone", writingDone);
 
-        // 지정하지 않은 경우 editor 영역에 img 삽입
-        if (selection.anchorNode == null) {
-            let targetElement = document.getElementById("editor");
-            targetElement.appendChild(divImgEle);
-        }
-        // 글 작성하는 editor 영역에 커서 위치할경우
-        else if (selection.anchorNode.parentNode.id === "editor") {
-            let range = selection.getRangeAt(0);
-            range.insertNode(divImgEle);
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", "/pages/upload", true);
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          console.log("Files uploaded successfully");
+          resolve();
         } else {
-            // 아닌 경우에는 editor 영역에 img 삽입
-            let targetElement = document.getElementById("editor");
-            targetElement.appendChild(divImgEle);
+          reject(new Error("Error upload files"));
         }
+      };
 
-        // 이미지 삽입함에 따라 그만큼 editor 의 높이 늘림
-        resizeEditorAfterImgInserted(divImgEle, file);
-        focusAfterImgInserted();
-    }
+      xhr.onerror = function () {
+        reject(new Error("Network error")); // Reject the promise with a network error
+      };
 
-    function focusAfterImgInserted() {
-        let newLineDiv = document.createElement('div');
-        // Set the content editable attribute of the new <div> to true
-        newLineDiv.setAttribute('contenteditable', 'true');
-        let br = document.createElement('br');
-        newLineDiv.appendChild(br);
-        editor.appendChild(newLineDiv);
-
-        // Set the focus on the inner text of the new <div>
-        const range = document.createRange();
-        const selection = window.getSelection();
-        range.selectNodeContents(br);
-        selection.removeAllRanges();
-        selection.addRange(range);
-    }
-
-
-    // submit button event listener
-    let button = document.getElementById("submitBtn");
-    button.addEventListener("click", async function (event) {
-        // Prevent the default form submission behavior (버튼 클릭시 서버로 폼 전송 방지)
-        event.preventDefault();
-        // error check, error 없을시 데이터 서버로 전송 시작
-        if (!checkErrors()) {
-            try {
-                isFormSubmitting = true;
-                // 이미지 정보 먼저 ajax로 보내고 폼 데이터 이후 보냄, 완료될때까지 대기
-                await uploadToServer(true);
-                form.submit();
-            } catch (error) {
-                console.log('error uploading files', error)
-            }
-        }
+      xhr.send(formData);
     });
+  }
 
-    // page 에 error 존재 시 true return
-    function checkErrors() {
-        // title 미입력시 에러
-        let title = document.getElementById('titleInput');
-        if (title.value.length == 0) {
-            title.classList.add('placeholder-red');
-            title.focus({ preventScroll: false });
-            return true;
-        }
-        return false;
+  // <div contenteditable=true> 에 있는 내용 <textarea> 에 복사
+  function getContent() {
+    insertFisrtLineDiv();
+    document.getElementById("my-textarea").value = editor.innerHTML;
+    getImgEleFromTextArea();
+  }
+
+  // editor 의 첫줄은 <div> 속에 포함안되고 그냥 text object 이 되버림.
+  // 일관성과 폼 입력 후 오류 발생해서 다시 되돌아왔을때 editor 높이 크기 계산 위해
+  function insertFisrtLineDiv() {
+    let string = "";
+    let i = 0;
+    for (; i < editor.innerHTML.length; i++) {
+      if (editor.innerHTML[i] == "<") {
+        break;
+      }
+      string += editor.innerHTML[i];
     }
 
-    function removePlaceholderRed() {
-        document.getElementById('titleInput').classList.remove('placeholder-red');
+    editor.innerHTML = editor.innerHTML.substring(i);
+
+    let div = document.createElement("div");
+    div.innerHTML = string;
+    editor.insertBefore(div, editor.firstChild);
+  }
+
+  // editor 에 작성된 글에서 <img> 추출
+  function getImgEleFromTextArea() {
+    const textareaValue = document.getElementById("my-textarea").value;
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = textareaValue;
+
+    // Get all <img> elements from the div
+    const imgElements = tempDiv.querySelectorAll("img");
+
+    // uploadMap 에 uuid,file 저장 (서버에 업로드할 파일들)
+    for (let i = 0; i < imgElements.length; i++) {
+      const imgElement = imgElements[i];
+      uploadMap.set(imgElement.id, fileMap.get(imgElement.id));
+      imgElement.removeAttribute("src");
     }
 
-    // files 에 담긴 파일들 formData 에 담아 서버에 ajax request 보냄
-    // 페이지 id 도 같이 보냄
-    function uploadToServer(writingDone) {
-        return new Promise(function (resolve, reject) {
-            // <div contenteditable=true> 에 있는 내용 <textarea> 에 복사
-            getContent();
+    // img src 는 필요없으므로 제거 (서버에 전송 x)
+    document.getElementById("my-textarea").value = tempDiv.innerHTML;
+  }
 
-            const form = document.querySelector("form");
-            const formData = new FormData();
+  // text editor 에 입력시 editor 크기 조절
+  function resizeEditor() {
+    const minHeight = 500; // Set the desired minimum height
+    editor.style.height = "auto"; // Reset the height to auto to recalculate the height based on content
+    editor.style.height = Math.max(minHeight, editor.scrollHeight) + "px"; // Set the height to the maximum of minHeight and scroll height
 
-            // key:pageId, pageId formData 에 추가
-            let pageId = "[[${form.id}]]";
-            formData.append("pageId", pageId);
+    prependDivFirstLineOfEditor();
+  }
 
-            // key:createdTime 
-            let createdTime = "[[${form.createdTime}]]"
-            // pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS";
-            createdTime = createdTime.substring(0, 23);
-            formData.append("createdTime", createdTime);
+  // 이미지 editor 에 삽입 하고, 그 높이 만큼 editor 의 높이 조절함
+  function resizeEditorAfterImgInserted(divImgEle, file) {
+    let minHeight = 500;
+    const reader = new FileReader();
+    const imgEle = document.createElement("img");
 
-            // key: files
-            // key: uuid
-            uploadMap.forEach((value, key) => {
-                formData.append("files", value);
-                formData.append("uuids", key);
-            });
+    reader.onload = function (event) {
+      imgEle.onload = function () {
+        // insert 한 img 높이
+        const imageHeight = imgEle.height + 20 + 20; // 위 아래 margin 20
+        // wait for scrollHeight reflection
+        setTimeout(function () {
+          editor.style.height = "auto";
+          editor.style.height =
+            Math.max(minHeight, editor.scrollHeight) + "px";
+          // Your code to adjust the editor height here
+        }, 100);
+      };
 
-            // key:title
-            let title = document.getElementById('titleInput').value;
-            formData.append("title", title);
+      imgEle.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
 
-            // key:content
-            formData.append("content", document.getElementById("my-textarea").value);
-
-            // key:wrtingDone
-            formData.append("writingDone", writingDone);
-
-            const xhr = new XMLHttpRequest();
-            xhr.open("POST", "/pages/upload", true);
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    console.log("Files uploaded successfully");
-                    resolve();
-
-                } else {
-                    reject(new Error("Error upload files"));
-                }
-            };
-
-            xhr.onerror = function () {
-                reject(new Error("Network error")); // Reject the promise with a network error
-            };
-
-            xhr.send(formData);
-        });
-
-
-    }
-
-    // <div contenteditable=true> 에 있는 내용 <textarea> 에 복사
-    function getContent() {
-        insertFisrtLineDiv();
-        document.getElementById("my-textarea").value = editor.innerHTML;
-        getImgEleFromTextArea();
-    }
-
-    // editor 의 첫줄은 <div> 속에 포함안되고 그냥 text object 이 되버림. 
-    // 일관성과 폼 입력 후 오류 발생해서 다시 되돌아왔을때 editor 높이 크기 계산 위해 
-    function insertFisrtLineDiv() {
-        let string = '';
-        let i = 0;
-        for (; i < editor.innerHTML.length; i++) {
-            if (editor.innerHTML[i] == '<') {
-                break;
-            }
-            string += editor.innerHTML[i];
-        }
-
-        editor.innerHTML = editor.innerHTML.substring(i);
-
-        let div = document.createElement('div');
-        div.innerHTML = string;
-        editor.insertBefore(div, editor.firstChild);
-    }
-
-    // editor 에 작성된 글에서 <img> 추출
-    function getImgEleFromTextArea() {
-        const textareaValue = document.getElementById("my-textarea").value;
-        const tempDiv = document.createElement("div");
-        tempDiv.innerHTML = textareaValue;
-
-        // Get all <img> elements from the div
-        const imgElements = tempDiv.querySelectorAll("img");
-
-        // uploadMap 에 uuid,file 저장 (서버에 업로드할 파일들)
-        for (let i = 0; i < imgElements.length; i++) {
-            const imgElement = imgElements[i];
-            uploadMap.set(imgElement.id, fileMap.get(imgElement.id));
-            imgElement.removeAttribute('src');
-        }
-
-        // img src 는 필요없으므로 제거 (서버에 전송 x)
-        document.getElementById("my-textarea").value = tempDiv.innerHTML;
-
-    }
-
-    // text editor 에 입력시 editor 크기 조절 
-    function resizeEditor() {
-        const minHeight = 500; // Set the desired minimum height
-        editor.style.height = "auto"; // Reset the height to auto to recalculate the height based on content
-        editor.style.height = Math.max(minHeight, editor.scrollHeight) + "px"; // Set the height to the maximum of minHeight and scroll height    
-
-        prependDivFirstLineOfEditor();
-    }
-
-    // 이미지 editor 에 삽입 하고, 그 높이 만큼 editor 의 높이 조절함
-    function resizeEditorAfterImgInserted(divImgEle, file) {
-        let minHeight = 500;
-        const reader = new FileReader();
-        const imgEle = document.createElement("img");
-
-        reader.onload = function (event) {
-            imgEle.onload = function () {
-                // insert 한 img 높이 
-                const imageHeight = imgEle.height + 20 + 20; // 위 아래 margin 20
-                // wait for scrollHeight reflection 
-                setTimeout(function () {
-                    editor.style.height = "auto";
-                    editor.style.height = Math.max(minHeight, editor.scrollHeight) + "px";
-                    // Your code to adjust the editor height here
-                }, 100);
-            };
-
-            imgEle.src = event.target.result;
-
-        };
-        reader.readAsDataURL(file);
-    }
-
-    // 에디터 크기 조절     
-    // 에디터 내부 모든 엘레먼트 높이 계산후 조절 (onload, paste 시)
-    function resizeEditorAllElements() {
-        // Perform additional actions after the element is displayed
-        window.requestAnimationFrame(function () {
-            // Your additional actions here
-            // This code will run after the element is rendered
-            let height = 62; // editor 기본 padding, border 포함
-            for (let i = 0; i < editor.childNodes.length; i++) {
-                let childNode = editor.childNodes[i];
-                height += getTotalHeightOfElement(childNode)
-            }
-            editor.style.height = 'auto';
-            editor.style.height = Math.max(500, height) + 'px';
-        });
-    }
-
-    // 엘러먼트의 content,margin,padding,border 모두 포함하는 높이 구함
-    function getTotalHeightOfElement(element) {
-        const styles = window.getComputedStyle(element);
-        const height = element.offsetHeight;
-        const marginTop = parseFloat(styles.marginTop);
-        const marginBottom = parseFloat(styles.marginBottom);
-        const paddingTop = parseFloat(styles.paddingTop);
-        const paddingBottom = parseFloat(styles.paddingBottom);
-        const borderTop = parseFloat(styles.borderTop);
-        const borderBottom = parseFloat(styles.borderBottom);
-        const totalHeight = height + marginTop + marginBottom + paddingTop + paddingBottom + borderTop + borderBottom;
-        return totalHeight;
-    }
-
-    // editor 의 children 모두 로드 될때까지 대기
-    function waitForEditorChildren() {
-        return new Promise((resolve) => {
-            // Check if all child elements are loaded
-            function checkChildrenLoaded() {
-                const editor = document.getElementById('editor');
-                const childNodes = editor.childNodes;
-
-                let allChildrenLoaded = true;
-                let height = 62; // editor's default padding and border
-
-                for (let i = 0; i < childNodes.length; i++) {
-                    const childNode = childNodes[i];
-                    if (childNode.offsetHeight === 0) {
-                        allChildrenLoaded = false;
-                        break;
-                    }
-                    height += childNode.offsetHeight;
-                }
-
-                if (allChildrenLoaded) {
-                    resolve(height); // Resolve the Promise with the total height
-                } else {
-                    // Wait for a brief moment and check again
-                    setTimeout(checkChildrenLoaded, 100);
-                }
-            }
-
-            checkChildrenLoaded(); // Start checking for loaded children
-        });
-    }
-
-
-
-
-    // submit 버튼 이외 다른 페이지로 navigate 시도 시 경고 메시지 
-    window.addEventListener('beforeunload', async function (event) {
-        // submit 버튼에 의한 이벤트는 제외 
-        if (isFormSubmitting) {
-            return; // Allow the default behavior for form submission
-        }
-        // Cancel the event as a fallback
-        event.preventDefault();
-        // Set the message that will be displayed in the confirmation dialog
-        event.returnValue = 'Are you sure you want to leave this page? Your unsaved changes may be lost.';
-
-
-        try {
-            await uploadToServer(false);
-        } catch (error) {
-            console.error("Error uploading files", error);
-        }
+  // 에디터 크기 조절
+  // 에디터 내부 모든 엘레먼트 높이 계산후 조절 (onload, paste 시)
+  function resizeEditorAllElements() {
+    // Perform additional actions after the element is displayed
+    window.requestAnimationFrame(function () {
+      // Your additional actions here
+      // This code will run after the element is rendered
+      let height = 62; // editor 기본 padding, border 포함
+      for (let i = 0; i < editor.childNodes.length; i++) {
+        let childNode = editor.childNodes[i];
+        height += getTotalHeightOfElement(childNode);
+      }
+      editor.style.height = "auto";
+      editor.style.height = Math.max(500, height) + "px";
     });
+  }
 
-    // contenteditable div의 첫 line <div><br></div> 삽입
-    function prependDivFirstLineOfEditor() {
-        if (editor.childNodes.length == 0) {
-            let divtmp = document.createElement('div');
-            // divtmp.classList.add('brDiv')
-            divtmp.id = 'brDiv';
-            let brtmp = document.createElement('br')
-            divtmp.appendChild(brtmp);
-            editor.prepend(divtmp);
+  // 엘러먼트의 content,margin,padding,border 모두 포함하는 높이 구함
+  function getTotalHeightOfElement(element) {
+    const styles = window.getComputedStyle(element);
+    const height = element.offsetHeight;
+    const marginTop = parseFloat(styles.marginTop);
+    const marginBottom = parseFloat(styles.marginBottom);
+    const paddingTop = parseFloat(styles.paddingTop);
+    const paddingBottom = parseFloat(styles.paddingBottom);
+    const borderTop = parseFloat(styles.borderTop);
+    const borderBottom = parseFloat(styles.borderBottom);
+    const totalHeight =
+      height +
+      marginTop +
+      marginBottom +
+      paddingTop +
+      paddingBottom +
+      borderTop +
+      borderBottom;
+    return totalHeight;
+  }
 
-            previousFocusedElement = divtmp;
+  // editor 의 children 모두 로드 될때까지 대기
+  function waitForEditorChildren() {
+    return new Promise((resolve) => {
+      // Check if all child elements are loaded
+      function checkChildrenLoaded() {
+        const editor = document.getElementById("editor");
+        const childNodes = editor.childNodes;
+
+        let allChildrenLoaded = true;
+        let height = 62; // editor's default padding and border
+
+        for (let i = 0; i < childNodes.length; i++) {
+          const childNode = childNodes[i];
+          if (childNode.offsetHeight === 0) {
+            allChildrenLoaded = false;
+            break;
+          }
+          height += childNode.offsetHeight;
         }
 
-        if (editor.firstChild.nodeName === 'BR') {
-            editor.firstChild.remove(); // Remove the <br> element if it's the only child
+        if (allChildrenLoaded) {
+          resolve(height); // Resolve the Promise with the total height
+        } else {
+          // Wait for a brief moment and check again
+          setTimeout(checkChildrenLoaded, 100);
         }
+      }
+
+      checkChildrenLoaded(); // Start checking for loaded children
+    });
+  }
+
+  // submit 버튼 이외 다른 페이지로 navigate 시도 시 경고 메시지
+  window.addEventListener("beforeunload", async function (event) {
+    // submit 버튼에 의한 이벤트는 제외
+    if (isFormSubmitting) {
+      return; // Allow the default behavior for form submission
+    }
+    // Cancel the event as a fallback
+    event.preventDefault();
+    // Set the message that will be displayed in the confirmation dialog
+    event.returnValue =
+      "Are you sure you want to leave this page? Your unsaved changes may be lost.";
+
+    try {
+      await uploadToServer(false);
+    } catch (error) {
+      console.error("Error uploading files", error);
+    }
+  });
+
+  // contenteditable div의 첫 line <div><br></div> 삽입
+  function prependDivFirstLineOfEditor() {
+    if (editor.childNodes.length == 0) {
+      let divtmp = document.createElement("div");
+      // divtmp.classList.add('brDiv')
+      divtmp.id = "brDiv";
+      let brtmp = document.createElement("br");
+      divtmp.appendChild(brtmp);
+      editor.prepend(divtmp);
+
+      previousFocusedElement = divtmp;
     }
 
+    if (editor.firstChild.nodeName === "BR") {
+      editor.firstChild.remove(); // Remove the <br> element if it's the only child
+    }
+  }
 </script>
-
 
 <!-- 작성된 titile,content 서버에서 불러서 editor에 디스플레이함 (updatePageForm, createPageForm 에서 사용)  -->
 <script th:fragment="requestTitleAndContentFromServer">
-    let writingPageId = "[[${form.writingPageId}]]"
+  let writingPageId = "[[${form.writingPageId}]]";
 
-    let xhr = new XMLHttpRequest();
+  let xhr = new XMLHttpRequest();
 
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState == XMLHttpRequest.DONE) {
-            if (xhr.status == 200) {
-                let data = JSON.parse(xhr.responseText);
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState == XMLHttpRequest.DONE) {
+      if (xhr.status == 200) {
+        let data = JSON.parse(xhr.responseText);
 
-                const imgCount = data.images.length;
-                let loadedImgCount = 0;
+        const imgCount = data.images.length;
+        let loadedImgCount = 0;
 
-                // key,val = 이미지의 uuid,이미지 File 
-                for (let i = 0; i < data.images.length; i++) {
-                    let file = base64ToFile(data.images[i], data.imgUUIDList[i], 'image/');
-                    fileMap.set(data.imgUUIDList[i], file);
-                }
-
-                // title
-                document.getElementById('titleInput').value = data.title;
-
-                // content 
-                const tempDiv = document.createElement("div");
-                tempDiv.innerHTML = data.content;
-
-                // Get all <img> elements from the div
-                const imgElements = tempDiv.querySelectorAll("img");
-                // 이미지 없는 경우 editor 내 child 들 모두 로드될때까지 대기 후 resize editor                    
-                if (imgCount === 0) {
-                    waitForEditorChildren().then((height) => {
-                        resizeEditorAllElements();
-                    });
-                }
-                // 이미지 있는 경우 editor 내 image 모두 로드될때까지 대기 후 resize editor 
-                else {
-                    for (let i = 0; i < imgElements.length; i++) {
-                        let imgElement = imgElements[i];
-                        // img uuid 
-                        const uuid = imgElement.id;
-                        // imgElement.src = 'data:image/jpeg;charset=utf-8;base64,' + fileMap.get(uuid);
-
-                        let url = URL.createObjectURL(fileMap.get(uuid));
-                        imgElement.src = url;
-
-                        imgElement.onload = function () {
-                            loadedImgCount++;
-
-                            if (loadedImgCount === imgCount) {
-                                resizeEditorAllElements();
-                            }
-                        }
-                    }
-                }
-
-                //let editor = document.getElementById("editor");
-                editor.innerHTML = tempDiv.innerHTML;
-
-                // contenteditable div의 첫 line <div><br></div> 삽입                 
-                prependDivFirstLineOfEditor();
-
-            } else {
-                console.error("error");
-            }
+        // key,val = 이미지의 uuid,이미지 File
+        for (let i = 0; i < data.images.length; i++) {
+          let file = base64ToFile(
+            data.images[i],
+            data.imgUUIDList[i],
+            "image/"
+          );
+          fileMap.set(data.imgUUIDList[i], file);
         }
-    };
 
-    // member 가 작성중이었던 page 존재하면 유저한테 물어보고 불러올지 말지 결정함
-    // 존재하지 않는다면 빈 페이지  
-    window.onload = function () {
-        var confirmation;
-        let titleVal;
+        // title
+        document.getElementById("titleInput").value = data.title;
 
-        // 현재 member 가 작성중인 page 존재하지 않음 
-        if (writingPageId == null || writingPageId == '') {
-            confirmation = true;
+        // content
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = data.content;
+
+        // Get all <img> elements from the div
+        const imgElements = tempDiv.querySelectorAll("img");
+        // 이미지 없는 경우 editor 내 child 들 모두 로드될때까지 대기 후 resize editor
+        if (imgCount === 0) {
+          waitForEditorChildren().then((height) => {
+            resizeEditorAllElements();
+          });
         }
-        // 현재 member 가 작성중인 page 존재함 
+        // 이미지 있는 경우 editor 내 image 모두 로드될때까지 대기 후 resize editor
         else {
-            // click yes or no 
-            confirmation = confirm('페이지 전체가 로드되었습니다. Do you want to continue?');
+          for (let i = 0; i < imgElements.length; i++) {
+            let imgElement = imgElements[i];
+            // img uuid
+            const uuid = imgElement.id;
+            // imgElement.src = 'data:image/jpeg;charset=utf-8;base64,' + fileMap.get(uuid);
+
+            let url = URL.createObjectURL(fileMap.get(uuid));
+            imgElement.src = url;
+
+            imgElement.onload = function () {
+              loadedImgCount++;
+
+              if (loadedImgCount === imgCount) {
+                resizeEditorAllElements();
+              }
+            };
+          }
         }
 
-        if (confirmation) {
-            // title 
-            // document.getElementById('titleInput').value = titleVal;
+        //let editor = document.getElementById("editor");
+        editor.innerHTML = tempDiv.innerHTML;
 
-            // 페이지 내용 가져옴 
-            xhr.open("GET", "/view/ajaxReq?pageId=" + pageId.toString(), true);
-            xhr.send();
-        } else {
-            console.log('User clicked "No"');
-            // contenteditable div의 첫 line <div><br></div> 삽입                 
-            prependDivFirstLineOfEditor();
-        }
+        // contenteditable div의 첫 line <div><br></div> 삽입
+        prependDivFirstLineOfEditor();
+      } else {
+        console.error("error");
+      }
+    }
+  };
 
+  // member 가 작성중이었던 page 존재하면 유저한테 물어보고 불러올지 말지 결정함
+  // 존재하지 않는다면 빈 페이지
+  window.onload = function () {
+    var confirmation;
+    let titleVal;
 
-    };
-
-
-
-    function base64ToFile(base64String, fileName, contentType) {
-        const byteCharacters = atob(base64String);
-        const byteArrays = [];
-
-        for (let offset = 0; offset < byteCharacters.length; offset += 512) {
-            const slice = byteCharacters.slice(offset, offset + 512);
-            const byteNumbers = new Array(slice.length);
-
-            for (let i = 0; i < slice.length; i++) {
-                byteNumbers[i] = slice.charCodeAt(i);
-            }
-
-            const byteArray = new Uint8Array(byteNumbers);
-            byteArrays.push(byteArray);
-        }
-
-        const blob = new Blob(byteArrays, { type: contentType });
-        return new File([blob], fileName, { type: contentType });
+    // 현재 member 가 작성중인 page 존재하지 않음
+    if (writingPageId == null || writingPageId == "") {
+      confirmation = true;
+    }
+    // 현재 member 가 작성중인 page 존재함
+    else {
+      // click yes or no
+      confirmation = confirm(
+        "페이지 전체가 로드되었습니다. Do you want to continue?"
+      );
     }
 
-    function logElement(element) {
-        let string = '';
-        string += element.tagName + ','
-        string += element.innerHTML
-        return string;
+    if (confirmation) {
+      // title
+      // document.getElementById('titleInput').value = titleVal;
+
+      // 페이지 내용 가져옴
+      xhr.open("GET", "/view/ajaxReq?pageId=" + pageId.toString(), true);
+      xhr.send();
+    } else {
+      console.log('User clicked "No"');
+      // contenteditable div의 첫 line <div><br></div> 삽입
+      prependDivFirstLineOfEditor();
+    }
+  };
+
+  function base64ToFile(base64String, fileName, contentType) {
+    const byteCharacters = atob(base64String);
+    const byteArrays = [];
+
+    for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+      const slice = byteCharacters.slice(offset, offset + 512);
+      const byteNumbers = new Array(slice.length);
+
+      for (let i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+
+      const byteArray = new Uint8Array(byteNumbers);
+      byteArrays.push(byteArray);
     }
 
+    const blob = new Blob(byteArrays, { type: contentType });
+    return new File([blob], fileName, { type: contentType });
+  }
+
+  function logElement(element) {
+    let string = "";
+    string += element.tagName + ",";
+    if (element.id != null) string += element.id + ",";
+    string += element.innerHTML;
+    return string;
+  }
 </script>
 
 </html>
