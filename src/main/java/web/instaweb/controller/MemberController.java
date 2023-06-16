@@ -4,16 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import web.instaweb.domain.Member;
-import web.instaweb.repository.MemberRepository;
 import web.instaweb.service.MemberService;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -53,12 +50,12 @@ public class MemberController {
         if(member.getPassword().length() < 4 || member.getLoginId().length() > 10) {
             bindingResult.addError(new FieldError("member", "password", member.getPassword(), false, null, null,"비밀번호는 4글자 이상 10글자 이하여야 합니다."));
         }
-        // member loginId, name 은 영어만 가능
-        if(!CheckIfItIsEng(member.getLoginId())) {
-            bindingResult.addError(new FieldError("member", "loginId", member.getLoginId(), false, null, null, "아이디는 영어만 가능합니다"));
+        // member loginId, name 은 영어,숫자만 가능
+        if(!CheckAllEngOrDigit(member.getLoginId())) {
+            bindingResult.addError(new FieldError("member", "loginId", member.getLoginId(), false, null, null, "아이디는 영어,숫자만 가능합니다"));
         }
-        if(!CheckIfItIsEng(member.getName())) {
-            bindingResult.addError(new FieldError("member", "name", member.getName(), false, null, null, "이름은 영어만 가능합니다"));
+        if(!CheckAllEngOrDigit(member.getName())) {
+            bindingResult.addError(new FieldError("member", "name", member.getName(), false, null, null, "이름은 영어,숫자만 가능합니다"));
         }
 
         if (bindingResult.hasErrors()) {
@@ -72,19 +69,17 @@ public class MemberController {
     /**
      * str 에 영어가 아닌 레터가 하나라도 포함되어 있으면 false 리턴
      */
-    boolean CheckIfItIsEng(String str) {
+    boolean CheckAllEngOrDigit(String str) {
         for(int i = 0; i < str.length(); i++) {
             char ch = str.charAt(i);
 
-            if (Character.isLetter(ch)) {
-                if (Character.UnicodeBlock.of(ch) != Character.UnicodeBlock.BASIC_LATIN) {
-                    return false;
-                }
-            } else {
+            // 영어도 아니고, 숫자도 아니면 return false
+            if (Character.UnicodeBlock.of(ch) != Character.UnicodeBlock.BASIC_LATIN && !Character.isDigit(ch)) {
                 return false;
             }
         }
         return true;
     }
+
 
 }
