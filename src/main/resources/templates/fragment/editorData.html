@@ -49,41 +49,41 @@
   const textSizeSumarry = document.getElementById("text-size-summary");
   const textSizeDetails = document.getElementById("text-size-details");
 
-  btnBold.addEventListener("click", function () {
-    setStyle("bold");
-    if (btnBold.classList.contains("btnPressed")) {
-      btnBold.classList.remove("btnPressed");
+
+  function setStyle(style) {
+    document.execCommand(style);
+    focusEditor();
+  }
+
+  // decorationType(bold, italic ..) 으로 처리하고, 해당 버튼 Pressed 처리 
+  function textDecorate(btn, decorationType) {
+    setStyle(decorationType);
+    if (btn.classList.contains("btnPressed")) {
+      btn.classList.remove("btnPressed");
     } else {
-      btnBold.classList.add("btnPressed");
+      btn.classList.add("btnPressed");
     }
+  }
+
+  btnBold.addEventListener("click", function () {
+    textDecorate(this, "bold");
   });
 
   btnItalic.addEventListener("click", function () {
-    setStyle("italic");
-    if (btnItalic.classList.contains("btnPressed")) {
-      btnItalic.classList.remove("btnPressed");
-    } else {
-      btnItalic.classList.add("btnPressed");
-    }
+    textDecorate(this, "italic");
   });
 
   btnUnderline.addEventListener("click", function () {
-    setStyle("underline");
-    if (btnUnderline.classList.contains("btnPressed")) {
-      btnUnderline.classList.remove("btnPressed");
-    } else {
-      btnUnderline.classList.add("btnPressed");
-    }
+    textDecorate(this, "underline");
   });
 
   btnStrike.addEventListener("click", function () {
-    setStyle("strikeThrough");
-    if (btnStrike.classList.contains("btnPressed")) {
-      btnStrike.classList.remove("btnPressed");
-    } else {
-      btnStrike.classList.add("btnPressed");
-    }
+    textDecorate(this, "strikeThrough")
   });
+
+
+
+  ///////////////////////////// text align /////////////////////////////////
 
   // text-align left or center or right 처리
   function alignText(element, alignment, textAlignBtn) {
@@ -129,6 +129,10 @@
     })
     alignText(previousFocusedElement, "textAlignRight", btnTextAlignRight);
   });
+
+  ///////////////////////////// END OF text align /////////////////////////////////
+
+  ///////////////////////////// text size /////////////////////////////////
 
   function pressTextSizeBtn(textSizeType, btn) {
     if (previousFocusedElement == null) return;
@@ -182,10 +186,7 @@
     pressTextSizeBtn("textSizeTitle3", this);
   });
 
-  function setStyle(style) {
-    document.execCommand(style);
-    focusEditor();
-  }
+
 
   // sumarry 의 표시된 글자 (본문2, 제목1..) 바꾸고, open 된 details 닫음
   function changeSummaryTextAndCloseDetails(btn) {
@@ -319,25 +320,23 @@
   });
 
   editor.addEventListener("mouseup", function (event) {
-    if (draggedElements.length === 1) {
-      let element = event.target;
+    let element = event.target;
 
-      resetUI();
+    resetUI();
 
-      // 현재 엘레먼트 에서 editor 이전까지 부모로 거슬러 올라가며 엘레먼트 분석
-      let foundBrDiv = false;
-      while (element.id != "editor") {
-        // brDiv 일 경우 previousFocusedElement 에 저장 (글자 크기 변경 용)
-        if (!foundBrDiv && element.id == "brDiv") {
-          foundBrDiv = true;
-          previousFocusedElement = element;
-          changeSumarryText(element);
-          changeAlignBtn(element);
-        }
-
-        changeUI(element);
-        element = element.parentElement;
+    // 현재 엘레먼트 에서 editor 이전까지 부모로 거슬러 올라가며 엘레먼트 분석
+    let foundBrDiv = false;
+    while (element.id != "editor") {
+      // brDiv 일 경우 previousFocusedElement 에 저장 (글자 크기 변경 용)
+      if (!foundBrDiv && element.id == "brDiv") {
+        foundBrDiv = true;
+        previousFocusedElement = element;
+        changeSumarryText(element);
+        changeAlignBtn(element);
       }
+
+      changeUI(element);
+      element = element.parentElement;
     }
   });
 
