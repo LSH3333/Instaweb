@@ -502,16 +502,17 @@
 
     // 이미지 삽입함에 따라 그만큼 editor 의 높이 늘림
     resizeEditorAfterImgInserted(divImgEle, file);
-    focusAfterImgInserted();
+    // 이미지 삽입후 다음줄 삽입하고 포커스 처리 
+    focusAfterImgInserted(getParentBrDiv(divImgEle));
   }
 
-  function focusAfterImgInserted() {
+  // 이미지 삽입 후, 이미지 삽입한 다음 줄에 brDiv 만들고 focus 함 
+  function focusAfterImgInserted(imgEleBrDiv) {
     let newLineDiv = document.createElement("div");
-    // Set the content editable attribute of the new <div> to true
-    newLineDiv.setAttribute("contenteditable", "true");
+    newLineDiv.id = "brDiv";
     let br = document.createElement("br");
     newLineDiv.appendChild(br);
-    editor.appendChild(newLineDiv);
+    editor.insertBefore(newLineDiv, imgEleBrDiv.nextSibling);
 
     // Set the focus on the inner text of the new <div>
     const range = document.createRange();
