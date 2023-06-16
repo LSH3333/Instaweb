@@ -50,9 +50,16 @@
   const textSizeDetails = document.getElementById("text-size-details");
 
 
+  ///////////////////////////// text decoration (bold, italic..) /////////////////////////////////
+
   function setStyle(style) {
     document.execCommand(style);
     focusEditor();
+  }
+
+  // 버튼 클릭 시 에디터가 포커스를 잃기 때문에 다시 에디터에 포커스를 해줌
+  function focusEditor() {
+    editor.focus({ preventScroll: true });
   }
 
   // decorationType(bold, italic ..) 으로 처리하고, 해당 버튼 Pressed 처리 
@@ -64,6 +71,7 @@
       btn.classList.add("btnPressed");
     }
   }
+
 
   btnBold.addEventListener("click", function () {
     textDecorate(this, "bold");
@@ -82,6 +90,7 @@
   });
 
 
+  ///////////////////////////// END OF text decoration (bold, italic..) /////////////////////////////////
 
   ///////////////////////////// text align /////////////////////////////////
 
@@ -109,106 +118,155 @@
     });
   }
 
-  btnTextAlignLeft.addEventListener("click", function () {
+  // 현재 드래그된 영역 저장 
+  function saveSelection() {
+    let selectedRange = null;
+    if (window.getSelection) {
+      const selection = window.getSelection();
+      if (selection.rangeCount > 0) {
+        selectedRange = selection.getRangeAt(0);
+      }
+    }
+    return selectedRange;
+  }
+  // 드래그된 영역 복구 
+  function restoreSelection(selectedRange) {
+    if (selectedRange) {
+      console.log('restored')
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(selectedRange);
+    }
+  }
+
+  function handleTextAlign(textAlignType, btn) {
+    let selectedRange = saveSelection();
+
     draggedElements.forEach((draggedElement) => {
-      alignText(draggedElement, "textAlignLeft", btnTextAlignLeft);
+      alignText(draggedElement, textAlignType, btn);
     })
-    alignText(previousFocusedElement, "textAlignLeft", btnTextAlignLeft);
+    alignText(previousFocusedElement, textAlignType, btn);
+    restoreSelection(selectedRange);
+  }
+
+  btnTextAlignLeft.addEventListener("click", function () {
+    handleTextAlign("textAlignLeft", this);
   });
 
   btnTextAlignCenter.addEventListener("click", function () {
-    draggedElements.forEach((draggedElement) => {
-      alignText(draggedElement, "textAlignCenter", btnTextAlignCenter);
-    })
-    alignText(previousFocusedElement, "textAlignCenter", btnTextAlignCenter);
+    handleTextAlign("textAlignCenter", this);
   });
 
   btnTextAlignRight.addEventListener("click", function () {
-    draggedElements.forEach((draggedElement) => {
-      alignText(draggedElement, "textAlignRight", btnTextAlignRight);
-    })
-    alignText(previousFocusedElement, "textAlignRight", btnTextAlignRight);
+    handleTextAlign("textAlignRight", this);
   });
 
   ///////////////////////////// END OF text align /////////////////////////////////
 
   ///////////////////////////// text size /////////////////////////////////
 
-  function pressTextSizeBtn(textSizeType, btn) {
-    if (previousFocusedElement == null) return;
-    const textSizeList = [
-      "textSizeMain1",
-      "textSizeMain2",
-      "textSizeMain3",
-      "textSizeTitle1",
-      "textSizeTitle2",
-      "textSizeTitle3",
-    ];
-    textSizeList.forEach((type) => {
-      if (type === textSizeType) {
-        draggedElements.forEach((draggedElement) => {
-          draggedElement.classList.add(textSizeType)
-        })
-        // previousFocusedElement.classList.add(textSizeType);
-      } else {
-        draggedElements.forEach((draggedElement) => {
-          draggedElement.classList.remove(type)
-        })
-        // previousFocusedElement.classList.remove(type);
-      }
+  (function () {
+
+    function pressTextSizeBtn(textSizeType, btn) {
+      if (previousFocusedElement == null) return;
+      let selectedRange = saveSelection();
+
+      const textSizeList = [
+        "textSizeMain1",
+        "textSizeMain2",
+        "textSizeMain3",
+        "textSizeTitle1",
+        "textSizeTitle2",
+        "textSizeTitle3",
+      ];
+
+      textSizeList.forEach((type) => {
+        if (type === textSizeType) {
+          draggedElements.forEach((draggedElement) => {
+            draggedElement.classList.add(textSizeType)
+          })
+        } else {
+          draggedElements.forEach((draggedElement) => {
+            draggedElement.classList.remove(type)
+          })
+        }
+      });
+
+      changeSummaryTextAndCloseDetails(btn);
+      setCursorPositionToEnd(previousFocusedElement);
+      resizeEditor();
+      restoreSelection(selectedRange);
+    }
+
+    
+    // <details> 누른 순간 드래그 영역 기억함 
+    let selectedRange;    
+    textSizeDetails.addEventListener("mousedown", function (event) {
+      event.preventDefault();
+      selectedRange = saveSelection();
+
+      // 닫혀있는 상태에서 누름 => 드래그 영역 복원 
+      if (!textSizeDetails.open) {
+        restoreSelection(selectedRange);
+      } 
+
     });
-    changeSummaryTextAndCloseDetails(btn);
-    setCursorPositionToEnd(previousFocusedElement);
-    resizeEditor();
-  }
 
-  btnTextSizeMain1.addEventListener("click", function () {
-    pressTextSizeBtn("textSizeMain1", this);
-  });
+    textSizeSumarry.addEventListener("click", function (event) {
+      event.preventDefault();
+      if(textSizeDetails.open) {
+        textSizeDetails.open = false;
+      } else {
+        textSizeDetails.open = true;
+      }
+    })
 
-  btnTextSizeMain2.addEventListener("click", function () {
-    pressTextSizeBtn("textSizeMain2", this);
-  });
+    btnTextSizeMain1.addEventListener("click", function () {
+      pressTextSizeBtn("textSizeMain1", this);
+    });
 
-  btnTextSizeMain3.addEventListener("click", function () {
-    pressTextSizeBtn("textSizeMain3", this);
-  });
+    btnTextSizeMain2.addEventListener("click", function () {
+      pressTextSizeBtn("textSizeMain2", this);
+    });
 
-  btnTextSizeTitle1.addEventListener("click", function () {
-    pressTextSizeBtn("textSizeTitle1", this);
-  });
+    btnTextSizeMain3.addEventListener("click", function () {
+      pressTextSizeBtn("textSizeMain3", this);
+    });
 
-  btnTextSizeTitle2.addEventListener("click", function () {
-    pressTextSizeBtn("textSizeTitle2", this);
-  });
+    btnTextSizeTitle1.addEventListener("click", function () {
+      pressTextSizeBtn("textSizeTitle1", this);
+    });
 
-  btnTextSizeTitle3.addEventListener("click", function () {
-    pressTextSizeBtn("textSizeTitle3", this);
-  });
+    btnTextSizeTitle2.addEventListener("click", function () {
+      pressTextSizeBtn("textSizeTitle2", this);
+    });
+
+    btnTextSizeTitle3.addEventListener("click", function () {
+      pressTextSizeBtn("textSizeTitle3", this);
+    });
+
+
+    // sumarry 의 표시된 글자 (본문2, 제목1..) 바꾸고, open 된 details 닫음
+    function changeSummaryTextAndCloseDetails(btn) {
+      textSizeSumarry.textContent = btn.innerText;
+      textSizeDetails.open = false;
+    }
+
+    function setCursorPositionToEnd(element) {
+      var range = document.createRange();
+      var selection = window.getSelection();
+
+      range.selectNodeContents(element);
+      range.collapse(false);
+
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+
+  })();
 
 
 
-  // sumarry 의 표시된 글자 (본문2, 제목1..) 바꾸고, open 된 details 닫음
-  function changeSummaryTextAndCloseDetails(btn) {
-    textSizeSumarry.textContent = btn.innerText;
-    textSizeDetails.open = false;
-  }
-
-  // 버튼 클릭 시 에디터가 포커스를 잃기 때문에 다시 에디터에 포커스를 해줌
-  function focusEditor() {
-    editor.focus({ preventScroll: true });
-  }
-
-  function setCursorPositionToEnd(element) {
-    var range = document.createRange();
-    var selection = window.getSelection();
-
-    range.selectNodeContents(element);
-    range.collapse(false);
-
-    selection.removeAllRanges();
-    selection.addRange(range);
-  }
 
   // editor paste event
   editor.addEventListener("paste", function (event) {
