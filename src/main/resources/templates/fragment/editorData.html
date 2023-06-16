@@ -449,13 +449,15 @@
 
   function getParentBrDiv(node) {
     if(node === null) return;
+    // 위로 
     if (node.nodeType !== Node.ELEMENT_NODE || node.id === null) {
       return getParentBrDiv(node.parentNode);
     }
-
+    // 리턴 
     if (node.id === 'brDiv') {
       return node;
     }
+    // 위로 
     else {
       return getParentBrDiv(node.parentNode);
     }
@@ -539,30 +541,34 @@
     // imgEle.classList.add(imgEleCnt++);
     imgEle.id = imgUUID;
     let divImgEle = document.createElement("div");
-    divImgEle.id = 'brDiv'
+    // divImgEle.id = 'brDiv'
     divImgEle.appendChild(imgEle);
 
     let selection = window.getSelection();
 
-    // 지정하지 않은 경우 editor 영역에 img 삽입
+    // 지정하지 않은 경우 editor 영역에 끝에 img 삽입
     if (selection.anchorNode == null) {
-      let targetElement = document.getElementById("editor");
-      targetElement.appendChild(divImgEle);
+      console.log('1')
+      divImgEle.id = 'brDiv'
+      editor.appendChild(divImgEle);
     }
     // 글 작성하는 editor 영역에 커서 위치할경우
     else if (selection.anchorNode.parentNode.id === "editor") {
+      console.log('2')
       let range = selection.getRangeAt(0);
-      range.insertNode(divImgEle);
+      getParentBrDiv(range.commonAncestorContainer).appendChild(divImgEle);
     } else {
+      console.log('3')
       // 아닌 경우에는 editor 영역에 img 삽입
       let targetElement = document.getElementById("editor");
+      divImgEle.id = 'brDiv';
       targetElement.appendChild(divImgEle);
     }
 
     // 이미지 삽입함에 따라 그만큼 editor 의 높이 늘림
     resizeEditorAfterImgInserted(divImgEle, file);
     // 이미지 삽입후 다음줄 삽입하고 포커스 처리 
-    focusAfterImgInserted(divImgEle);
+    focusAfterImgInserted(getParentBrDiv(divImgEle));
   }
 
   // 이미지 삽입 후, 이미지 삽입한 다음 줄에 brDiv 만들고 focus 함 
@@ -573,8 +579,6 @@
     newLineDiv.appendChild(br);
     
     // 마지막에 이미지 삽입 하는 경우, editor에 어팬드 
-    console.log(imgEleBrDiv)
-    console.log(imgEleBrDiv.nextSibling)
     if(imgEleBrDiv.nextSibling === null) {
       editor.appendChild(newLineDiv);
     } else { // 글 중간에 삽입하는 경우 
