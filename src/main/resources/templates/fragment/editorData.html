@@ -49,41 +49,50 @@
   const textSizeSumarry = document.getElementById("text-size-summary");
   const textSizeDetails = document.getElementById("text-size-details");
 
-  btnBold.addEventListener("click", function () {
-    setStyle("bold");
-    if (btnBold.classList.contains("btnPressed")) {
-      btnBold.classList.remove("btnPressed");
+
+  ///////////////////////////// text decoration (bold, italic..) /////////////////////////////////
+
+  function setStyle(style) {
+    document.execCommand(style);
+    focusEditor();
+  }
+
+  // 버튼 클릭 시 에디터가 포커스를 잃기 때문에 다시 에디터에 포커스를 해줌
+  function focusEditor() {
+    editor.focus({ preventScroll: true });
+  }
+
+  // decorationType(bold, italic ..) 으로 처리하고, 해당 버튼 Pressed 처리 
+  function textDecorate(btn, decorationType) {
+    setStyle(decorationType);
+    if (btn.classList.contains("btnPressed")) {
+      btn.classList.remove("btnPressed");
     } else {
-      btnBold.classList.add("btnPressed");
+      btn.classList.add("btnPressed");
     }
+  }
+
+
+  btnBold.addEventListener("click", function () {
+    textDecorate(this, "bold");
   });
 
   btnItalic.addEventListener("click", function () {
-    setStyle("italic");
-    if (btnItalic.classList.contains("btnPressed")) {
-      btnItalic.classList.remove("btnPressed");
-    } else {
-      btnItalic.classList.add("btnPressed");
-    }
+    textDecorate(this, "italic");
   });
 
   btnUnderline.addEventListener("click", function () {
-    setStyle("underline");
-    if (btnUnderline.classList.contains("btnPressed")) {
-      btnUnderline.classList.remove("btnPressed");
-    } else {
-      btnUnderline.classList.add("btnPressed");
-    }
+    textDecorate(this, "underline");
   });
 
   btnStrike.addEventListener("click", function () {
-    setStyle("strikeThrough");
-    if (btnStrike.classList.contains("btnPressed")) {
-      btnStrike.classList.remove("btnPressed");
-    } else {
-      btnStrike.classList.add("btnPressed");
-    }
+    textDecorate(this, "strikeThrough")
   });
+
+
+  ///////////////////////////// END OF text decoration (bold, italic..) /////////////////////////////////
+
+  ///////////////////////////// text align /////////////////////////////////
 
   // text-align left or center or right 처리
   function alignText(element, alignment, textAlignBtn) {
@@ -109,105 +118,155 @@
     });
   }
 
-  btnTextAlignLeft.addEventListener("click", function () {
+  // 현재 드래그된 영역 저장 
+  function saveSelection() {
+    let selectedRange = null;
+    if (window.getSelection) {
+      const selection = window.getSelection();
+      if (selection.rangeCount > 0) {
+        selectedRange = selection.getRangeAt(0);
+      }
+    }
+    return selectedRange;
+  }
+  // 드래그된 영역 복구 
+  function restoreSelection(selectedRange) {
+    if (selectedRange) {
+      console.log('restored')
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(selectedRange);
+    }
+  }
+
+  function handleTextAlign(textAlignType, btn) {
+    let selectedRange = saveSelection();
+
     draggedElements.forEach((draggedElement) => {
-      alignText(draggedElement, "textAlignLeft", btnTextAlignLeft);
+      alignText(draggedElement, textAlignType, btn);
     })
-    alignText(previousFocusedElement, "textAlignLeft", btnTextAlignLeft);
+    alignText(previousFocusedElement, textAlignType, btn);
+    restoreSelection(selectedRange);
+  }
+
+  btnTextAlignLeft.addEventListener("click", function () {
+    handleTextAlign("textAlignLeft", this);
   });
 
   btnTextAlignCenter.addEventListener("click", function () {
-    draggedElements.forEach((draggedElement) => {
-      alignText(draggedElement, "textAlignCenter", btnTextAlignCenter);
-    })
-    alignText(previousFocusedElement, "textAlignCenter", btnTextAlignCenter);
+    handleTextAlign("textAlignCenter", this);
   });
 
   btnTextAlignRight.addEventListener("click", function () {
-    draggedElements.forEach((draggedElement) => {
-      alignText(draggedElement, "textAlignRight", btnTextAlignRight);
-    })
-    alignText(previousFocusedElement, "textAlignRight", btnTextAlignRight);
+    handleTextAlign("textAlignRight", this);
   });
 
-  function pressTextSizeBtn(textSizeType, btn) {
-    if (previousFocusedElement == null) return;
-    const textSizeList = [
-      "textSizeMain1",
-      "textSizeMain2",
-      "textSizeMain3",
-      "textSizeTitle1",
-      "textSizeTitle2",
-      "textSizeTitle3",
-    ];
-    textSizeList.forEach((type) => {
-      if (type === textSizeType) {
-        draggedElements.forEach((draggedElement) => {
-          draggedElement.classList.add(textSizeType)
-        })
-        // previousFocusedElement.classList.add(textSizeType);
-      } else {
-        draggedElements.forEach((draggedElement) => {
-          draggedElement.classList.remove(type)
-        })
-        // previousFocusedElement.classList.remove(type);
-      }
+  ///////////////////////////// END OF text align /////////////////////////////////
+
+  ///////////////////////////// text size /////////////////////////////////
+
+  (function () {
+
+    function pressTextSizeBtn(textSizeType, btn) {
+      if (previousFocusedElement == null) return;
+      let selectedRange = saveSelection();
+
+      const textSizeList = [
+        "textSizeMain1",
+        "textSizeMain2",
+        "textSizeMain3",
+        "textSizeTitle1",
+        "textSizeTitle2",
+        "textSizeTitle3",
+      ];
+
+      textSizeList.forEach((type) => {
+        if (type === textSizeType) {
+          draggedElements.forEach((draggedElement) => {
+            draggedElement.classList.add(textSizeType)
+          })
+        } else {
+          draggedElements.forEach((draggedElement) => {
+            draggedElement.classList.remove(type)
+          })
+        }
+      });
+
+      changeSummaryTextAndCloseDetails(btn);
+      setCursorPositionToEnd(previousFocusedElement);
+      resizeEditor();
+      restoreSelection(selectedRange);
+    }
+
+    
+    // <details> 누른 순간 드래그 영역 기억함 
+    let selectedRange;    
+    textSizeDetails.addEventListener("mousedown", function (event) {
+      event.preventDefault();
+      selectedRange = saveSelection();
+
+      // 닫혀있는 상태에서 누름 => 드래그 영역 복원 
+      if (!textSizeDetails.open) {
+        restoreSelection(selectedRange);
+      } 
+
     });
-    changeSummaryTextAndCloseDetails(btn);
-    setCursorPositionToEnd(previousFocusedElement);
-    resizeEditor();
-  }
 
-  btnTextSizeMain1.addEventListener("click", function () {
-    pressTextSizeBtn("textSizeMain1", this);
-  });
+    textSizeSumarry.addEventListener("click", function (event) {
+      event.preventDefault();
+      if(textSizeDetails.open) {
+        textSizeDetails.open = false;
+      } else {
+        textSizeDetails.open = true;
+      }
+    })
 
-  btnTextSizeMain2.addEventListener("click", function () {
-    pressTextSizeBtn("textSizeMain2", this);
-  });
+    btnTextSizeMain1.addEventListener("click", function () {
+      pressTextSizeBtn("textSizeMain1", this);
+    });
 
-  btnTextSizeMain3.addEventListener("click", function () {
-    pressTextSizeBtn("textSizeMain3", this);
-  });
+    btnTextSizeMain2.addEventListener("click", function () {
+      pressTextSizeBtn("textSizeMain2", this);
+    });
 
-  btnTextSizeTitle1.addEventListener("click", function () {
-    pressTextSizeBtn("textSizeTitle1", this);
-  });
+    btnTextSizeMain3.addEventListener("click", function () {
+      pressTextSizeBtn("textSizeMain3", this);
+    });
 
-  btnTextSizeTitle2.addEventListener("click", function () {
-    pressTextSizeBtn("textSizeTitle2", this);
-  });
+    btnTextSizeTitle1.addEventListener("click", function () {
+      pressTextSizeBtn("textSizeTitle1", this);
+    });
 
-  btnTextSizeTitle3.addEventListener("click", function () {
-    pressTextSizeBtn("textSizeTitle3", this);
-  });
+    btnTextSizeTitle2.addEventListener("click", function () {
+      pressTextSizeBtn("textSizeTitle2", this);
+    });
 
-  function setStyle(style) {
-    document.execCommand(style);
-    focusEditor();
-  }
+    btnTextSizeTitle3.addEventListener("click", function () {
+      pressTextSizeBtn("textSizeTitle3", this);
+    });
 
-  // sumarry 의 표시된 글자 (본문2, 제목1..) 바꾸고, open 된 details 닫음
-  function changeSummaryTextAndCloseDetails(btn) {
-    textSizeSumarry.textContent = btn.innerText;
-    textSizeDetails.open = false;
-  }
 
-  // 버튼 클릭 시 에디터가 포커스를 잃기 때문에 다시 에디터에 포커스를 해줌
-  function focusEditor() {
-    editor.focus({ preventScroll: true });
-  }
+    // sumarry 의 표시된 글자 (본문2, 제목1..) 바꾸고, open 된 details 닫음
+    function changeSummaryTextAndCloseDetails(btn) {
+      textSizeSumarry.textContent = btn.innerText;
+      textSizeDetails.open = false;
+    }
 
-  function setCursorPositionToEnd(element) {
-    var range = document.createRange();
-    var selection = window.getSelection();
+    function setCursorPositionToEnd(element) {
+      var range = document.createRange();
+      var selection = window.getSelection();
 
-    range.selectNodeContents(element);
-    range.collapse(false);
+      range.selectNodeContents(element);
+      range.collapse(false);
 
-    selection.removeAllRanges();
-    selection.addRange(range);
-  }
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+
+  })();
+
+
+
 
   // editor paste event
   editor.addEventListener("paste", function (event) {
@@ -319,25 +378,23 @@
   });
 
   editor.addEventListener("mouseup", function (event) {
-    if (draggedElements.length === 1) {
-      let element = event.target;
+    let element = event.target;
 
-      resetUI();
+    resetUI();
 
-      // 현재 엘레먼트 에서 editor 이전까지 부모로 거슬러 올라가며 엘레먼트 분석
-      let foundBrDiv = false;
-      while (element.id != "editor") {
-        // brDiv 일 경우 previousFocusedElement 에 저장 (글자 크기 변경 용)
-        if (!foundBrDiv && element.id == "brDiv") {
-          foundBrDiv = true;
-          previousFocusedElement = element;
-          changeSumarryText(element);
-          changeAlignBtn(element);
-        }
-
-        changeUI(element);
-        element = element.parentElement;
+    // 현재 엘레먼트 에서 editor 이전까지 부모로 거슬러 올라가며 엘레먼트 분석
+    let foundBrDiv = false;
+    while (element.id != "editor") {
+      // brDiv 일 경우 previousFocusedElement 에 저장 (글자 크기 변경 용)
+      if (!foundBrDiv && element.id == "brDiv") {
+        foundBrDiv = true;
+        previousFocusedElement = element;
+        changeSumarryText(element);
+        changeAlignBtn(element);
       }
+
+      changeUI(element);
+      element = element.parentElement;
     }
   });
 
@@ -391,13 +448,16 @@
   });
 
   function getParentBrDiv(node) {
+    if(node === null) return;
+    // 위로 
     if (node.nodeType !== Node.ELEMENT_NODE || node.id === null) {
       return getParentBrDiv(node.parentNode);
     }
-
+    // 리턴 
     if (node.id === 'brDiv') {
       return node;
     }
+    // 위로 
     else {
       return getParentBrDiv(node.parentNode);
     }
@@ -452,6 +512,7 @@
     }
   }
 
+
   btnImage.addEventListener("click", function () {
     imageSelector.click();
   });
@@ -480,40 +541,49 @@
     // imgEle.classList.add(imgEleCnt++);
     imgEle.id = imgUUID;
     let divImgEle = document.createElement("div");
+    // divImgEle.id = 'brDiv'
     divImgEle.appendChild(imgEle);
 
     let selection = window.getSelection();
-    // console.log('selection.anchorOffset = ' + selection.anchorOffset);
-    // console.log('selection.anchorNode = ' + selection.anchorNode);
-    // console.log('selection.anchorNode.parentNode = ' + selection.anchorNode.parentNode);
 
-    // 지정하지 않은 경우 editor 영역에 img 삽입
+    // 지정하지 않은 경우 editor 영역에 끝에 img 삽입
     if (selection.anchorNode == null) {
-      let targetElement = document.getElementById("editor");
-      targetElement.appendChild(divImgEle);
+      console.log('1')
+      divImgEle.id = 'brDiv'
+      editor.appendChild(divImgEle);
     }
     // 글 작성하는 editor 영역에 커서 위치할경우
     else if (selection.anchorNode.parentNode.id === "editor") {
+      console.log('2')
       let range = selection.getRangeAt(0);
-      range.insertNode(divImgEle);
+      getParentBrDiv(range.commonAncestorContainer).appendChild(divImgEle);
     } else {
+      console.log('3')
       // 아닌 경우에는 editor 영역에 img 삽입
       let targetElement = document.getElementById("editor");
+      divImgEle.id = 'brDiv';
       targetElement.appendChild(divImgEle);
     }
 
     // 이미지 삽입함에 따라 그만큼 editor 의 높이 늘림
     resizeEditorAfterImgInserted(divImgEle, file);
-    focusAfterImgInserted();
+    // 이미지 삽입후 다음줄 삽입하고 포커스 처리 
+    focusAfterImgInserted(getParentBrDiv(divImgEle));
   }
 
-  function focusAfterImgInserted() {
+  // 이미지 삽입 후, 이미지 삽입한 다음 줄에 brDiv 만들고 focus 함 
+  function focusAfterImgInserted(imgEleBrDiv) {
     let newLineDiv = document.createElement("div");
-    // Set the content editable attribute of the new <div> to true
-    newLineDiv.setAttribute("contenteditable", "true");
+    newLineDiv.id = "brDiv";
     let br = document.createElement("br");
     newLineDiv.appendChild(br);
-    editor.appendChild(newLineDiv);
+    
+    // 마지막에 이미지 삽입 하는 경우, editor에 어팬드 
+    if(imgEleBrDiv.nextSibling === null) {
+      editor.appendChild(newLineDiv);
+    } else { // 글 중간에 삽입하는 경우 
+      editor.insertBefore(newLineDiv, imgEleBrDiv.nextSibling);
+    }
 
     // Set the focus on the inner text of the new <div>
     const range = document.createRange();
@@ -788,7 +858,6 @@
   function prependDivFirstLineOfEditor() {
     if (editor.childNodes.length == 0) {
       let divtmp = document.createElement("div");
-      // divtmp.classList.add('brDiv')
       divtmp.id = "brDiv";
       let brtmp = document.createElement("br");
       divtmp.appendChild(brtmp);
