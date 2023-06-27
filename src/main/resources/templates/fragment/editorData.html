@@ -291,14 +291,17 @@
             // Get the current range
             const range = selection.getRangeAt(0);
             let element = range.commonAncestorContainer;
-            console.log('element = ' + element)
-            
-            if(element instanceof Text) {
+
+            // 이미 text 있는 라인에 paste 
+            if (element instanceof Text) {
+              console.log('element instanceof Text')
               element.textContent += externalClipboardData;
+              moveFocusToElement(element);
             }
-            else {
+            else { // 새로운 라인에 paste 
               element.removeChild(element.firstChild)
               element.innerText += externalClipboardData
+              moveFocusToElement(element);
             }
           }
 
@@ -340,7 +343,9 @@
             removeElementAndChildrenStyle(copiedElements[i]);
             // 첫번째 라인은 현재 라인에 포함시킴
             if (i == 0) {
+              console.log('--text')
               const textNode = selection.anchorNode;
+              console.log('textNode = ' + textNode);
               const offset = selection.anchorOffset;
               textNode.insertData(offset, copiedElements[i].textContent);
 
@@ -352,11 +357,19 @@
               );
               previousElement = copiedElements[i];
             }
+
+            if (i === copiedElements.length - 1) {
+              moveFocusToElement(previousElement);
+            }
           }
         }
         // 새로운 라인에 붙여넣기 하는 경우
         else {
+          console.log('--else')
           let previousElement = element.previousElementSibling;
+          if (previousElement.parentElement != editor) {
+            previousElement = editor.firstChild;
+          }
           for (let i = 0; i < copiedElements.length; i++) {
             removeElementAndChildrenStyle(copiedElements[i]);
 
@@ -373,9 +386,18 @@
       resizeEditorAllElements();
     }
 
-
-
   });
+
+  function moveFocusToElement(element) {
+    const range = document.createRange();
+    const selection = window.getSelection();
+
+    range.selectNodeContents(element);
+    range.collapse(false);
+
+    selection.removeAllRanges();
+    selection.addRange(range);
+  }
 
 
   // editor paste event
