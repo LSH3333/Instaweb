@@ -198,9 +198,9 @@
       restoreSelection(selectedRange);
     }
 
-    
+
     // <details> 누른 순간 드래그 영역 기억함 
-    let selectedRange;    
+    let selectedRange;
     textSizeDetails.addEventListener("mousedown", function (event) {
       event.preventDefault();
       selectedRange = saveSelection();
@@ -208,13 +208,13 @@
       // 닫혀있는 상태에서 누름 => 드래그 영역 복원 
       if (!textSizeDetails.open) {
         restoreSelection(selectedRange);
-      } 
+      }
 
     });
 
     textSizeSumarry.addEventListener("click", function (event) {
       event.preventDefault();
-      if(textSizeDetails.open) {
+      if (textSizeDetails.open) {
         textSizeDetails.open = false;
       } else {
         textSizeDetails.open = true;
@@ -266,52 +266,100 @@
   })();
 
 
-
-
   // editor paste event
   editor.addEventListener("paste", function (event) {
     event.preventDefault(); // Prevent default paste behavior
 
+
+
+
+
+
+
     const clipboardData = event.clipboardData || window.clipboardData;
     const pastedData = clipboardData.getData("text/html");
 
-    // Create a temporary div element to extract the copied content
-    const tempDiv = document.createElement("div");
-    tempDiv.innerHTML = pastedData;
+    // 외부에서 복사한경우, 단순히 플레인 텍스트 삽입하도록함 
+    if (!pastedData) {
+      navigator.clipboard.readText()
+        .then(externalClipboardData => {
+          console.log('externalClipboardData = ' + externalClipboardData)
 
-    // Create a document fragment and append the temporary div contents to it
-    const fragment = document.createDocumentFragment();
-    while (tempDiv.firstChild) {
-      fragment.appendChild(tempDiv.firstChild);
+          // Get the current selection
+          const selection = window.getSelection();
+          if (selection.rangeCount > 0) {
+            // Get the current range
+            const range = selection.getRangeAt(0);
+            let element = range.commonAncestorContainer;
+            console.log('element = ' + element)
+            
+            if(element instanceof Text) {
+              element.textContent += externalClipboardData;
+            }
+            else {
+              element.removeChild(element.firstChild)
+              element.innerText += externalClipboardData
+            }
+          }
+
+        })
+        .catch(err => {
+          console.error("Failed to read clipboard:", err);
+        });
     }
+    // 내부에서 복사한 경우, 엘레먼트 생성 후 삽입 
+    else {
+      // Create a temporary div element to extract the copied content
+      const tempDiv = document.createElement("div");
+      tempDiv.innerHTML = pastedData;
 
-    // Get all elements from the document fragment
-    const copiedElements = Array.from(fragment.childNodes).filter(function (
-      node
-    ) {
-      return node.nodeType === Node.ELEMENT_NODE;
-    });
+      // Create a document fragment and append the temporary div contents to it
+      const fragment = document.createDocumentFragment();
+      while (tempDiv.firstChild) {
+        fragment.appendChild(tempDiv.firstChild);
+      }
 
-    // Get the current selection
-    const selection = window.getSelection();
-    if (selection.rangeCount > 0) {
-      // Get the current range
-      const range = selection.getRangeAt(0);
-      let element = range.commonAncestorContainer;
+      // Get all elements from the document fragment
+      const copiedElements = Array.from(fragment.childNodes).filter(function (
+        node
+      ) {
+        return node.nodeType === Node.ELEMENT_NODE;
+      });
 
-      // 현재 라인에 붙여넣기 하는 경우
-      if (selection.anchorNode instanceof Text) {
-        let previousElement;
-        for (let i = 0; i < copiedElements.length; i++) {
-          removeElementAndChildrenStyle(copiedElements[i]);
-          // 첫번째 라인은 현재 라인에 포함시킴
-          if (i == 0) {
-            const textNode = selection.anchorNode;
-            const offset = selection.anchorOffset;
-            textNode.insertData(offset, copiedElements[i].textContent);
+      // Get the current selection
+      const selection = window.getSelection();
+      if (selection.rangeCount > 0) {
+        // Get the current range
+        const range = selection.getRangeAt(0);
+        let element = range.commonAncestorContainer;
 
-            previousElement = selection.anchorNode.parentElement;
-          } else {
+        // 현재 라인에 붙여넣기 하는 경우
+        if (selection.anchorNode instanceof Text) {
+          let previousElement;
+          for (let i = 0; i < copiedElements.length; i++) {
+            removeElementAndChildrenStyle(copiedElements[i]);
+            // 첫번째 라인은 현재 라인에 포함시킴
+            if (i == 0) {
+              const textNode = selection.anchorNode;
+              const offset = selection.anchorOffset;
+              textNode.insertData(offset, copiedElements[i].textContent);
+
+              previousElement = selection.anchorNode.parentElement;
+            } else {
+              previousElement.insertAdjacentElement(
+                "afterend",
+                copiedElements[i]
+              );
+              previousElement = copiedElements[i];
+            }
+          }
+        }
+        // 새로운 라인에 붙여넣기 하는 경우
+        else {
+          let previousElement = element.previousElementSibling;
+          for (let i = 0; i < copiedElements.length; i++) {
+            removeElementAndChildrenStyle(copiedElements[i]);
+
             previousElement.insertAdjacentElement(
               "afterend",
               copiedElements[i]
@@ -320,24 +368,95 @@
           }
         }
       }
-      // 새로운 라인에 붙여넣기 하는 경우
-      else {
-        let previousElement = element.previousElementSibling;
-        for (let i = 0; i < copiedElements.length; i++) {
-          removeElementAndChildrenStyle(copiedElements[i]);
 
-          previousElement.insertAdjacentElement(
-            "afterend",
-            copiedElements[i]
-          );
-          previousElement = copiedElements[i];
-        }
-      }
+      // 복사 붙여 넣기 후 에디터 크기 조절
+      resizeEditorAllElements();
     }
 
-    // 복사 붙여 넣기 후 에디터 크기 조절
-    resizeEditorAllElements();
+
+
   });
+
+
+  // editor paste event
+  // editor.addEventListener("paste", function (event) {
+  //   event.preventDefault(); // Prevent default paste behavior
+
+
+  // const clipboardData = event.clipboardData || window.clipboardData;
+  // console.log('event.clipboardData = ' + event.clipboardData)
+  // console.log('window.clipboardData = ' + window.clipboardData)
+  // console.log('clipboardData = ' + clipboardData)
+  // const pastedData = clipboardData.getData("text/html");
+  // console.log('pastedData = ' + pastedData)
+
+  //   // Create a temporary div element to extract the copied content
+  //   const tempDiv = document.createElement("div");
+  //   tempDiv.innerHTML = pastedData;
+
+  //   // Create a document fragment and append the temporary div contents to it
+  //   const fragment = document.createDocumentFragment();
+  //   while (tempDiv.firstChild) {
+  //     fragment.appendChild(tempDiv.firstChild);
+  //   }
+
+  //   // Get all elements from the document fragment
+  //   const copiedElements = Array.from(fragment.childNodes).filter(function (
+  //     node
+  //   ) {
+  //     return node.nodeType === Node.ELEMENT_NODE;
+  //   });
+
+  //   // Get the current selection
+  //   const selection = window.getSelection();
+  //   if (selection.rangeCount > 0) {
+  //     // Get the current range
+  //     const range = selection.getRangeAt(0);
+  //     let element = range.commonAncestorContainer;
+
+  //     // 현재 라인에 붙여넣기 하는 경우
+  //     if (selection.anchorNode instanceof Text) {
+  //       let previousElement;
+  //       for (let i = 0; i < copiedElements.length; i++) {
+  //         removeElementAndChildrenStyle(copiedElements[i]);
+  //         // 첫번째 라인은 현재 라인에 포함시킴
+  //         if (i == 0) {
+  //           const textNode = selection.anchorNode;
+  //           const offset = selection.anchorOffset;
+  //           textNode.insertData(offset, copiedElements[i].textContent);
+
+  //           previousElement = selection.anchorNode.parentElement;
+  //         } else {
+  //           previousElement.insertAdjacentElement(
+  //             "afterend",
+  //             copiedElements[i]
+  //           );
+  //           previousElement = copiedElements[i];
+  //         }
+  //       }
+  //     }
+  //     // 새로운 라인에 붙여넣기 하는 경우
+  //     else {
+  //       let previousElement = element.previousElementSibling;
+  //       for (let i = 0; i < copiedElements.length; i++) {
+  //         removeElementAndChildrenStyle(copiedElements[i]);
+
+  //         previousElement.insertAdjacentElement(
+  //           "afterend",
+  //           copiedElements[i]
+  //         );
+  //         previousElement = copiedElements[i];
+  //       }
+  //     }
+  //   }
+
+  //   // 복사 붙여 넣기 후 에디터 크기 조절
+  //   resizeEditorAllElements();
+  // });
+
+
+
+
 
   // recursive 하게 element 아래 존재하는 모든 엘레먼트 돌면서 style 지움
   function removeElementAndChildrenStyle(element) {
@@ -448,7 +567,7 @@
   });
 
   function getParentBrDiv(node) {
-    if(node === null) return;
+    if (node === null) return;
     // 위로 
     if (node.nodeType !== Node.ELEMENT_NODE || node.id === null) {
       return getParentBrDiv(node.parentNode);
@@ -577,9 +696,9 @@
     newLineDiv.id = "brDiv";
     let br = document.createElement("br");
     newLineDiv.appendChild(br);
-    
+
     // 마지막에 이미지 삽입 하는 경우, editor에 어팬드 
-    if(imgEleBrDiv.nextSibling === null) {
+    if (imgEleBrDiv.nextSibling === null) {
       editor.appendChild(newLineDiv);
     } else { // 글 중간에 삽입하는 경우 
       editor.insertBefore(newLineDiv, imgEleBrDiv.nextSibling);
