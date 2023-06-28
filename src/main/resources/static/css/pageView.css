@@ -109,6 +109,11 @@
     line-height: 1.5;
 }
 
+#editor a {
+    color: #3db39e;
+    text-decoration: underline;
+    
+}
 
 #editor img {
     max-width: 100%;
