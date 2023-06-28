@@ -32,14 +32,25 @@ public class MemberController {
      */
     @PostMapping("members/register")
     public String register(@Valid @ModelAttribute("member") Member member, BindingResult bindingResult) {
-        System.out.println("--register");
-        // member loginId, name 중복 체크
-        if (memberService.checkLoginIdDuplication(member)) {
-            bindingResult.addError(new FieldError("member", "loginId", member.getLoginId(), false, null, null, "이미 존재하는 아이디 입니다."));
+
+        // member loginId, name 은 영어,숫자만 가능
+        if(!CheckAllEngOrDigit(member.getLoginId())) {
+            bindingResult.addError(new FieldError("member", "loginId", member.getLoginId(), false, null, null, "아이디는 영어,숫자만 가능합니다"));
+        } else {
+            // member loginId, name 중복 체크
+            if (memberService.checkLoginIdDuplication(member)) {
+                bindingResult.addError(new FieldError("member", "loginId", member.getLoginId(), false, null, null, "이미 존재하는 아이디 입니다."));
+            }
         }
-        if (memberService.checkNameDuplication(member)) {
-            bindingResult.addError(new FieldError("member", "name", member.getName(), false, null, null,"이미 존재하는 이름 입니다."));
+        if(!CheckAllEngOrDigit(member.getName())) {
+            bindingResult.addError(new FieldError("member", "name", member.getName(), false, null, null, "이름은 영어,숫자만 가능합니다"));
+        } else {
+            if (memberService.checkNameDuplication(member)) {
+                bindingResult.addError(new FieldError("member", "name", member.getName(), false, null, null,"이미 존재하는 이름 입니다."));
+            }
         }
+
+
         // member loginId, name, password 길이 체크
         if(member.getLoginId().length() < 4 || member.getLoginId().length() > 10) {
             bindingResult.addError(new FieldError("member", "loginId", member.getLoginId(), false, null, null,"아이디는 4글자 이상 10글자 이하여야 합니다."));
@@ -49,13 +60,6 @@ public class MemberController {
         }
         if(member.getPassword().length() < 4 || member.getLoginId().length() > 10) {
             bindingResult.addError(new FieldError("member", "password", member.getPassword(), false, null, null,"비밀번호는 4글자 이상 10글자 이하여야 합니다."));
-        }
-        // member loginId, name 은 영어,숫자만 가능
-        if(!CheckAllEngOrDigit(member.getLoginId())) {
-            bindingResult.addError(new FieldError("member", "loginId", member.getLoginId(), false, null, null, "아이디는 영어,숫자만 가능합니다"));
-        }
-        if(!CheckAllEngOrDigit(member.getName())) {
-            bindingResult.addError(new FieldError("member", "name", member.getName(), false, null, null, "이름은 영어,숫자만 가능합니다"));
         }
 
         if (bindingResult.hasErrors()) {

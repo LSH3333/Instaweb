@@ -275,7 +275,6 @@
 
     // 복사된 내용이 순수 스트링일때, 복사된 스트링을 개행 기준 분리 후 <div id='brDiv'> 에 넣어서 처리 
     if (!pastedData) {
-      console.log('순수 스트링')
       navigator.clipboard.readText()
         .then(externalClipboardData => {
           const tempDiv = document.createElement("div");
@@ -290,9 +289,7 @@
 
             let brDiv = document.createElement('div');
             brDiv.id = 'brDiv';
-            console.log('pastedLine = ' + pastedLine)
             if (isHyperlink(pastedLine)) {
-              console.log('isHyperLink')
               let linkEle = document.createElement('a');
               linkEle.href = pastedLine;
               linkEle.textContent = pastedLine;
@@ -313,7 +310,6 @@
     }
     // 복사한 내용이 element 포함될때 (내 editor 복사한 경우 포함)
     else {
-      console.log('element 포함')
       const tempDiv = document.createElement("div");
       tempDiv.innerHTML = pastedData;
 
@@ -412,8 +408,6 @@
   }
 
   function isHyperlink(text) {
-    console.log(text)
-    console.log(text.trim())
     // Use a regular expression to check if the text matches a URL pattern
     // let urlPattern = /^(https?:\/\/)?([\w.-]+\.[a-zA-Z]{2,6})([\/\w.-]*)*\/?$/;    
     let urlPattern = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
