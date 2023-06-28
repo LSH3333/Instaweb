@@ -88,6 +88,7 @@ input[type="file"] {
   outline: none;
 }
 
+
 #editor {
   border: 1px solid #d6d6d6;
   border-radius: 4px;
@@ -103,6 +104,12 @@ input[type="file"] {
 
 #editor:focus {
   outline: none;
+}
+
+/* editor 내부 링크 (하이퍼텍스트)  */
+#editor a {
+  color: #3db39e;
+  text-decoration: underline;
 }
 
 #editor img {
