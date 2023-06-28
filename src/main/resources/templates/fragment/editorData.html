@@ -132,7 +132,6 @@
   // 드래그된 영역 복구 
   function restoreSelection(selectedRange) {
     if (selectedRange) {
-      console.log('restored')
       const selection = window.getSelection();
       selection.removeAllRanges();
       selection.addRange(selectedRange);
@@ -179,6 +178,7 @@
         "textSizeTitle2",
         "textSizeTitle3",
       ];
+
 
       textSizeList.forEach((type) => {
         if (type === textSizeType) {
@@ -435,10 +435,10 @@
     // Clear the selected elements array
     draggedElements = [];
 
-    let element = event.target;
 
+    let element = getParentBrDiv(event.target);
     if (element.id !== null && element.id === 'brDiv') {
-      draggedElements.push(event.target);
+      draggedElements.push(element);
     }
   });
 
@@ -523,16 +523,24 @@
 
   });
 
+  // recursive 하게 현재 노드의 부모를 거슬러 올라가면서 brDiv를 찾는다
+  // editor를 벗어나지는 못한다 (설계상 벗어날수는 없긴함)
   function getParentBrDiv(node) {
+    // console.log('getParentFunc = ' + node + ', ' + node.id);
     if (node === null) return;
-    // 위로 
-    if (node.nodeType !== Node.ELEMENT_NODE || node.id === null) {
-      return getParentBrDiv(node.parentNode);
+    // 만약에 editor 까지 올라가면 그냥 editor 내 첫번째 자식 리턴
+    if (node === editor) {
+      return editor.firstChild;
     }
     // 리턴 
     if (node.id === 'brDiv') {
       return node;
     }
+    // 위로 
+    if (node.nodeType !== Node.ELEMENT_NODE || node.id === null) {
+      return getParentBrDiv(node.parentNode);
+    }
+
     // 위로 
     else {
       return getParentBrDiv(node.parentNode);
@@ -623,18 +631,15 @@
     let selection = window.getSelection();
 
     // 지정하지 않은 경우 editor 영역에 끝에 img 삽입
-    if (selection.anchorNode == null) {
-      console.log('1')
+    if (selection.anchorNode == null) {      
       divImgEle.id = 'brDiv'
       editor.appendChild(divImgEle);
     }
     // 글 작성하는 editor 영역에 커서 위치할경우
     else if (selection.anchorNode.parentNode.id === "editor") {
-      console.log('2')
       let range = selection.getRangeAt(0);
       getParentBrDiv(range.commonAncestorContainer).appendChild(divImgEle);
     } else {
-      console.log('3')
       // 아닌 경우에는 editor 영역에 img 삽입
       let targetElement = document.getElementById("editor");
       divImgEle.id = 'brDiv';
