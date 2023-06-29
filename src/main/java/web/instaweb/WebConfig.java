@@ -20,11 +20,11 @@ public class WebConfig implements WebMvcConfigurer {
                 // 로그인 되어있어야 접근 가능한 경로
                 .addPathPatterns("/**")
                 // 로그인 안되어있어도 접근 가능 경로
-                .excludePathPatterns("/", "/members/register", "/login", "/logout", "/css/**", "/*.ico", "/error",
+                .excludePathPatterns("/", "/members/register", "/login", "/logout", "/js/**", "/css/**", "/*.ico", "/error",
                         "/*/pages", // pageList 볼 수 있음,
                         "/*/pages/*", // 글 볼 수 있음
                         "/pages/ajaxReq", "/view/ajaxReq", // ajax 경로도 제외해줘야함
-                        "/allPages", "/allPages/ajaxReq", "/game/list");
+                        "/allPages", "/allPages/ajaxReq", "/game/list", "/search/searchAll");
 
         // 로그인 상태라면 postHandle 에서 loginMemberId attribute 에 저장
         registry.addInterceptor(new MemberCheckInterceptor())

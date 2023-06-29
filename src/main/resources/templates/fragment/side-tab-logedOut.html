@@ -8,6 +8,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Cedarville+Cursive&display=swap" rel="stylesheet" />
   <script src="https://kit.fontawesome.com/c39d59a5ec.js" crossorigin="anonymous"></script>
 
+
+
   <div class="side-tab">
     <div class="logo">
       <a href="/">InstaWeb</a>
@@ -23,11 +25,22 @@
       <div>
         <a href="/members/register"><i class="fa-solid fa-address-card"></i></a><a href="/members/register">가입</a>
       </div>
+      <div class="search-container">
+        <button id="search-button"><i class="fa-solid fa-magnifying-glass"></i></button>
+        <div id="search-input-container">
+          <input type="text" id="search-input" placeholder="">
+        </div>
+      </div>
       <div id="menus-game">
         <a href="/game/list"><i class="fa-solid fa-gamepad"></i></a><a href="/game/list">게임</a>
       </div>
     </div>
   </div>
+
+
+  <script type="text/javascript" src="/js/side-tab.js" th:src="@{/js/side-tab.js}"></script>
+
 </div>
+
 
 </html>

@@ -15,6 +15,7 @@
     <link rel="stylesheet" type="text/css" href="/css/footer.css" th:href="@{/css/footer.css}">
     <link rel="stylesheet" type="text/css" href="/css/side-tab.css" th:href="@{/css/side-tab.css}" />
 </head>
+
 <body>
     <!-- side tab fragment -->
     <div th:replace="fragment/side-tab-logedOut :: side-tab-logedOut"></div>
@@ -56,7 +57,7 @@
         const loginId = document.getElementById('loginIdInput')
         const password = document.getElementById('loginPasswordInput');
         const submitBtn = document.getElementById('submitBtn');
-        
+
         // 최초 상태 
         submitBtn.disabled = true;
         submitBtn.style = "cursor:default; background-color: rgb(80, 180, 252);"

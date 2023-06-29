@@ -74,6 +74,34 @@ a {
     padding-left: 5px;
 }
 
+
+/* search-button */
+.search-container {
+    position: relative;
+    display: inline-block;
+}
+
+#search-button {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    cursor: pointer;
+}
+
+#search-input-container {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+}
+
+#search-input {
+    width: 200px;
+}
+
+
 /* icon */
 .side-tab .menus div a i {
     width: 23px;
