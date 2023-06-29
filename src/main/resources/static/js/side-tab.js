@@ -10,7 +10,7 @@ searchBtn.addEventListener("click", function () {
 
 serachInput.addEventListener("keyup", function (event) {
     // press enter 
-    if (event.keyCode === 13) { 
+    if (event.keyCode === 13) {
         var searchQuery = this.value;
 
         // Send the inputText to the server using AJAX or form submission
@@ -32,17 +32,21 @@ document.addEventListener("click", function (event) {
 });
 
 
-// 입력한 searchQuery 서버로 전송 
+// 입력한 searchQuery 서버로 전송, 서버에서는 searchQuery 를 쿼리 파라미터로 /search/searchResultList?searchQuery= 로 navigate 
 function uploadToServer(searchQuery) {
     const formData = new FormData();
 
     formData.append("searchQuery", searchQuery);
 
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "/search/searchAll", true);
+    xhr.open("POST", "/search/ajaxReq", true);
     xhr.onload = function () {
         if (xhr.status === 200) {
             console.log("query uploaded successfully");
+            
+            let data = JSON.parse(xhr.responseText);            
+            let searchQuery = data.searchQuery;
+            window.location.href = 'search/resultList?searchQuery=' + encodeURIComponent(searchQuery);
 
         } else {
             console.log('Error upload query')

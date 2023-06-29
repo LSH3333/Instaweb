@@ -3,13 +3,18 @@ package web.instaweb.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.view.RedirectView;
 import web.instaweb.domain.Page;
 import web.instaweb.service.PageService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -17,18 +22,37 @@ public class SearchController {
 
     private final PageService pageService;
 
-    @PostMapping("/search/searchAll")
-    public ResponseEntity<String> searchAll(@RequestParam("searchQuery") String searchQuery) {
-        System.out.println("searchAll");
-        System.out.println("searchQuery = " + searchQuery);
+//    @PostMapping("/search/searchAll")
+//    public ResponseEntity<String> searchAll(@RequestParam("searchQuery") String searchQuery) {
+//        System.out.println("searchAll");
+//        System.out.println("searchQuery = " + searchQuery);
+//
+//        List<Page> foundPages = searchFromAllMember(searchQuery);
+//        for (Page foundPage : foundPages) {
+//            System.out.println(foundPage.getTitle());
+//        }
+//
+//        return null;
+//    }
 
-        List<Page> foundPages = searchFromAllMember(searchQuery);
-        for (Page foundPage : foundPages) {
-            System.out.println(foundPage.getTitle());
-        }
-
-        return null;
+    @GetMapping("/search/resultList")
+    public String searchResultList() {
+        System.out.println("searchResultList");
+        return "search/searchResultList";
     }
+
+    @ResponseBody
+    @PostMapping("/search/ajaxReq")
+    public Map<String,?> search(@RequestParam("searchQuery") String searchQuery) {
+        System.out.println("resultList = " + searchQuery);
+
+        Map<String, String> ret = new HashMap<>();
+        ret.put("searchQuery", searchQuery);
+
+        return ret;
+    }
+
+
 
     /**
      * title,content 에 searchQuery 문자열이 포함되는 page 들 리턴함
