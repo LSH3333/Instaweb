@@ -21,6 +21,7 @@ import web.instaweb.form.PageListForm;
 import web.instaweb.service.ImageService;
 import web.instaweb.service.MemberService;
 import web.instaweb.service.PageService;
+import web.instaweb.singletonBean.NoImgProvider;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -38,18 +39,19 @@ public class PageController {
     private final PageService pageService;
     private final ImageService imageService;
     private final MemberService memberService;
+    private final NoImgProvider noImgProvider;
 
     // Page 에 이미지 하나도 없는 경우 띄울 이미지
-    private byte[] noImgFile;
-
-    private void getNoImgFile() throws IOException {
-        // Load the image file from the resources/static folder
-        Resource resource = new ClassPathResource("static/no-img" +
-                ".png");
-        InputStream inputStream = resource.getInputStream();
-        noImgFile = inputStream.readAllBytes();
-        inputStream.close();
-    }
+//    private byte[] noImgFile;
+//
+//    private void getNoImgFile() throws IOException {
+//        // Load the image file from the resources/static folder
+//        Resource resource = new ClassPathResource("static/no-img" +
+//                ".png");
+//        InputStream inputStream = resource.getInputStream();
+//        noImgFile = inputStream.readAllBytes();
+//        inputStream.close();
+//    }
 
 
     /**
@@ -131,8 +133,6 @@ public class PageController {
     public String list(Model model, @PathVariable("memberId") Long memberId,
                        @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) throws IOException {
 
-        getNoImgFile();
-
         model.addAttribute("memberId", memberId);
         model.addAttribute("memberName", memberService.findOne(memberId).getName());
         return "pages/pageList";
@@ -176,7 +176,7 @@ public class PageController {
             }
             else {
                 // 페이지에 이미지가 하나도 없을 경우 "no-img.png" 디스플레이 하도록함
-                base64Image = Base64.encodeBase64String(noImgFile);
+                base64Image = Base64.encodeBase64String(noImgProvider.getNoImgFile());
             }
             images.add(base64Image);
         }
@@ -244,7 +244,7 @@ public class PageController {
             }
             else {
                 // 페이지에 이미지가 하나도 없을 경우 "no-img.png" 디스플레이 하도록함
-                base64Image = Base64.encodeBase64String(noImgFile);
+                base64Image = Base64.encodeBase64String(noImgProvider.getNoImgFile());
             }
             images.add(base64Image);
         }
