@@ -51,6 +51,10 @@ public class PageService {
         return pageRepository.findRange(beginIdx, cnt);
     }
 
+    public PagesAndEndIdxDto findSearchQuery(int beginIdx, int count, String searchQuery) {
+        return pageRepository.findSearchQuery(beginIdx, count, searchQuery);
+    }
+
     /**
      * 이 member 가 작성한 page 들 중 beginIdx 부터 cnt 개 찾는다
      * @param beginIdx

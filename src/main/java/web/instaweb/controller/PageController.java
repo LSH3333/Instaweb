@@ -249,13 +249,13 @@ public class PageController {
             images.add(base64Image);
         }
 
+        List<String> nextBeginIdxList = new ArrayList<>();
+        nextBeginIdxList.add(Integer.toString(nextBeginIdx));
 
         ret.put("pages", pageListForms);
         ret.put("images", images);
-
-        List<String> nextBeginIdxList = new ArrayList<>();
-        nextBeginIdxList.add(Integer.toString(nextBeginIdx));
         ret.put("nextBeginIdx", nextBeginIdxList);
+        System.out.println("nextBeginIdx = " + nextBeginIdx);
 
         return ret;
     }

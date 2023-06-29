@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.view.RedirectView;
 import web.instaweb.domain.Image;
 import web.instaweb.domain.Page;
+import web.instaweb.dto.PagesAndEndIdxDto;
 import web.instaweb.form.PageListForm;
 import web.instaweb.service.ImageService;
 import web.instaweb.service.PageService;
@@ -51,11 +52,16 @@ public class SearchController {
         System.out.println("searchAll");
         System.out.println("searchQuery = " + searchQuery);
 
+        PagesAndEndIdxDto pagesAndEndIdxDto = pageService.findSearchQuery(beginIdx, 10, searchQuery);
+        List<Page> foundPages = pagesAndEndIdxDto.getRetPages();
+        System.out.println("foundPages.size() = " + foundPages.size());
+
+
         Map<String, List<?>> ret = new HashMap<>();
 
         // page
         List<Object> pageListForms = new ArrayList<>();
-        List<Page> foundPages = searchFromAllMember(searchQuery);
+//        List<Page> foundPages = searchFromAllMember(searchQuery, beginIdx);
         for (Page page : foundPages) {
             PageListForm pageListForm = new PageListForm(page.getId(), page.getTitle(), page.getContent(), page.getMember().getId(), page.getMember().getName(), page.getCreatedTime());
             pageListForms.add(pageListForm);
@@ -91,19 +97,33 @@ public class SearchController {
     /**
      * title,content 에 searchQuery 문자열이 포함되는 page 들 리턴함
      */
-    private List<Page> searchFromAllMember(String searchQuery) {
+    private List<Page> searchFromAllMember(String searchQuery, int beginIdx) {
         // 모든 Member 들의 모든 Page, 즉 존재하는 모든 Page
         List<Page> allPages = pageService.findAll();
         // query 조건 충족하는 페이지들 담김
         List<Page> foundPages = new ArrayList<>();
 
+        PagesAndEndIdxDto pagesAndEndIdxDto = pageService.findSearchQuery(beginIdx, 10, searchQuery);
+        List<Page> pages = pagesAndEndIdxDto.getRetPages();
+
         // page 의 title, content 중에 searchQuery 포함하면 foundPages 에 담는다
-        for (Page page : allPages) {
-            if(!page.getWritingDone()) continue; // 작성중인 Page 제외
-            if (page.getTitle().contains(searchQuery) || page.getContent().contains(searchQuery)) {
-                foundPages.add(page);
-            }
-        }
+//        for (Page page : allPages) {
+//            if(!page.getWritingDone()) continue; // 작성중인 Page 제외
+//            if (page.getTitle().contains(searchQuery) || page.getContent().contains(searchQuery)) {
+//                foundPages.add(page);
+//            }
+//        }
+//        int i;
+//        for(i = beginIdx; i < allPages.size(); i++) {
+//            Page page = allPages.get(i);
+//            if(!page.getWritingDone()) continue; // 작성중인 Page 제외
+//            if (page.getTitle().contains(searchQuery) || page.getContent().contains(searchQuery)) {
+//                foundPages.add(page);
+//                if(foundPages.size() >= 10) break;
+//            }
+//        }
+
+
 
         return foundPages;
     }
