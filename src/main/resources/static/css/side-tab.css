@@ -64,8 +64,16 @@ a {
     align-items: center;
 }
 
-.side-tab .menus #menus-game {
+.side-tab .menus #logout {
     margin-top: auto;
+}
+
+.side-tab .menus #register {
+    margin-top: auto;
+}
+
+.side-tab .menus #menus-game {
+    /* margin-top: auto; */
 }
 
 .side-tab .menus div i {
