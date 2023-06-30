@@ -83,4 +83,26 @@ public class PageRepository {
 
         return new PagesAndEndIdxDto(endIdx, resultList);
     }
+
+    public PagesAndEndIdxDto findMineSearchQuery(int beginIdx, int count, String searchQuery, Long memberId) {
+
+//        List<Page> resultList = em.createQuery("SELECT p FROM Page p WHERE LOWER(p.title) LIKE LOWER(:searchQuery) OR LOWER(p.content) LIKE LOWER(:searchQuery) ORDER BY p.createdTime DESC", Page.class)
+//                .setParameter("searchQuery", "%" + searchQuery.toLowerCase() + "%")
+//                .setFirstResult(beginIdx)
+//                .setMaxResults(count)
+//                .getResultList();
+
+        List<Page> resultList = em.createQuery("SELECT p FROM Page p WHERE (LOWER(p.title) LIKE LOWER(:searchQuery) OR LOWER(p.content) LIKE LOWER(:searchQuery)) AND p.member.id = :memberId ORDER BY p.createdTime DESC", Page.class)
+                .setParameter("searchQuery", "%" + searchQuery.toLowerCase() + "%")
+                .setParameter("memberId", memberId)
+                .setFirstResult(beginIdx)
+                .setMaxResults(count)
+                .getResultList();
+
+
+
+        int endIdx = beginIdx + resultList.size();
+
+        return new PagesAndEndIdxDto(endIdx, resultList);
+    }
 }

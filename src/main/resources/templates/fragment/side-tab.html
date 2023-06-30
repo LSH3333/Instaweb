@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cedarville+Cursive&display=swap" rel="stylesheet" />
   <script src="https://kit.fontawesome.com/c39d59a5ec.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" type="text/css" href="/css/side-tab.css" th:href="@{/css/side-tab.css}" />
 
   <div class="side-tab">
     <div class="logo">
@@ -25,6 +26,13 @@
         <a th:href="@{|/${loginMemberId}/pages/new|}"><i class="fa-solid fa-pen"></i></a><a
           th:href="@{|/${loginMemberId}/pages/new|}">작성</a>
       </div>
+      <div class="search-mine-container">
+        <button id="search-mine-button"><i class="fa-solid fa-magnifying-glass"></i></button>
+        <button id="search-mine-text-button">나의 글 검색</button>
+        <div id="search-mine-input-container">
+          <input type="text" id="search-mine-input" placeholder="">
+        </div>
+      </div>
       <div>
         <a href="/logout"><i class="fa-solid fa-arrow-right-from-bracket"></i></a><a href="/logout">로그아웃</a>
       </div>
@@ -33,6 +41,8 @@
       </div>
     </div>
   </div>
+
+  <script type="text/javascript" src="/js/searchMine.js" th:src="@{/js/searchMine.js}"></script>
 </div>
 
 </html>

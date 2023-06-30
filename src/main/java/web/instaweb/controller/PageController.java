@@ -41,18 +41,6 @@ public class PageController {
     private final MemberService memberService;
     private final NoImgProvider noImgProvider;
 
-    // Page 에 이미지 하나도 없는 경우 띄울 이미지
-//    private byte[] noImgFile;
-//
-//    private void getNoImgFile() throws IOException {
-//        // Load the image file from the resources/static folder
-//        Resource resource = new ClassPathResource("static/no-img" +
-//                ".png");
-//        InputStream inputStream = resource.getInputStream();
-//        noImgFile = inputStream.readAllBytes();
-//        inputStream.close();
-//    }
-
 
     /**
      * 글 작성 폼
