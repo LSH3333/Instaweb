@@ -5,11 +5,13 @@ const inputContainer = document.getElementById("search-input-container");
 const searchContainer = document.getElementById("search-container");
 
 searchBtn.addEventListener("click", function () {
+    console.log('searchbtn')
     inputContainer.style.display = "block";
     serachInput.focus();
 });
 
 searchTextBtn.addEventListener("click", function () {
+    console.log('searchTextbtn')
     inputContainer.style.display = "block";
     serachInput.focus();
 });
@@ -32,6 +34,6 @@ document.addEventListener("click", function (event) {
 
     if (target != inputContainer && target != searchBtn && target != searchTextBtn && target != serachInput 
         && target != searchContainer && target.parentNode != searchBtn) {
-        inputContainer.style.display = "none";
+            inputContainer.style.display = "none";
     }
 });

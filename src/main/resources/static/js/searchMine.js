@@ -1,20 +1,20 @@
-const searchBtn = document.getElementById("search-mine-button");
-const searchTextBtn = document.getElementById("search-mine-text-button");
-const serachInput = document.getElementById("search-mine-input")
-const inputContainer = document.getElementById("search-mine-input-container");
-const searchContainer = document.getElementById("search-mine-container");
+const searchMineBtn = document.getElementById("search-mine-button");
+const searchMineTextBtn = document.getElementById("search-mine-text-button");
+const serachMineInput = document.getElementById("search-mine-input")
+const inputMineContainer = document.getElementById("search-mine-input-container");
+const searchMineContainer = document.getElementById("search-mine-container");
 
-searchBtn.addEventListener("click", function () {
-    inputContainer.style.display = "block";
-    serachInput.focus();
+searchMineBtn.addEventListener("click", function () {
+    inputMineContainer.style.display = "block";
+    serachMineInput.focus();
 });
 
-searchTextBtn.addEventListener("click", function () {
-    inputContainer.style.display = "block";
-    serachInput.focus();
+searchMineTextBtn.addEventListener("click", function () {
+    inputMineContainer.style.display = "block";
+    serachMineInput.focus();
 });
 
-serachInput.addEventListener("keyup", function (event) {
+serachMineInput.addEventListener("keyup", function (event) {
     // press enter 
     if (event.keyCode === 13) {
         let searchQuery = this.value;
@@ -22,7 +22,7 @@ serachInput.addEventListener("keyup", function (event) {
 
         // Reset the input field and hide it
         this.value = "";
-        inputContainer.style.display = "none";
+        inputMineContainer.style.display = "none";
     }
 });
 
@@ -30,8 +30,8 @@ serachInput.addEventListener("keyup", function (event) {
 document.addEventListener("click", function (event) {
     let target = event.target;
 
-    if (target != inputContainer && target != searchBtn && target != searchTextBtn && target != serachInput 
-        && target != searchContainer && target.parentNode != searchBtn) {
-        inputContainer.style.display = "none";
+    if (target != inputMineContainer && target != searchMineBtn && target != searchMineTextBtn && target != serachMineInput 
+        && target != searchMineContainer && target.parentNode != searchMineBtn) {
+        inputMineContainer.style.display = "none";
     }
 });

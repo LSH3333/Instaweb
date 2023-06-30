@@ -20,17 +20,24 @@
       </div>
       <div>
         <a th:href="@{|/${loginMemberId}/pages|}"><i class="fa-solid fa-user"></i></a><a href="/pages"
-          th:href="@{|/${loginMemberId}/pages|}">작성 목록</a>
-      </div>
-      <div>
-        <a th:href="@{|/${loginMemberId}/pages/new|}"><i class="fa-solid fa-pen"></i></a><a
-          th:href="@{|/${loginMemberId}/pages/new|}">작성</a>
+          th:href="@{|/${loginMemberId}/pages|}">나의 작성 목록</a>
       </div>
       <div class="search-mine-container">
         <button id="search-mine-button"><i class="fa-solid fa-magnifying-glass"></i></button>
         <button id="search-mine-text-button">나의 글 검색</button>
         <div id="search-mine-input-container">
           <input type="text" id="search-mine-input" placeholder="">
+        </div>
+      </div>
+      <div>
+        <a th:href="@{|/${loginMemberId}/pages/new|}"><i class="fa-solid fa-pen"></i></a><a
+          th:href="@{|/${loginMemberId}/pages/new|}">작성</a>
+      </div>
+      <div class="search-container">
+        <button id="search-button"><i class="fa-solid fa-magnifying-glass"></i></button>
+        <button id="search-text-button">모든 글 검색</button>
+        <div id="search-input-container">
+          <input type="text" id="search-input" placeholder="">
         </div>
       </div>
       <div>
@@ -42,6 +49,7 @@
     </div>
   </div>
 
+  <script type="text/javascript" src="/js/searchAll.js" th:src="@{/js/searchAll.js}"></script>
   <script type="text/javascript" src="/js/searchMine.js" th:src="@{/js/searchMine.js}"></script>
 </div>
 

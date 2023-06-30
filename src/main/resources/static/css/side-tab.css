@@ -181,4 +181,12 @@ a {
     .side-tab .menus div a:nth-child(2) {
         display: none;
     }
+
+    .side-tab #search-text-button {
+        display: none;
+    }
+
+    .side-tab #search-mine-text-button {
+        display: none;
+    }
 }
