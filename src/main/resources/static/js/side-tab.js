@@ -1,9 +1,15 @@
 const searchBtn = document.getElementById("search-button");
+const searchTextBtn = document.getElementById("search-text-button");
 const serachInput = document.getElementById("search-input")
 const inputContainer = document.getElementById("search-input-container");
 const searchContainer = document.getElementById("search-container");
 
 searchBtn.addEventListener("click", function () {
+    inputContainer.style.display = "block";
+    serachInput.focus();
+});
+
+searchTextBtn.addEventListener("click", function () {
     inputContainer.style.display = "block";
     serachInput.focus();
 });
@@ -24,7 +30,8 @@ serachInput.addEventListener("keyup", function (event) {
 document.addEventListener("click", function (event) {
     let target = event.target;
 
-    if (target != inputContainer && target != searchBtn && target != serachInput && target != searchContainer && target.parentNode != searchBtn) {
+    if (target != inputContainer && target != searchBtn && target != searchTextBtn && target != serachInput 
+        && target != searchContainer && target.parentNode != searchBtn) {
         inputContainer.style.display = "none";
     }
 });
