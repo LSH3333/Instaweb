@@ -32,22 +32,33 @@
     <script th:replace="fragment/wrapPageBlock :: wrapPageBlock"></script>
 
     <script type="text/javascript">
+        let memberId = "[[${memberId}]]";
         let params = new URLSearchParams(window.location.search);
         let searchQuery = params.get("searchQuery");
 
         // infinite scroll
         window.addEventListener("scroll", function () {
-            if (
-                window.innerHeight + window.scrollY + 5 >=
-                document.body.offsetHeight
-            ) {
+            const scrollPosition = window.scrollY;
+            const windowHeight = window.innerHeight;
+            const documentHeight = Math.max(
+                document.body.scrollHeight,
+                document.body.offsetHeight,
+                document.documentElement.clientHeight,
+                document.documentElement.scrollHeight,
+                document.documentElement.offsetHeight
+            );
+
+            if (scrollPosition + windowHeight >= documentHeight) {
+                console.log('scroll')
                 // 이전 request 에 대한 게시글들 로딩 완료된 이후에만 또 다른 request 보냄
                 if (xhr.readyState == XMLHttpRequest.DONE) {
                     if (xhr.status == 200) {
-                        console.log('searchBeginIdx = ' + beginIdx.toString())
                         xhr.open(
                             "GET",
-                            "/search/searchMine?beginIdx=" + beginIdx.toString() + "&searchQuery=" + searchQuery.toString(),
+                            "/pages/ajaxReq?beginIdx=" +
+                            beginIdx.toString() +
+                            "&memberId=" +
+                            memberId.toString(),
                             true
                         );
                         xhr.send();

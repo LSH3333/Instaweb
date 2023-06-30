@@ -18,6 +18,17 @@
       <div>
         <a href="/"><i class="fa-solid fa-house"></i></a><a href="/">홈</a>
       </div>
+      <div class="search-container">
+        <button id="search-button"><i class="fa-solid fa-magnifying-glass"></i></button>
+        <button id="search-text-button">모든 글 검색</button>
+        <div id="search-input-container">
+          <input type="text" id="search-input" placeholder="">
+        </div>
+      </div>
+      <div>
+        <a th:href="@{|/${loginMemberId}/pages/new|}"><i class="fa-solid fa-pen"></i></a><a
+          th:href="@{|/${loginMemberId}/pages/new|}">작성</a>
+      </div>
       <div>
         <a th:href="@{|/${loginMemberId}/pages|}"><i class="fa-solid fa-user"></i></a><a href="/pages"
           th:href="@{|/${loginMemberId}/pages|}">나의 작성 목록</a>
@@ -28,18 +39,7 @@
         <div id="search-mine-input-container">
           <input type="text" id="search-mine-input" placeholder="">
         </div>
-      </div>
-      <div>
-        <a th:href="@{|/${loginMemberId}/pages/new|}"><i class="fa-solid fa-pen"></i></a><a
-          th:href="@{|/${loginMemberId}/pages/new|}">작성</a>
-      </div>
-      <div class="search-container">
-        <button id="search-button"><i class="fa-solid fa-magnifying-glass"></i></button>
-        <button id="search-text-button">모든 글 검색</button>
-        <div id="search-input-container">
-          <input type="text" id="search-input" placeholder="">
-        </div>
-      </div>
+      </div>    
       <div>
         <a href="/logout"><i class="fa-solid fa-arrow-right-from-bracket"></i></a><a href="/logout">로그아웃</a>
       </div>

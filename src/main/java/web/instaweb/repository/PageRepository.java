@@ -1,14 +1,20 @@
 package web.instaweb.repository;
 
 import lombok.RequiredArgsConstructor;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.springframework.stereotype.Repository;
-import web.instaweb.domain.Member;
 import web.instaweb.domain.Page;
 import web.instaweb.dto.PagesAndEndIdxDto;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
+
+
+
 
 @Repository
 @RequiredArgsConstructor
@@ -64,7 +70,7 @@ public class PageRepository {
     }
 
     /**
-     *
+     * findAll, 모든 member 의 모든 page 대상 검색
      * @param beginIdx : 가져올 시작 인덱스
      * @param count : 최대 몇개 가져 올지
      * @param searchQuery
@@ -72,11 +78,18 @@ public class PageRepository {
      */
     public PagesAndEndIdxDto findSearchQuery(int beginIdx, int count, String searchQuery) {
 
-        List<Page> resultList = em.createQuery("SELECT p FROM Page p WHERE LOWER(p.title) LIKE LOWER(:searchQuery) OR LOWER(p.content) LIKE LOWER(:searchQuery) ORDER BY p.createdTime DESC", Page.class)
-                .setParameter("searchQuery", "%" + searchQuery.toLowerCase() + "%")
+        List<Page> resultList = new ArrayList<>();
+
+        List<Page> allPage = em.createQuery("SELECT p FROM Page p ORDER BY p.createdTime DESC", Page.class)
                 .setFirstResult(beginIdx)
                 .setMaxResults(count)
                 .getResultList();
+
+        for (Page page : allPage) {
+            if (checkContentWithSearchQuery(page.getTitle(), page.getContent(), searchQuery)) {
+                resultList.add(page);
+            }
+        }
 
 
         int endIdx = beginIdx + resultList.size();
@@ -84,25 +97,52 @@ public class PageRepository {
         return new PagesAndEndIdxDto(endIdx, resultList);
     }
 
+    /**
+     * findMine, 로그인한 Member 의 Page 대상 검색
+     */
     public PagesAndEndIdxDto findMineSearchQuery(int beginIdx, int count, String searchQuery, Long memberId) {
+        List<Page> resultList = new ArrayList<>();
 
-//        List<Page> resultList = em.createQuery("SELECT p FROM Page p WHERE LOWER(p.title) LIKE LOWER(:searchQuery) OR LOWER(p.content) LIKE LOWER(:searchQuery) ORDER BY p.createdTime DESC", Page.class)
-//                .setParameter("searchQuery", "%" + searchQuery.toLowerCase() + "%")
-//                .setFirstResult(beginIdx)
-//                .setMaxResults(count)
-//                .getResultList();
-
-        List<Page> resultList = em.createQuery("SELECT p FROM Page p WHERE (LOWER(p.title) LIKE LOWER(:searchQuery) OR LOWER(p.content) LIKE LOWER(:searchQuery)) AND p.member.id = :memberId ORDER BY p.createdTime DESC", Page.class)
-                .setParameter("searchQuery", "%" + searchQuery.toLowerCase() + "%")
+        List<Page> allPage = em.createQuery("SELECT p FROM Page p WHERE p.member.id = :memberId ORDER BY p.createdTime DESC", Page.class)
                 .setParameter("memberId", memberId)
                 .setFirstResult(beginIdx)
                 .setMaxResults(count)
                 .getResultList();
 
-
+        for (Page page : allPage) {
+            if (checkContentWithSearchQuery(page.getTitle(), page.getContent(), searchQuery)) {
+                resultList.add(page);
+            }
+        }
 
         int endIdx = beginIdx + resultList.size();
 
         return new PagesAndEndIdxDto(endIdx, resultList);
+    }
+
+
+    /**
+     * page 의 content 의 textContent (element 제외) 에 searchQuery 포함되는지 확인한다
+     */
+    private boolean checkContentWithSearchQuery( String title,String content, String searchQuery) {
+        searchQuery = searchQuery.toLowerCase();
+        // Parse the HTML string
+        Document doc = Jsoup.parse(content);
+        Elements elements = doc.select("div");
+
+        // title
+        if(title.contains(searchQuery)) {
+            return true;
+        }
+
+        // Iterate over the selected elements
+        // content element check
+        for (Element element : elements) {
+            String text = element.text();
+            if (text.toLowerCase().contains(searchQuery)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
