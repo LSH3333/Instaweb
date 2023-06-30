@@ -63,29 +63,23 @@ public class PageRepository {
         return new PagesAndEndIdxDto(endIdx, ret);
     }
 
+    /**
+     *
+     * @param beginIdx : 가져올 시작 인덱스
+     * @param count : 최대 몇개 가져 올지
+     * @param searchQuery
+     * @return : page.title, page.content 중 searchQuery 스트링을 포함하는 page 들 리턴
+     */
     public PagesAndEndIdxDto findSearchQuery(int beginIdx, int count, String searchQuery) {
-        System.out.println("findSearchQuery");
 
-        List<Page> resultList = em.createQuery("SELECT p FROM Page p WHERE p.title LIKE :searchQuery ORDER BY p.createdTime DESC", Page.class)
-                .setParameter("searchQuery", "%" + searchQuery + "%")
+        List<Page> resultList = em.createQuery("SELECT p FROM Page p WHERE LOWER(p.title) LIKE LOWER(:searchQuery) OR LOWER(p.content) LIKE LOWER(:searchQuery) ORDER BY p.createdTime DESC", Page.class)
+                .setParameter("searchQuery", "%" + searchQuery.toLowerCase() + "%")
                 .setFirstResult(beginIdx)
                 .setMaxResults(count)
                 .getResultList();
 
-//        List<Page> resultList = em.createQuery("SELECT p FROM Page p WHERE p.title LIKE :searchQuery OR p.content LIKE :searchQuery ORDER BY p.createdTime DESC", Page.class)
-//                .setParameter("searchQuery", "%" + searchQuery + "%")
-//                .setFirstResult(beginIdx)
-//                .setMaxResults(count)
-//                .getResultList();
-
-
 
         int endIdx = beginIdx + resultList.size();
-
-        System.out.println("foundList");
-        for (Page page : resultList) {
-            System.out.println(page.getTitle());
-        }
 
         return new PagesAndEndIdxDto(endIdx, resultList);
     }

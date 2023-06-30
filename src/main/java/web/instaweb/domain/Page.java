@@ -23,7 +23,9 @@ public class Page {
     private String title;
 
     // 내용
-    @Lob
+//    @Lob
+//    @Column(length = 1000)
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     // 작성일
