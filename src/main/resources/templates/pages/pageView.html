@@ -38,7 +38,8 @@
                 <!-- 글 수정 폼으로 이동  -->
                 <a href="#" th:href="@{/pages/{id}/edit (id=${page.id})}">수정</a>
                 <!-- 글 삭제 -->
-                <a href="#" th:href="@{/pages/{id}/delete (id=${page.id})}">삭제</a>
+                <a id="deleteAnchor" href="#" th:href="@{/pages/{id}/delete (id=${page.id})}"
+                    onclick="return confirmDelete()">삭제</a>
             </div>
         </div>
     </div>
@@ -226,6 +227,15 @@
             const newPattern = datePart + ". " + timePart;
             createdTimeElement.textContent = newPattern;
         }
+
+        function confirmDelete() {
+            // Display a confirmation dialog
+            var confirmation = confirm("Are you sure you want to delete this page?");
+
+            // Return true to proceed with the deletion or false to cancel
+            return confirmation;
+        }
+
     </script>
 
 </body>
