@@ -16,13 +16,13 @@ spring:
 #  postgresql db (1.local, 2.heroku deploy)
   datasource:
     driver-class-name: org.postgresql.Driver
-#    url: jdbc:postgresql://localhost:5432/instaweb
-    url: jdbc:postgresql://ec2-34-197-91-131.compute-1.amazonaws.com/dckofr3ptkpa9b
+    url: jdbc:postgresql://localhost:5432/instaweb
+#    url: jdbc:postgresql://ec2-34-197-91-131.compute-1.amazonaws.com/dckofr3ptkpa9b
     platform: postgres
-#    username: admin_jake
-    username: mpcdhjuocwciio
-#    password: admin_jake
-    password: 3fc888680efc3d57d8a90a3f46246d90d6913bf5e1be8bcbffb54c7b616b0b3c
+    username: admin_jake
+#    username: mpcdhjuocwciio
+    password: admin_jake
+#    password: 3fc888680efc3d57d8a90a3f46246d90d6913bf5e1be8bcbffb54c7b616b0b3c
 # added
     maxActive: 10
     maxIdle: 5
@@ -33,7 +33,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: none # When you launch the application for the first time - switch "none" at "create"
+      ddl-auto: create # When you launch the application for the first time - switch "none" at "create"
       dialect: org.hibernate.dialect.PostgreSQL10Dialect
     properties:
       hibernate:
@@ -68,7 +68,7 @@ server:
       timeout: 1800
 
   # heroku deploy 시 명시 필수, 로칼에서는 주석 처리
-  port: ${PORT:5432}
+#  port: ${PORT:5432}
 
   error:
     whitelabel:

@@ -53,9 +53,7 @@ public class Page {
     public Page() {
     }
 
-    public Page(String title, String content, LocalDateTime createdTime, boolean writingDone)  {
-        this.title = title;
-        this.content = content;
+    public Page(LocalDateTime createdTime)  {
         this.createdTime = createdTime;
     }
 
@@ -78,6 +76,6 @@ public class Page {
 
     public void setCreatedTime(LocalDateTime time) {this.createdTime = time;}
 
-    public void delete() {}
+
 
 }

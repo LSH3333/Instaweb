@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 import web.instaweb.domain.Member;
 import web.instaweb.domain.Page;
 import web.instaweb.dto.PagesAndEndIdxDto;
-import web.instaweb.repository.ImageRepository;
 import web.instaweb.repository.PageRepository;
 
 import java.time.LocalDateTime;
@@ -65,7 +64,7 @@ public class PageService {
      * @param cnt
      * @return : {다음에 찾기 시작할 idx, 찾은 pages 들}
      */
-    public PagesAndEndIdxDto getCntPagesFromIdx(int beginIdx, int cnt, Long memberId) {
+    public PagesAndEndIdxDto getCntPagesFromIdxInMemberPage(int beginIdx, int cnt, Long memberId) {
         Member member = memberService.findOne(memberId);
         List<Page> pages = member.getPages();
         List<Page> retPages = new ArrayList<>();
@@ -78,5 +77,17 @@ public class PageService {
         return new PagesAndEndIdxDto(i, retPages);
     }
 
+    /**
+     * 글 작성을 위해 새로운 Page 를 만들때, Member 와 연관관계를 맺은후 Page 를 리턴한다
+     */
+    public Page createPageForMember(Member member) {
+        Page page = new Page(LocalDateTime.now());
+        page.setMember(member);
+        member.addPage(page);
+        pageRepository.save(page);
+        // member 가 작성중 상태인 page id 기억해놓음
+        memberService.setMemberWritingPageId(member.getId(), page.getId());
+        return page;
+    }
 
 }

@@ -36,8 +36,11 @@ public class PageForm {
 
     private List<String> imageOrder;
 
-    public PageForm(Long id, LocalDateTime createdTime) {
+    public PageForm(Long id, LocalDateTime createdTime, String title, String content, Long writingPageId) {
         this.id = id;
         this.createdTime = createdTime;
+        this.title = title;
+        this.content = content;
+        this.writingPageId = writingPageId;
     }
 }

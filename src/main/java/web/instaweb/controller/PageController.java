@@ -2,8 +2,6 @@ package web.instaweb.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -26,7 +24,6 @@ import web.instaweb.singletonBean.NoImgProvider;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -57,28 +54,17 @@ public class PageController {
         // 글 작성폼에서 ajax request 로 이미지 저장할때 id 가 필요하기 때문에, 아무것도 없는 Page 를 여기서 미리 만든다
 
 
-        Page page;
         PageForm pageForm;
-        // Member 가 작성 중인 Page 가 있는 경우
+        // Member 가 작성 중인 Page 가 있는 경우, 가져와서 클라이언트로 보냄
         if(member.getWritingPageId() != null) {
-            page = pageService.findOne(member.getWritingPageId());
-            pageForm = new PageForm(page.getId(), page.getCreatedTime());
-            pageForm.setTitle(page.getTitle());
-            pageForm.setContent(page.getContent());
-            pageForm.setWritingPageId(member.getWritingPageId());
+            Page page = pageService.findOne(member.getWritingPageId());
+            pageForm = new PageForm(page.getId(), page.getCreatedTime(), page.getTitle(), page.getContent(), member.getWritingPageId());
         }
-        // 없는 경우
+        // 없는 경우 Page 를 새로 생성
         else {
-            page = new Page();
-            page.setCreatedTime(LocalDateTime.now());
-            // Member - Page 연결
-            page.setMember(member);
-            member.addPage(page);
-            pageService.savePage(page);
-            // member 가 작성중 상태인 page id 기억해놓음
-            memberService.setMemberWritingPageId(member.getId(), page.getId());
-            pageForm = new PageForm(page.getId(), page.getCreatedTime());
-            pageForm.setWritingPageId(null);
+            // member 와 연관관계 맺은 상태인 page
+            Page page = pageService.createPageForMember(member);
+            pageForm = new PageForm(page.getId(), page.getCreatedTime(), null, null, null);
         }
 
         model.addAttribute("form", pageForm);
@@ -136,48 +122,8 @@ public class PageController {
     @GetMapping("/pages/ajaxReq")
     public Map<String, ?> loadPagesAndImages(@RequestParam int beginIdx, @RequestParam Long memberId) {
         int cnt = 10; // 최대 10개의 Page 가져오기 시도
-
-        PagesAndEndIdxDto pagesAndEndIdxDto = pageService.getCntPagesFromIdx(beginIdx, cnt, memberId);
-        // 클라이언트로 보낼 page 목록
-        List<Page> pages = pagesAndEndIdxDto.getRetPages();
-        // 다음 요청때 page 에서 탐색 시작할 idx
-        int nextBeginIdx = pagesAndEndIdxDto.getEndIdx();
-
-        Map<String, List<?>> ret = new HashMap<>();
-
-        // page
-        List<Object> pageListForms = new ArrayList<>();
-        for (Page page : pages) {
-            if(!page.getWritingDone()) continue; // 작성중인 Page 제외
-            PageListForm pageListForm = new PageListForm(page.getId(), page.getTitle(), page.getContent(), page.getMember().getId(), page.getMember().getName(), page.getCreatedTime());
-            pageListForms.add(pageListForm);
-        }
-
-        // images
-        // 각 페이지의 첫번째 이미지(존재한다면)를 base64 로 인코딩 후 리스트에 저장
-        List<String> images = new ArrayList<>();
-        for (Page page : pages) {
-            List<Image> pageImages = imageService.findAllImageFromPage(page.getId());
-            String base64Image;
-            if (!pageImages.isEmpty()) {
-                base64Image = pageImages.get(0).generateBase64Image();
-            }
-            else {
-                // 페이지에 이미지가 하나도 없을 경우 "no-img.png" 디스플레이 하도록함
-                base64Image = Base64.encodeBase64String(noImgProvider.getNoImgFile());
-            }
-            images.add(base64Image);
-        }
-
-        ret.put("pages", pageListForms);
-        ret.put("images", images);
-
-        List<String> nextBeginIdxList = new ArrayList<>();
-        nextBeginIdxList.add(Integer.toString(nextBeginIdx));
-        ret.put("nextBeginIdx", nextBeginIdxList);
-
-
-        return ret;
+        PagesAndEndIdxDto pagesAndEndIdxDto = pageService.getCntPagesFromIdxInMemberPage(beginIdx, cnt, memberId);
+        return wrapPagesAndImages(pagesAndEndIdxDto);
     }
 
     /**
@@ -197,6 +143,7 @@ public class PageController {
         return "home";
     }
 
+
     /**
      * ajax request from home.html
      * db에 존재하는 모든 Page 10개씩 클라이언트로 보냄 (모든 Member)
@@ -205,13 +152,22 @@ public class PageController {
     @GetMapping("/allPages/ajaxReq")
     public Map<String, ?> loadAllPagesAndImages(@RequestParam int beginIdx)  {
         int cnt = 10;
-
         PagesAndEndIdxDto pagesAndEndIdxDto = pageService.findRange(beginIdx, cnt);
+        return wrapPagesAndImages(pagesAndEndIdxDto);
+    }
+
+    /**
+     * loadAllPagesAndImages(), loadPagesAndImages() 에서 사용
+     * 클라이언트에서 홈과 작성목록 에서 작성된 page 들을 보여주기 위해서 cnt 개의 page 요청하면
+     * 해당하는 page 들 찾아서 Map 에 포장함
+     */
+    private Map<String, List<?>> wrapPagesAndImages(PagesAndEndIdxDto pagesAndEndIdxDto) {
+        Map<String, List<?>> ret = new HashMap<>();
+
         List<Page> pages = pagesAndEndIdxDto.getRetPages();
         // 다음 요청때 page 에서 탐색 시작할 idx
         int nextBeginIdx = pagesAndEndIdxDto.getEndIdx();
 
-        Map<String, List<?>> ret = new HashMap<>();
 
         // page
         List<Object> pageListForms = new ArrayList<>();
@@ -243,7 +199,6 @@ public class PageController {
         ret.put("pages", pageListForms);
         ret.put("images", images);
         ret.put("nextBeginIdx", nextBeginIdxList);
-        System.out.println("nextBeginIdx = " + nextBeginIdx);
 
         return ret;
     }
@@ -271,7 +226,6 @@ public class PageController {
     @ResponseBody
     @GetMapping("/view/ajaxReq")
     public Map<String,?> viewPageSendData(@RequestParam long pageId) {
-        System.out.println("viewPageSendData");
         Map<String, List<?>> ret = new HashMap<>();
 
         Page page = pageService.findOne(pageId);
@@ -325,9 +279,7 @@ public class PageController {
             // 1. 뷰에서는 저장된 이미지를 보여줘야함
         // Page 에는 Image 형으로 저장되어있음, 폼은 MultiPartFile 형식 -> 폼에 Image 형으로도 저장할수 있도록 선언
 
-        PageForm form = new PageForm(page.getId(), page.getCreatedTime());
-        form.setId(page.getId());
-        form.setTitle(page.getTitle());
+        PageForm form = new PageForm(page.getId(), page.getCreatedTime(), page.getTitle(), null, null);
         // 수정을 위해서 PageForm 에는 Image 형으로도 저장 가능
         form.setByteImages(page.getImages());
 

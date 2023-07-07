@@ -40,17 +40,17 @@ public class DataInitializer implements ApplicationRunner {
 
     }
 
-    private void MakePage(String num, byte[] imageBytes, Member member) {
-        String title = "This is title of " + num + " Page";
-        String content = "Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic cumque obcaecati odit dicta quis facere eos ratione veniam assumenda similique quibusdam rem illo, sit nobis! Repellendus suscipit quae corporis eaque deleniti sapiente quibusdam, eum nulla vel maiores aut eius magnam sed modi assumenda tenetur doloremque maxime iste quisquam rerum rem? Dolores asperiores laudantium aliquam ex ipsum sapiente praesentium minima. Eveniet quibusdam iure beatae sequi facere nostrum error facilis in vel ratione eaque nam aut officia maiores, magnam officiis! Aperiam voluptate corrupti nostrum eius asperiores ab, a voluptates dolorem facilis tenetur quo repellat quidem rem explicabo sapiente aliquid at odio. Provident!";
-        Page page = new Page(title, content, LocalDateTime.now(), true);
-        page.setMember(member);
-        pageService.savePage(page);
-
-        Image image = new Image();
-        image.setPage(page);
-        image.setImage(imageBytes);
-        imageService.saveImage(image);
-
-    }
+//    private void MakePage(String num, byte[] imageBytes, Member member) {
+//        String title = "This is title of " + num + " Page";
+//        String content = "Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic cumque obcaecati odit dicta quis facere eos ratione veniam assumenda similique quibusdam rem illo, sit nobis! Repellendus suscipit quae corporis eaque deleniti sapiente quibusdam, eum nulla vel maiores aut eius magnam sed modi assumenda tenetur doloremque maxime iste quisquam rerum rem? Dolores asperiores laudantium aliquam ex ipsum sapiente praesentium minima. Eveniet quibusdam iure beatae sequi facere nostrum error facilis in vel ratione eaque nam aut officia maiores, magnam officiis! Aperiam voluptate corrupti nostrum eius asperiores ab, a voluptates dolorem facilis tenetur quo repellat quidem rem explicabo sapiente aliquid at odio. Provident!";
+//        Page page = new Page(title, content, LocalDateTime.now(), true);
+//        page.setMember(member);
+//        pageService.savePage(page);
+//
+//        Image image = new Image();
+//        image.setPage(page);
+//        image.setImage(imageBytes);
+//        imageService.saveImage(image);
+//
+//    }
 }
