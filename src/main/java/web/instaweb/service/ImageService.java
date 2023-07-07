@@ -26,17 +26,6 @@ public class ImageService {
         imageRepository.save(image);
     }
 
-    public Image findOne(Long id) {
-        return imageRepository.findOne(id);
-    }
-
-    public List<Image> findAll() {
-        return imageRepository.findAll();
-    }
-
-    public void deleteImage(Long id) {
-        imageRepository.deleteImage(id);
-    }
 
     public List<Image> findAllImageFromPage(Long pageId) {
         Page page = pageService.findOne(pageId);
@@ -64,12 +53,9 @@ public class ImageService {
 
     // Page 에 속한 모든 Image 들 삭제
     public void deletePagesAllImages(Long pageId) {
-        System.out.println("deletePagesAllImages");
         Page page = pageService.findOne(pageId);
-        System.out.println("pageId = " + pageId);
         List<Image> images = page.getImages();
         for (Image image : images) {
-            System.out.println("image = " + image.getId());
             imageRepository.deleteImage(image.getId());
         }
     }

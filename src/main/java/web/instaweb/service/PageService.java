@@ -20,10 +20,6 @@ public class PageService {
     private final PageRepository pageRepository;
     private final MemberService memberService;
 
-    public void savePage(Page page) {
-        pageRepository.save(page);
-    }
-
     // 변경 감지
     public Page updatePage(Long id, String title, String content, LocalDateTime createTime, boolean writingDone) {
         // 여기서 findPage 는 db에서 가져왔으므로 영속 상태
@@ -42,9 +38,6 @@ public class PageService {
         return pageRepository.findOne(pageId);
     }
 
-    public List<Page> findAll() {
-        return pageRepository.findAll();
-    }
 
     public PagesAndEndIdxDto findRange(int beginIdx, int cnt) {
         return pageRepository.findRange(beginIdx, cnt);
