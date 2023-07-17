@@ -75,6 +75,7 @@ public class PageService {
      */
     public Page createPageForMember(Member member) {
         Page page = new Page(LocalDateTime.now());
+        // 연관관계
         page.setMember(member);
         member.addPage(page);
         pageRepository.save(page);

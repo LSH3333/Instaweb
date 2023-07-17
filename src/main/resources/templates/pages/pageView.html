@@ -41,11 +41,51 @@
                 <a id="deleteAnchor" href="#" th:href="@{/pages/{id}/delete (id=${page.id})}"
                     onclick="return confirmDelete()">삭제</a>
             </div>
+            <!-- comment -->
+            <div th:if="${loginMemberId != null}">
+                <div id="commentBox">
+                    <div id="commentSubmitBox">
+                        <textarea id="commentSubmitTextArea" name="CommentSubmitTextArea" cols="30" rows="10"></textarea>
+                        <button type="submit" id="commentSubmitBtn">입력</button>
+                    </div>
+                </div>
+            </div>            
         </div>
     </div>
 
     <!-- footer -->
     <footer th:replace="fragment/footer :: footer"></footer>
+
+    <!-- comment -->
+    <script type="text/javascript">
+        const commentSubmitTextArea = document.getElementById('commentSubmitTextArea');
+        const commentSubmitBtn = document.getElementById('commentSubmitBtn');
+        // const pageId = "[[${page.id}]]";
+
+        commentSubmitBtn.addEventListener('click', function (event) {
+            event.preventDefault();
+            sendCommentToServerAjax();
+            commentSubmitTextArea.value = "";
+        });
+
+        function sendCommentToServerAjax() {
+
+            const formData = new FormData();
+            formData.append("comment", commentSubmitTextArea.value);
+            formData.append("pageId", pageId);
+
+            let xhr = new XMLHttpRequest();
+            xhr.open("POST", "/comment/upload", true);
+            xhr.onreadystatechange = function () {
+                if (xhr.status === 200) {
+                    console.log("Files uploaded successfully");
+                } else {
+                    console.log("Files upload failed")
+                }
+            };
+            xhr.send(formData);
+        }
+    </script>
 
 
     <!-- ajax 요청으로 내용 가져와서 <img> 삽입  -->
