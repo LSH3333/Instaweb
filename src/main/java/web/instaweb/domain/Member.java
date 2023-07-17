@@ -33,6 +33,11 @@ public class Member {
     @OrderBy("createdTime desc") // Page 의 생성 시간 기준 오름차순으로 저장
     private List<Page> pages = new ArrayList<>();
 
+    // Member 가 갖고 있는 Comment 들 리스트
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    @OrderBy("createdTime desc") // Comment 의 생성 시간 기준 오름차순으로 저장
+    private List<Comment> comments = new ArrayList<>();
+
     // Member 가 작성중인 (작성 완료 하지 않은) Page 의 id, 작성중인 page 없다면 null
     private Long writingPageId;
 
@@ -40,6 +45,10 @@ public class Member {
     public void addPage(Page page) {
         pages.add(page);
     }
+
+    public void addComment(Comment comment) {comments.add(comment);}
+
+
 
     /**
      * 이 member 가 작성한 page 들 중 beginIdx 부터 cnt 개 찾는다

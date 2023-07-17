@@ -29,6 +29,12 @@ public class Comment {
     @JoinColumn(name = "page_id")
     private Page page;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    public Comment() {}
+
     public Comment(String commentContent) {
         this.commentContent = commentContent;
         this.createdTime = LocalDateTime.now();
@@ -36,6 +42,10 @@ public class Comment {
 
     public void setPage(Page page) {
         this.page = page;
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
     }
 
 }
