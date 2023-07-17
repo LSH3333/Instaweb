@@ -38,4 +38,12 @@ public class CommentService {
     public List<Comment> findAll() {
         return commentRepository.findAll();
     }
+
+    public Comment findOne(Long id) {
+        return commentRepository.findOne(id);
+    }
+
+    public void delete(Long id) {
+        commentRepository.delete(id);
+    }
 }

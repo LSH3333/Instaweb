@@ -18,9 +18,20 @@ public class CommentRepository {
         em.persist(comment);
     }
 
+    public void delete(Long id) {
+        Comment comment = em.find(Comment.class, id);
+        em.remove(comment);
+    }
+
+    public Comment findOne(Long id) {
+        return em.createQuery(
+                        "SELECT c FROM Comment c WHERE c.id = :commentId", Comment.class)
+                .setParameter("commentId", id)
+                .getSingleResult();
+    }
+
     public List<Comment> findAll() {
         return em.createQuery("select c from Comment c", Comment.class).getResultList();
     }
-
 
 }

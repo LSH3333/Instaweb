@@ -14,11 +14,9 @@ import web.instaweb.service.CommentService;
 import web.instaweb.service.MemberService;
 import web.instaweb.service.PageService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Controller
@@ -54,17 +52,39 @@ public class CommentController {
         List<String> commentContentList = new ArrayList<>();
         List<String> commentNameList = new ArrayList<>();
         List<LocalDateTime> commentCreatedTimeList = new ArrayList<>();
+        List<Long> commentIdList = new ArrayList<>();
 
         for (Comment comment : comments) {
             commentContentList.add(comment.getCommentContent());
             commentNameList.add(comment.getMember().getName());
             commentCreatedTimeList.add(comment.getCreatedTime());
+            commentIdList.add(comment.getId());
         }
 
         ret.put("commentContentList", commentContentList);
         ret.put("commentNameList", commentNameList);
         ret.put("commentCreatedTimeList", commentCreatedTimeList);
-
+        ret.put("commentIdList", commentIdList);
         return ret;
     }
+
+    @GetMapping("/comment/delete/{commentId}")
+    public String delete(@PathVariable("commentId") Long commentId,
+                         @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
+                         HttpServletRequest request) {
+        Comment comment = commentService.findOne(commentId);
+
+        if(!Objects.equals(comment.getMember().getId(), loginMember.getId())) {
+            return "error/showError.html";
+        }
+
+        commentService.delete(commentId);
+
+        // 여기서 referer = /comment/delete/3 이 옴.
+        // 따라서 이렇게 말고 memberId, pageId 를 받아서 그냥 uri 만들어서 리다이렉트해야할듯 
+        String referer = request.getRequestURI();
+        System.out.println("referer = " + referer);
+        return "redirect:" + referer;
+    }
+
 }

@@ -67,11 +67,13 @@
         const commentListBox = document.getElementById('commentListBox')
         // const pageId = "[[${page.id}]]";
 
-        commentSubmitBtn.addEventListener('click', function (event) {
-            event.preventDefault();
-            sendCommentToServerAjax();
-            commentSubmitTextArea.value = "";
-        });
+        if (commentSubmitBtn) {
+            commentSubmitBtn.addEventListener('click', function (event) {
+                event.preventDefault();
+                sendCommentToServerAjax();
+                commentSubmitTextArea.value = "";
+            });
+        }
 
         // 서버로 작성된 댓글 정보 보냄 
         function sendCommentToServerAjax() {
@@ -91,7 +93,7 @@
             };
             sendCommentDataXhr.send(formData);
         }
-        
+
         // 서버에서 댓글들 불러와서 commentListBox 에 append, 기존에 있던 댓글들 다 지우고 통째로 가져와서 다시 디스플레이
         function getComments() {
             console.log('getComments')
@@ -104,8 +106,9 @@
                         let data = JSON.parse(xhr.responseText);
 
                         for (let i = 0; i < data.commentContentList.length; i++) {
+                            let commentId = data.commentIdList[i];
                             let commentBlock = document.createElement("div");
-                            commentBlock.id = "commentBlock";
+                            commentBlock.classList.add('commentBlock')
 
                             // name 
                             let name = data.commentNameList[i];
@@ -125,9 +128,15 @@
                             const timePart = date.toTimeString().split(" ")[0];
                             createdTimeEle.innerText = datePart + ". " + timePart;
 
+                            // delete 
+                            let deleteEle = document.createElement('a')
+                            deleteEle.href = "/comment/delete/" + commentId;
+                            deleteEle.innerText = '삭제'
+
                             commentBlock.appendChild(nameEle);
                             commentBlock.appendChild(contentEle);
                             commentBlock.appendChild(createdTimeEle);
+                            commentBlock.appendChild(deleteEle);
                             commentListBox.appendChild(commentBlock)
                         }
 
@@ -219,7 +228,7 @@
             xhr.send();
             changeCreatedTimePattern();
             changeTitle();
-            
+
             getComments();
         };
 
