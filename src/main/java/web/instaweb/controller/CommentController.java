@@ -33,7 +33,7 @@ public class CommentController {
     public ResponseEntity<String> submit(@RequestParam("pageId") String pageId,
                                          @RequestParam("comment") String commentContent,
                                          @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
-        
+
         String message = "";
 
         Comment comment = new Comment(commentContent);

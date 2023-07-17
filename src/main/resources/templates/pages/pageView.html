@@ -43,20 +43,17 @@
             </div>
             <!-- comment -->
             <div id="commentBox">
+                <!-- 댓글 목록 -->
+                <div id="commentListBox"></div>
                 <!-- 댓글 입력 박스 -->
                 <div th:if="${loginMemberId != null}">
                     <div id="commentSubmitBox">
-                        <textarea id="commentSubmitTextArea" name="CommentSubmitTextArea" cols="50"
-                            rows="5"></textarea>
+                        <textarea id="commentSubmitTextArea" name="CommentSubmitTextArea" cols="50" rows="5"></textarea>
                         <button type="submit" id="commentSubmitBtn">입력</button>
                     </div>
                 </div>
-                <!-- 댓글 목록 -->
-                <div id="commentListBox">
-                    
-                </div>
             </div>
-            
+
         </div>
     </div>
 
@@ -72,54 +69,66 @@
 
         commentSubmitBtn.addEventListener('click', function (event) {
             event.preventDefault();
-            console.log('--------commentSubmitBtn')
             sendCommentToServerAjax();
             commentSubmitTextArea.value = "";
         });
 
         // 서버로 작성된 댓글 정보 보냄 
         function sendCommentToServerAjax() {
-            console.log('--------sendCommentToServerAjax')
             const formData = new FormData();
             formData.append("pageId", pageId);
             formData.append("comment", commentSubmitTextArea.value);
 
-            const xhr = new XMLHttpRequest();
-            xhr.open("POST", "/comment/upload", true);
-            xhr.onreadystatechange = function () {
-                if (xhr.status === 200) {
+            const sendCommentDataXhr = new XMLHttpRequest();
+            sendCommentDataXhr.open("POST", "/comment/upload", true);
+            sendCommentDataXhr.onload = function () {
+                if (sendCommentDataXhr.status === 200) {
                     console.log("Files uploaded successfully");
                     getComments();
                 } else {
                     console.log("Files upload failed")
                 }
             };
-            xhr.send(formData);
+            sendCommentDataXhr.send(formData);
         }
-
-        // 서버에서 댓글들 불러옴 
+        
+        // 서버에서 댓글들 불러와서 commentListBox 에 append, 기존에 있던 댓글들 다 지우고 통째로 가져와서 다시 디스플레이
         function getComments() {
+            console.log('getComments')
             const xhr = new XMLHttpRequest();
             xhr.open("GET", "/comment/getComments", true);
             xhr.onreadystatechange = function () {
                 if (xhr.readyState == XMLHttpRequest.DONE) {
                     if (xhr.status == 200) {
+                        commentListBox.innerHTML = "";
                         let data = JSON.parse(xhr.responseText);
-                        
-                        for(let i = 0; i < data.commentContentList.length; i++) {
+
+                        for (let i = 0; i < data.commentContentList.length; i++) {
                             let commentBlock = document.createElement("div");
                             commentBlock.id = "commentBlock";
 
                             // name 
                             let name = data.commentNameList[i];
-                            console.log('name = ' + name)
+                            let nameEle = document.createElement('h2')
+                            nameEle.innerText = name;
+
                             // content
                             let content = data.commentContentList[i];
-                            console.log('content = ' + content)
+                            let contentEle = document.createElement('p')
+                            contentEle.innerText = content;
+
                             // createdTime 
                             let createdTime = data.commentCreatedTimeList[i];
-                            console.log('createdTime = ' + createdTime)
+                            let createdTimeEle = document.createElement('p')
+                            const date = new Date(data.commentCreatedTimeList[i]);
+                            const datePart = date.toISOString().split("T")[0];
+                            const timePart = date.toTimeString().split(" ")[0];
+                            createdTimeEle.innerText = datePart + ". " + timePart;
 
+                            commentBlock.appendChild(nameEle);
+                            commentBlock.appendChild(contentEle);
+                            commentBlock.appendChild(createdTimeEle);
+                            commentListBox.appendChild(commentBlock)
                         }
 
                     } else {
@@ -129,6 +138,7 @@
             };
             xhr.send();
         }
+
 
     </script>
 
@@ -209,6 +219,8 @@
             xhr.send();
             changeCreatedTimePattern();
             changeTitle();
+            
+            getComments();
         };
 
         function changeTitle() {
