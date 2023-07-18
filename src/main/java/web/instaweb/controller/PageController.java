@@ -346,7 +346,6 @@ public class PageController {
                     i++;
                 }
             }
-
             message = "Files uploaded successfully!";
             return ResponseEntity.status(HttpStatus.OK).body(message);
         } catch (IOException e) {

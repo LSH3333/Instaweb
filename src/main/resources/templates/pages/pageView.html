@@ -130,6 +130,7 @@
 
                             // delete 
                             let deleteEle = document.createElement('a')
+                            deleteEle.classList.add('commentDeleteAnchor')
                             deleteEle.href = "/comment/delete/" + commentId;
                             deleteEle.innerText = '삭제'
 
@@ -147,6 +148,32 @@
             };
             xhr.send();
         }
+
+        ///////////////////////////////// DELETE COMMENT 
+        function deleteComment(commentDeleteAnchor) {
+
+            const url = new URL(commentDeleteAnchor.href);
+            const path = url.pathname;
+
+            const deleteCommentXhr = new XMLHttpRequest();
+            deleteCommentXhr.open("GET", path, true);
+            deleteCommentXhr.onload = function () {
+                if (deleteCommentXhr.status === 200) {
+                    console.log("Comment deleted successfully");
+                    getComments();
+                } else {
+                    console.log("Comment delete failed")
+                }
+            };
+            deleteCommentXhr.send();
+        }
+
+        commentListBox.addEventListener("click", function (event) {
+            if (event.target.matches(".commentDeleteAnchor")) {
+                event.preventDefault();
+                deleteComment(event.target);
+            }
+        });
 
 
     </script>

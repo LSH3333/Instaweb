@@ -32,13 +32,11 @@ public class CommentController {
                                          @RequestParam("comment") String commentContent,
                                          @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
 
-        String message = "";
-
         Comment comment = new Comment(commentContent);
         commentService.save(comment, Long.parseLong(pageId), loginMember.getId());
 
 
-        return ResponseEntity.status(HttpStatus.OK).body(message);
+        return ResponseEntity.status(HttpStatus.OK).body("");
     }
 
 
@@ -69,22 +67,22 @@ public class CommentController {
     }
 
     @GetMapping("/comment/delete/{commentId}")
-    public String delete(@PathVariable("commentId") Long commentId,
+    public ResponseEntity<String> delete(@PathVariable("commentId") Long commentId,
                          @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
                          HttpServletRequest request) {
+        System.out.println("CommentController.delete = " + commentId);
+        String message = "";
         Comment comment = commentService.findOne(commentId);
 
         if(!Objects.equals(comment.getMember().getId(), loginMember.getId())) {
-            return "error/showError.html";
+//            return "error/showError.html";
+            message = "Failed to upload files";
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(message);
         }
 
         commentService.delete(commentId);
 
-        // 여기서 referer = /comment/delete/3 이 옴.
-        // 따라서 이렇게 말고 memberId, pageId 를 받아서 그냥 uri 만들어서 리다이렉트해야할듯 
-        String referer = request.getRequestURI();
-        System.out.println("referer = " + referer);
-        return "redirect:" + referer;
+        return ResponseEntity.status(HttpStatus.OK).body("");
     }
 
 }
