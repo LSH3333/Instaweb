@@ -38,7 +38,6 @@ public class CommentRepository {
      * Page 에 속한 모든 Comment 리턴
      */
     public List<Comment> findByPageId(Page page) {
-        System.out.println("CommentRepository.findByPageId");
         return page.getComments();
     }
 

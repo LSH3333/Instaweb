@@ -8,15 +8,9 @@ import org.springframework.web.bind.annotation.*;
 import web.instaweb.SessionConst;
 import web.instaweb.domain.Comment;
 import web.instaweb.domain.Member;
-import web.instaweb.domain.Page;
-import web.instaweb.dto.PagesAndEndIdxDto;
 import web.instaweb.service.CommentService;
-import web.instaweb.service.MemberService;
-import web.instaweb.service.PageService;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.*;
 
 
@@ -42,7 +36,7 @@ public class CommentController {
 
 
     /**
-     * ajax 요청 받으면
+     * ajax 요청 받으면 Page 에 속한 Comment 들 정보 wrap 해서 클라이언트로 보냄
      */
     @ResponseBody
     @GetMapping("/comment/getComments/{pageId}")
@@ -60,7 +54,6 @@ public class CommentController {
 
         // 로그인 안된 상태 혹은 댓글의 주인이 아니면 에러
         if(loginMember == null || !Objects.equals(comment.getMember().getId(), loginMember.getId())) {
-            System.out.println("HttpStatus.EXPECTATION_FAILED");
             message = "Failed to upload files";
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(message);
         }
@@ -68,7 +61,7 @@ public class CommentController {
         commentService.delete(commentId);
 
         message = "Files uploaded successfully!";
-        return ResponseEntity.status(HttpStatus.OK).body("");
+        return ResponseEntity.status(HttpStatus.OK).body(message);
     }
 
 }
