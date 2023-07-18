@@ -142,7 +142,7 @@
                         }
 
                     } else {
-                        console.error("error");
+                        console.error("getComments failed");
                     }
                 }
             };
@@ -163,6 +163,7 @@
                     getComments();
                 } else {
                     console.log("Comment delete failed")
+                    alert("권한이 없습니다.");
                 }
             };
             deleteCommentXhr.send();
@@ -171,7 +172,9 @@
         commentListBox.addEventListener("click", function (event) {
             if (event.target.matches(".commentDeleteAnchor")) {
                 event.preventDefault();
-                deleteComment(event.target);
+                if(confirmDelete()) {
+                    deleteComment(event.target);
+                }                
             }
         });
 
@@ -363,7 +366,7 @@
 
         function confirmDelete() {
             // Display a confirmation dialog
-            var confirmation = confirm("Are you sure you want to delete this page?");
+            var confirmation = confirm("Are you sure you want to delete");
 
             // Return true to proceed with the deletion or false to cancel
             return confirmation;

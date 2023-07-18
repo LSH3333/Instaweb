@@ -42,8 +42,8 @@ public class CommentController {
 
     @ResponseBody
     @GetMapping("/comment/getComments")
-    public Map<String, ?> commentList() {
-
+    public Map<String, ?> getComments() {
+        System.out.println("CommentController.getComments");
         Map<String, List<?>> ret = new HashMap<>();
         List<Comment> comments = commentService.findAll();
 
@@ -74,8 +74,10 @@ public class CommentController {
         String message = "";
         Comment comment = commentService.findOne(commentId);
 
-        if(!Objects.equals(comment.getMember().getId(), loginMember.getId())) {
+        // 로그인 안된 상태 혹은 댓글의 주인이 아니면 에러
+        if(loginMember == null || !Objects.equals(comment.getMember().getId(), loginMember.getId())) {
 //            return "error/showError.html";
+            System.out.println("HttpStatus.EXPECTATION_FAILED");
             message = "Failed to upload files";
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(message);
         }
