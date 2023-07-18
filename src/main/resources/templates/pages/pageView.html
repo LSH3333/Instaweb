@@ -96,9 +96,8 @@
 
         // 서버에서 댓글들 불러와서 commentListBox 에 append, 기존에 있던 댓글들 다 지우고 통째로 가져와서 다시 디스플레이
         function getComments() {
-            console.log('getComments')
             const xhr = new XMLHttpRequest();
-            xhr.open("GET", "/comment/getComments", true);
+            xhr.open("GET", "/comment/getComments/" + pageId, true);
             xhr.onreadystatechange = function () {
                 if (xhr.readyState == XMLHttpRequest.DONE) {
                     if (xhr.status == 200) {
