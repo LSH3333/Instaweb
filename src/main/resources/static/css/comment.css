@@ -1,0 +1,111 @@
+#commentBox {
+    /* background-color: aqua; */
+    margin: 30px 0 30px 0;
+}
+
+#commentBox #commentListBox {
+    /* background-color: aquamarine; */
+    margin-bottom: 20px;
+    border-bottom: 1px solid #D6D6D6;
+}
+
+#commentBox #commentListBox .commentBlock {
+    /* background-color: bisque; */
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    border-top: 1px solid #D6D6D6;
+}
+
+#commentBox #commentListBox .commentBlock:hover {
+    background-color: rgb(243, 243, 243);
+}
+
+#commentBox #commentListBox .commentBlock:hover .commentDeleteAnchor {
+    display: block;
+    color: rgb(25, 161, 161);
+}
+
+
+#commentBox #commentListBox .commentBlock * {
+    font-size: 15px;
+    flex: 1;
+}
+
+#commentBox #commentListBox .commentBlock .commentContentBox {
+    /* background-color: blueviolet; */
+    display: flex;
+    flex-direction: column;
+    margin: 5px 0 5px 0;
+}
+
+#commentBox #commentListBox .commentBlock .commentContentBox * {
+    margin: 3px 0 3px 50px;
+}
+
+#commentBox #commentListBox .commentBlock .commentContentBox #commentCreatedTime {
+    font-size: 12px;
+    color: gray;
+}
+
+#commentBox #commentListBox .commentBlock .commentContentBox #commentWriter {
+    font-size: 16px;
+}
+
+#commentBox #commentListBox .commentBlock .commentDeleteAnchor {
+    /* background-color: red; */
+    display: none;
+    margin-right: 20px;
+    font-size: 13px;
+    /* color: rgb(25, 161, 161); */
+}
+
+/* comment submit box  */
+#commentBox #commentSubmitBox {
+    /* background-color: red;                         */
+    display: flex;
+    flex-direction: column;
+}
+
+#commentSubmitTextArea {
+    /* background-color: red; */
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    border: 1px solid #D6D6D6;
+    resize: none;
+    padding: 10px;
+    font-size: 15px;
+    margin-bottom: 10px;
+}
+
+#commentSubmitTextArea::placeholder {
+    font-size: 15px;
+}
+
+#commentSubmitTextArea:focus {
+    outline: none;
+}
+
+#commentSubmitBox .content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+#commentSubmitBtn {
+    background-color: rgb(25, 161, 161);
+    height: 35px;
+    width: 70px;
+    border: none;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 4px;
+
+    align-items: flex-end;
+}
+
+#commentSubmitBtn:hover {
+    cursor:pointer;
+}

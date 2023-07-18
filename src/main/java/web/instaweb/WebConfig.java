@@ -26,7 +26,7 @@ public class WebConfig implements WebMvcConfigurer {
                         "/pages/ajaxReq", "/view/ajaxReq", // ajax 경로도 제외해줘야함
                         "/allPages", "/allPages/ajaxReq", "/game/list",
                         "/search/resultList/**", "/search/searchAll", "/search/resultMineList/**", "/search/searchMine",
-                        "/comment/getComments", "/comment/delete/**"
+                        "/comment/getComments/**", "/comment/delete/**"
                         );
 
         // 로그인 상태라면 postHandle 에서 loginMemberId attribute 에 저장

@@ -10,6 +10,7 @@
     <link rel="stylesheet" type="text/css" href="/css/pageBlock.css" th:href="@{/css/pageBlock.css}">
     <link rel="stylesheet" type="text/css" href="/css/footer.css" th:href="@{/css/footer.css}">
     <link rel="stylesheet" type="text/css" href="/css/side-tab.css" th:href="@{/css/side-tab.css}" />
+    <link rel="stylesheet" type="text/css" href="/css/comment.css" th:href="@{/css/comment.css}" />
 </head>
 
 <body>
@@ -48,8 +49,11 @@
                 <!-- 댓글 입력 박스 -->
                 <div th:if="${loginMemberId != null}">
                     <div id="commentSubmitBox">
-                        <textarea id="commentSubmitTextArea" name="CommentSubmitTextArea" cols="50" rows="5"></textarea>
-                        <button type="submit" id="commentSubmitBtn">입력</button>
+                        <div class="content">
+                            <textarea id="commentSubmitTextArea" name="CommentSubmitTextArea" cols="50" rows="4"
+                                placeholder="댓글을 입력해주세요."></textarea>
+                            <button type="submit" id="commentSubmitBtn">입력</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -107,25 +111,36 @@
                         for (let i = 0; i < data.commentContentList.length; i++) {
                             let commentId = data.commentIdList[i];
                             let commentBlock = document.createElement("div");
-                            commentBlock.classList.add('commentBlock')
+                            commentBlock.classList.add('commentBlock')    
 
                             // name 
                             let name = data.commentNameList[i];
                             let nameEle = document.createElement('h2')
+                            nameEle.id = "commentWriter";
                             nameEle.innerText = name;
 
                             // content
                             let content = data.commentContentList[i];
                             let contentEle = document.createElement('p')
+                            contentEle.id = "commentContent";
                             contentEle.innerText = content;
 
                             // createdTime 
                             let createdTime = data.commentCreatedTimeList[i];
                             let createdTimeEle = document.createElement('p')
+                            createdTimeEle.id = "commentCreatedTime";
                             const date = new Date(data.commentCreatedTimeList[i]);
                             const datePart = date.toISOString().split("T")[0];
                             const timePart = date.toTimeString().split(" ")[0];
                             createdTimeEle.innerText = datePart + ". " + timePart;
+
+                            // comment content block 
+                            let commentContentBlock = document.createElement("div")
+                            commentContentBlock.classList.add("commentContentBox")
+                            commentContentBlock.appendChild(nameEle);
+                            commentContentBlock.appendChild(contentEle);
+                            commentContentBlock.appendChild(createdTimeEle);
+
 
                             // delete 
                             let deleteEle = document.createElement('a')
@@ -133,11 +148,15 @@
                             deleteEle.href = "/comment/delete/" + commentId;
                             deleteEle.innerText = '삭제'
 
-                            commentBlock.appendChild(nameEle);
-                            commentBlock.appendChild(contentEle);
-                            commentBlock.appendChild(createdTimeEle);
-                            commentBlock.appendChild(deleteEle);
+                            // commentBlock.appendChild(nameEle);
+                            // commentBlock.appendChild(contentEle);
+                            // commentBlock.appendChild(createdTimeEle);
+                                                   
+                            commentBlock.append(commentContentBlock);
+                            commentBlock.appendChild(deleteEle);     
+
                             commentListBox.appendChild(commentBlock)
+                            
                         }
 
                     } else {
@@ -171,9 +190,9 @@
         commentListBox.addEventListener("click", function (event) {
             if (event.target.matches(".commentDeleteAnchor")) {
                 event.preventDefault();
-                if(confirmDelete()) {
+                if (confirmDelete()) {
                     deleteComment(event.target);
-                }                
+                }
             }
         });
 
