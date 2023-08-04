@@ -277,11 +277,22 @@
     if (!pastedData) {
       navigator.clipboard.readText()
         .then(externalClipboardData => {
+
+
           const tempDiv = document.createElement("div");
           tempDiv.innerHTML = externalClipboardData;
+          console.log('externalClipboardData = ' + externalClipboardData)
+          console.log('tempDiv.innerHTML = ' + tempDiv.innerHTML)
+
 
           // 복사된 "string" 을 개행 기준 split 해서 분리한다 
           let lineContainer = tempDiv.firstChild.textContent.split("\n").filter(Boolean);
+          // <script> 일 경우 (git gist 용) 
+          if (externalClipboardData.startsWith("<script")) {
+            lineContainer.push(externalClipboardData)
+          }
+          console.log('lineContainer = ' + lineContainer);
+
           let copiedElements = [];
           // 분리된 각 줄을 div 로 감싼다 
           for (let i = 0; i < lineContainer.length; i++) {
@@ -289,7 +300,20 @@
 
             let brDiv = document.createElement('div');
             brDiv.id = 'brDiv';
-            if (isHyperlink(pastedLine)) {
+            // gist 
+            if (externalClipboardData.startsWith("<script")) {
+              let scriptEle = document.createElement('script');
+              // Define a regular expression pattern to match the src attribute
+              const pattern = /src="(.*?)"/;
+              // Use the exec method of the RegExp object to extract the URL
+              const match = pattern.exec(externalClipboardData);
+              const srcPart = match[1];
+              console.log('srcPart = ' + srcPart)
+              scriptEle.src = srcPart;
+              
+            }
+            else if (isHyperlink(pastedLine)) {
+              console.log('isHyper')
               let linkEle = document.createElement('a');
               linkEle.href = pastedLine;
               linkEle.textContent = pastedLine;
@@ -297,10 +321,12 @@
               brDiv.appendChild(linkEle);
             }
             else {
+              console.log('is not Hyer')
               brDiv.innerText = pastedLine;
             }
             copiedElements.push(brDiv);
           }
+          console.log('copiedElements = ' + copiedElements);
 
           insertCopiedElementsToEditorFunc(copiedElements);
         })
@@ -342,6 +368,7 @@
   });
 
   function insertCopiedElementsToEditorFunc(copiedElements) {
+
     // Get the current selection
     const selection = window.getSelection();
     if (selection.rangeCount > 0) {
@@ -353,6 +380,7 @@
       if (selection.anchorNode instanceof Text) {
         let previousElement;
         for (let i = 0; i < copiedElements.length; i++) {
+          console.log('1copiedElements[i] = ' + copiedElements[i])
           removeElementAndChildrenStyle(copiedElements[i]);
           // 첫번째 라인은 현재 라인에 포함시킴
           if (i == 0) {
@@ -381,6 +409,7 @@
           previousElement = editor.firstChild;
         }
         for (let i = 0; i < copiedElements.length; i++) {
+          console.log('copiedElements[i] = ' + copiedElements[i].innerHTML)
           removeElementAndChildrenStyle(copiedElements[i]);
 
           previousElement.insertAdjacentElement(
@@ -631,7 +660,7 @@
     let selection = window.getSelection();
 
     // 지정하지 않은 경우 editor 영역에 끝에 img 삽입
-    if (selection.anchorNode == null) {      
+    if (selection.anchorNode == null) {
       divImgEle.id = 'brDiv'
       editor.appendChild(divImgEle);
     }
