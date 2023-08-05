@@ -293,9 +293,9 @@
           // 분리된 각 줄을 div 로 감싼다 
           for (let i = 0; i < lineContainer.length; i++) {
             let pastedLine = lineContainer[i]; // 분리된 한 줄 (string) 
-
             let brDiv = document.createElement('div');
             brDiv.id = 'brDiv';
+
             // gist 
             if (externalClipboardData.startsWith("<script")) {
               let scriptEle = document.createElement('script');
@@ -389,6 +389,8 @@
       // Get the current range
       const range = selection.getRangeAt(0);
       let element = range.commonAncestorContainer;
+
+    
 
       // 현재 라인에 붙여넣기 하는 경우
       if (selection.anchorNode instanceof Text) {
