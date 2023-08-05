@@ -309,11 +309,14 @@
               const match = pattern.exec(externalClipboardData);
               const srcPart = match[1];
               console.log('srcPart = ' + srcPart)
-              scriptEle.src = srcPart;
-              
+              // scriptEle.src = srcPart;
+              // scriptEle.setAttribute('src', srcPart);
+              // brDiv.appendChild(scriptEle);
+
+              // let gistDiv = document.createElement('div');
+              addGist(brDiv, srcPart);
             }
             else if (isHyperlink(pastedLine)) {
-              console.log('isHyper')
               let linkEle = document.createElement('a');
               linkEle.href = pastedLine;
               linkEle.textContent = pastedLine;
@@ -366,6 +369,29 @@
     }
 
   });
+
+  // parentEle 의 innerHTML 에 gist 내용 붙여넣음 
+  function addGist(parentEle, gistSrc) {
+    /* Create script element */
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = gistSrc;
+    /* Backup document.write function */
+    if (!document._write) document._write = document.write;
+    /* Override document.write function */
+    document.write = function (str) {
+      parentEle.innerHTML += str;
+    };
+    /* Append the script element to #scriptCont */
+    parentEle.appendChild(script);
+    /* When the script load, restore the document.write function */
+    script.onload = function () {
+      setTimeout(function () {
+        document.write = document._write;
+        resizeEditorAllElements();
+      }, 0);
+    };
+  }
 
   function insertCopiedElementsToEditorFunc(copiedElements) {
 
