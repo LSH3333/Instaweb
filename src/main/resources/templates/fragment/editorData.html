@@ -394,8 +394,6 @@
       if (selection.anchorNode instanceof Text && !copiedElements[0].innerHTML.startsWith('<script')) {
         let previousElement;
         for (let i = 0; i < copiedElements.length; i++) {
-          console.log('1copiedElements[i] = ' + copiedElements[i])
-          console.log('1copiedElements[i].innerHTML = ' + copiedElements[i].innerHTML)
           removeElementAndChildrenStyle(copiedElements[i]);
           // 첫번째 라인은 현재 라인에 포함시킴
           if (i == 0) {
@@ -424,7 +422,6 @@
           previousElement = editor.firstChild;
         }
         for (let i = 0; i < copiedElements.length; i++) {
-          console.log('copiedElements[i] = ' + copiedElements[i].innerHTML)
           removeElementAndChildrenStyle(copiedElements[i]);
 
           previousElement.insertAdjacentElement(
