@@ -44,7 +44,7 @@ public class Page {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToMany(mappedBy = "page", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "page", orphanRemoval = true, fetch = FetchType.LAZY)
     @OrderBy("createdTime desc") // Comment 의 생성 시간 기준 오름차순으로 저장
     private List<Comment> comments = new ArrayList<>();
 
