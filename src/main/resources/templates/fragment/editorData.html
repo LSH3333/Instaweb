@@ -278,11 +278,8 @@
       navigator.clipboard.readText()
         .then(externalClipboardData => {
 
-
           const tempDiv = document.createElement("div");
           tempDiv.innerHTML = externalClipboardData;
-          console.log('externalClipboardData = ' + externalClipboardData)
-          console.log('tempDiv.innerHTML = ' + tempDiv.innerHTML)
 
 
           // 복사된 "string" 을 개행 기준 split 해서 분리한다 
@@ -291,7 +288,6 @@
           if (externalClipboardData.startsWith("<script")) {
             lineContainer.push(externalClipboardData)
           }
-          console.log('lineContainer = ' + lineContainer);
 
           let copiedElements = [];
           // 분리된 각 줄을 div 로 감싼다 
@@ -308,12 +304,6 @@
               // Use the exec method of the RegExp object to extract the URL
               const match = pattern.exec(externalClipboardData);
               const srcPart = match[1];
-              console.log('srcPart = ' + srcPart)
-              // scriptEle.src = srcPart;
-              // scriptEle.setAttribute('src', srcPart);
-              // brDiv.appendChild(scriptEle);
-
-              // let gistDiv = document.createElement('div');
               addGist(brDiv, srcPart);
             }
             else if (isHyperlink(pastedLine)) {
@@ -324,12 +314,10 @@
               brDiv.appendChild(linkEle);
             }
             else {
-              console.log('is not Hyer')
               brDiv.innerText = pastedLine;
             }
             copiedElements.push(brDiv);
           }
-          console.log('copiedElements = ' + copiedElements);
 
           insertCopiedElementsToEditorFunc(copiedElements);
         })
