@@ -25,7 +25,8 @@ public class Image {
     private byte[] image;
 
 
-    // 이미지의 유니크한 uuid
+    // 이미지의 유니크한 uuid, Image 파일은 최초에 클라이언트 쪽에서 삽입되기 때문에 클라이언트에서 uuid 값 생성하고
+    // 서버로 보낸 후에 해당값 저장함
     private String UUID;
 
     public void setImgUUID(String UUID) {
