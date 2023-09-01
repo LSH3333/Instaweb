@@ -4,7 +4,8 @@
 (https://lsh-instaweb.herokuapp.com/)
 
 ## 도메인 모델 
-<img src="https://github.com/LSH3333/Instaweb/assets/62237852/e86889b7-e5c3-4cbc-bd51-3a214c8002c4.png" width="60%" height="60%"/>
+<img src="https://github.com/LSH3333/Instaweb/assets/62237852/b1cd4c26-9f62-4473-9a16-f53f87c0ce3e.png" width="60%" height="60%"/>
+
 
 ## 주요 기능 
 ### 회원가입
