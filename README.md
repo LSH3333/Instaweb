@@ -25,6 +25,7 @@ https://github.com/LSH3333/Instaweb/blob/3055332448adafbf4d22b2a890ca155be510a96
 https://github.com/LSH3333/Instaweb/blob/3055332448adafbf4d22b2a890ca155be510a96b/src/main/java/web/instaweb/WebConfig.java#L9-L40
   
 </details>
+<br/>
 
 ### 글 작성, 수정  
 <img src="https://github.com/LSH3333/Instaweb/assets/62237852/c41861cd-402f-4485-9af9-679f5020c271.png" width="60%" height="60%"/>
@@ -48,5 +49,47 @@ https://github.com/LSH3333/Instaweb/blob/3055332448adafbf4d22b2a890ca155be510a96
 
 에디터 기능은 글 작성, 수정에서 동일하게 쓰이므로 thymeleaf fragment 로 만들어서 관리함.
 (https://github.com/LSH3333/Instaweb/blob/main/src/main/resources/templates/fragment/editorData.html)
+
+<br/>
+
+### 홈
+
+<img src="https://github.com/LSH3333/Instaweb/assets/62237852/ae2c64be-50d4-4aba-b9cc-14c971c24a8a.png" width="20%" height="20%"/>
+
+홈에서는 모든 유저들이 작성한 글들을 볼 수 있다.
+
+홈과 작성된 글들은 로그인 여부에 상관 없이 볼 수 있다. 
+
+(스프링 인터셉터에서 LoginCheckInterceptor 의 검사 경로에서 제외)
+
+<details>
+<summary>접기/펼치기</summary>
+
+https://github.com/LSH3333/Instaweb/blob/af3e3fab8dc91a822f6ada977f9685d21311b588/src/main/java/web/instaweb/WebConfig.java#L12-L30
+  
+</details>
+
+<br/>
+
+### 나의 작성 목록 
+
+<img src="https://github.com/LSH3333/Instaweb/assets/62237852/ecd1cc91-ed19-4701-8cbb-50d7dc7a68f1.png" width="20%" height="20%"/>
+
+나의 작성 목록 탭에서는 내가 작성한 글들만 표시된다. 
+
+<br/>
+
+### Infinite Scroll 
+
+**홈**, **나의 작성 목록** 에서 Page 목록이 보여질때는 스크롤을 내리면 서버에서 클라이언트로 새로운 Page 들을 ajax 로 보내준다. 
+
+서버에서 Page 와 Page 에 속하는 첫 번째 이미지를 Wrap 해서 클라이언트로 보내주고, 클라이언트는 받아서 화면에 띄운다. 
+
+<details>
+<summary>접기/펼치기</summary>
+
+https://github.com/LSH3333/Instaweb/blob/af3e3fab8dc91a822f6ada977f9685d21311b588/src/main/java/web/instaweb/controller/PageController.java#L159-L204
+  
+</details>
 
 
