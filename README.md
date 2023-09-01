@@ -6,12 +6,17 @@
 ## 도메인 모델 
 <img src="https://github.com/LSH3333/Instaweb/assets/62237852/b1cd4c26-9f62-4473-9a16-f53f87c0ce3e.png" width="60%" height="60%"/>
 
-
 ## 주요 기능 
-### 회원가입
+
+<img src="https://github.com/LSH3333/Instaweb/assets/62237852/f1cd71b7-835f-492e-8dbd-af8f29cf835c.png" width="15px" height="15px"/> 가입
+
 <img src="https://github.com/LSH3333/Instaweb/assets/62237852/54c70dd1-6090-4812-a09f-be42bd660e57.png" width="60%" height="60%"/>
 
-### 로그인
+
+<br/>
+
+<img src="https://github.com/LSH3333/Instaweb/assets/62237852/b1e18815-e808-4987-a3b9-459899261331.png" width="15px" height="15px"/> 로그인
+
 <img src="https://github.com/LSH3333/Instaweb/assets/62237852/ad5c3a10-c97f-482b-bb90-592edf075ee4.png" width="60%" height="60%"/>
 
 로그인 여부 확인은 Spring Interceptor 통해서 진행.
@@ -27,7 +32,8 @@ https://github.com/LSH3333/Instaweb/blob/3055332448adafbf4d22b2a890ca155be510a96
 </details>
 <br/>
 
-### 글 작성, 수정  
+<img src="https://github.com/LSH3333/Instaweb/assets/62237852/95b2c05c-bbfa-43f5-a53b-f25b37ca6852.png" width="15px" height="15px"/> 글 작성, 수정 
+
 <img src="https://github.com/LSH3333/Instaweb/assets/62237852/c41861cd-402f-4485-9af9-679f5020c271.png" width="60%" height="60%"/>
 
 글 작성, 수정에서 작성된 모든 내용 (제목,콘텐츠,이미지 등) 들은 모두 ajax 요청으로 서버로 보내서 저장 처리.
@@ -52,7 +58,7 @@ https://github.com/LSH3333/Instaweb/blob/3055332448adafbf4d22b2a890ca155be510a96
 
 <br/>
 
-### 홈
+<img src="https://github.com/LSH3333/Instaweb/assets/62237852/24be8d3d-aee3-43a7-b3e8-190c81dc3694.png" width="15px" height="15px"/> 홈
 
 <img src="https://github.com/LSH3333/Instaweb/assets/62237852/ae2c64be-50d4-4aba-b9cc-14c971c24a8a.png" width="20%" height="20%"/>
 
@@ -71,7 +77,8 @@ https://github.com/LSH3333/Instaweb/blob/af3e3fab8dc91a822f6ada977f9685d21311b58
 
 <br/>
 
-### 나의 작성 목록 
+
+<img src="https://github.com/LSH3333/Instaweb/assets/62237852/aefd5535-1b90-4556-824c-3a636d558b2f.png" width="15px" height="15px"/> 나의 작성 목록 
 
 <img src="https://github.com/LSH3333/Instaweb/assets/62237852/ecd1cc91-ed19-4701-8cbb-50d7dc7a68f1.png" width="20%" height="20%"/>
 
@@ -84,6 +91,8 @@ https://github.com/LSH3333/Instaweb/blob/af3e3fab8dc91a822f6ada977f9685d21311b58
 **홈**, **나의 작성 목록** 에서 Page 목록이 보여질때는 스크롤을 내리면 서버에서 클라이언트로 새로운 Page 들을 ajax 로 보내준다. 
 
 서버에서 Page 와 Page 에 속하는 첫 번째 이미지를 Wrap 해서 클라이언트로 보내주고, 클라이언트는 받아서 화면에 띄운다. 
+
+<img src="https://github.com/LSH3333/Instaweb/assets/62237852/d68a6b07-1122-4c7d-8bae-cd49dba4c056.png" width="50%" height="50%"/>
 
 <details>
 <summary>접기/펼치기</summary>
