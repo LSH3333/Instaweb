@@ -56,7 +56,7 @@ public class SearchController {
     @ResponseBody
     @GetMapping("/search/searchAll")
     public Map<String,?> searchAll(@RequestParam int beginIdx, @RequestParam("searchQuery") String searchQuery) {
-        System.out.println("searchAll = " + searchQuery);
+//        System.out.println("searchAll = " + searchQuery);
         PagesAndEndIdxDto pagesAndEndIdxDto = pageService.findSearchQuery(beginIdx, 10, searchQuery);
         return wrapInfo(pagesAndEndIdxDto, beginIdx);
     }

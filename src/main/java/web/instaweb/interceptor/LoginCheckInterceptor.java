@@ -19,13 +19,11 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
      */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        System.out.println("LoginCheckInterceptor.preHandle");
         String requestURI = request.getRequestURI();
         HttpSession session = request.getSession();
 
         // 로그인 안된 경우
         if (session == null || session.getAttribute(SessionConst.LOGIN_MEMBER) == null) {
-//            System.out.println("/login?redirectURL = " + requestURI);
             response.sendRedirect("/login?redirectURL=" + requestURI);
             return false; // request 종료
         }
