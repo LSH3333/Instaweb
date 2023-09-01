@@ -15,7 +15,7 @@
 <img src="https://github.com/LSH3333/Instaweb/assets/62237852/54c70dd1-6090-4812-a09f-be42bd660e57.png" width="60%" height="60%"/>
 
 
-<br/>
+<br/><br/>
 
 <img src="https://github.com/LSH3333/Instaweb/assets/62237852/b1e18815-e808-4987-a3b9-459899261331.png" width="15px" height="15px"/>  로그인
 
@@ -32,9 +32,11 @@ https://github.com/LSH3333/Instaweb/blob/3055332448adafbf4d22b2a890ca155be510a96
 https://github.com/LSH3333/Instaweb/blob/3055332448adafbf4d22b2a890ca155be510a96b/src/main/java/web/instaweb/WebConfig.java#L9-L40
   
 </details>
+
+
 <br/>
 
-<img src="https://github.com/LSH3333/Instaweb/assets/62237852/95b2c05c-bbfa-43f5-a53b-f25b37ca6852.png" width="15px" height="15px"/>  글 작성, 수정 
+<img src="https://github.com/LSH3333/Instaweb/assets/62237852/95b2c05c-bbfa-43f5-a53b-f25b37ca6852.png" width="15px" height="15px"/>  글 작성, 수정, 삭제  
 
 <img src="https://github.com/LSH3333/Instaweb/assets/62237852/c41861cd-402f-4485-9af9-679f5020c271.png" width="60%" height="60%"/>
 
@@ -61,6 +63,23 @@ https://github.com/LSH3333/Instaweb/blob/3055332448adafbf4d22b2a890ca155be510a96
 에디터 기능은 글 작성, 수정에서 동일하게 쓰이므로 thymeleaf fragment 로 만들어서 관리함.
 (https://github.com/LSH3333/Instaweb/blob/main/src/main/resources/templates/fragment/editorData.html)
 
+<br/>
+
+#### 글 삭제 
+로그인한 Member 가 작성한 Page 는 삭제할수 있다. 
+
+<img src="https://github.com/LSH3333/Instaweb/assets/62237852/f0c9e80e-d1f5-45c5-8c1d-9e8554096049.png" width="50%" height="50%"/>
+
+<img src="https://github.com/LSH3333/Instaweb/assets/62237852/cc5f42a0-796c-4292-96ba-656bc142725e.png" width="50%" height="50%"/>
+
+스프링 인터셉터로 등록된 LoginCheckInterceptor 에서는 삭제를 포함한 모든 로그인이 필요한 요청에 대해, 로그인되지 않은 상태로 요청할 경우 로그인 화면으로 리다이렉트하도록 되어있다.
+<details>
+
+  
+  
+</details>
+
+<br/>
 <br/>
 
 <img src="https://github.com/LSH3333/Instaweb/assets/62237852/24be8d3d-aee3-43a7-b3e8-190c81dc3694.png" width="15px" height="15px"/>  홈
@@ -133,5 +152,10 @@ https://github.com/LSH3333/Instaweb/blob/4bc9a2228f3c4b98ee0f3d970ff2c20d8d33e25
 
 </details>
 
+<br/>
+
+<img src="https://github.com/LSH3333/Instaweb/assets/62237852/31cd3047-05dc-4e97-8697-5912fc2922aa.png" width="50%" height="50%"/>
+
+<img src="https://github.com/LSH3333/Instaweb/assets/62237852/ef4a46f0-2077-4058-ae13-9ecdecb1f2ed.png" width="50%" height="50%"/>
 
 
