@@ -1,7 +1,7 @@
 # Instaweb
 
 ## 배포 주소 
-https://lsh-instaweb.herokuapp.com/
+(https://lsh-instaweb.herokuapp.com/)
 
 ## 도메인 모델 
 <img src="https://github.com/LSH3333/Instaweb/assets/62237852/e86889b7-e5c3-4cbc-bd51-3a214c8002c4.png" width="60%" height="60%"/>
@@ -37,5 +37,15 @@ https://github.com/LSH3333/Instaweb/blob/3055332448adafbf4d22b2a890ca155be510a96
 이미지를 사용자가 지우면 img 태그가 지워진다.
 
 글 작성이 끝나고 서버에 정보들이 보내질때 img 태그들과 map 을 대조해서 지워지지 않은 이미지들만 서버로 보낸다. 
+
+<br/>
+
+**에디터** 내 복사 붙여넣기 지원. (html element 를 통째로 복사해서 붙여 넣는 방법으로 속성(폰트크기 등)들 유지됨)
+
+외부 프로그램에서 복사 붙여 넣기 시 모두 단순 텍스트로 변형해서 붙여넣어짐.
+
+
+에디터 기능은 글 작성, 수정에서 동일하게 쓰이므로 thymeleaf fragment 로 만들어서 관리함.
+(https://github.com/LSH3333/Instaweb/blob/main/src/main/resources/templates/fragment/editorData.html)
 
 
