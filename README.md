@@ -65,7 +65,8 @@ https://github.com/LSH3333/Instaweb/blob/3055332448adafbf4d22b2a890ca155be510a96
 
 <br/>
 
-#### 글 삭제 
+:x: 글 삭제 
+
 로그인한 Member 가 작성한 Page 는 삭제할수 있다. 
 
 <img src="https://github.com/LSH3333/Instaweb/assets/62237852/f0c9e80e-d1f5-45c5-8c1d-9e8554096049.png" width="50%" height="50%"/>
@@ -73,9 +74,11 @@ https://github.com/LSH3333/Instaweb/blob/3055332448adafbf4d22b2a890ca155be510a96
 <img src="https://github.com/LSH3333/Instaweb/assets/62237852/cc5f42a0-796c-4292-96ba-656bc142725e.png" width="50%" height="50%"/>
 
 스프링 인터셉터로 등록된 LoginCheckInterceptor 에서는 삭제를 포함한 모든 로그인이 필요한 요청에 대해, 로그인되지 않은 상태로 요청할 경우 로그인 화면으로 리다이렉트하도록 되어있다.
-<details>
 
-  
+<details>
+<summary>접기/펼치기</summary>
+
+https://github.com/LSH3333/Instaweb/blob/a32aabc8b8631e3889c0daf8c77fc8c7de525973/src/main/java/web/instaweb/interceptor/LoginCheckInterceptor.java#L13-L37
   
 </details>
 
@@ -110,7 +113,7 @@ https://github.com/LSH3333/Instaweb/blob/af3e3fab8dc91a822f6ada977f9685d21311b58
 
 <br/>
 
-### Infinite Scroll 
+:infinity: Infinite Scroll 
 
 **홈**, **나의 작성 목록** 에서 Page 목록이 보여질때는 스크롤을 내리면 서버에서 클라이언트로 새로운 Page 들을 ajax 로 보내준다. 
 
@@ -158,4 +161,42 @@ https://github.com/LSH3333/Instaweb/blob/4bc9a2228f3c4b98ee0f3d970ff2c20d8d33e25
 
 <img src="https://github.com/LSH3333/Instaweb/assets/62237852/ef4a46f0-2077-4058-ae13-9ecdecb1f2ed.png" width="50%" height="50%"/>
 
+<br/>
+<br/>
+
+:speech_balloon: 댓글 
+
+<img src="https://github.com/LSH3333/Instaweb/assets/62237852/3d439281-c9ac-4f8b-8678-1795bb8d329b.png" width="50%" height="50%"/>
+
+댓글 입력, 삭제할때는 ajax 로 동적으로 처리. 
+
+변경 발생할때마다 클라이언트의 댓글 모두 지우고, 서버에서 통째로 가져와서 다시 디스플레이하는 방식. 
+
+<details>
+<summary>접기/펼치기</summary>
+
+https://github.com/LSH3333/Instaweb/blob/main/src/main/resources/templates/pages/pageView.html#L73-L206
+
+https://github.com/LSH3333/Instaweb/blob/9af57f52e3ccb1d8a411621c36bc7e298c2f1e1f/src/main/resources/templates/pages/pageView.html#L73-L206
+
+</details>
+
+<br/>
+<br/>
+
+<img src="https://github.com/LSH3333/Instaweb/assets/62237852/fdbfeb82-f933-4b2a-a59d-e1cd7b585861.png" width="15px" height="15px"/>  게임 
+
+<img src="https://github.com/LSH3333/Instaweb/assets/62237852/8d410c4f-8bee-46de-b028-7c3cefe6ba62.png" width="20%" height="20%"/>
+
+<img src="https://github.com/LSH3333/Instaweb/assets/62237852/6a7e1766-b09d-4de9-9e04-5160ba59d101.png" width="50%" height="50%"/>
+
+Unity 로 만든 게임들을 itch.io 라는 인디게임들을 올릴수 있는 사이트에 올려 놓았는데 링크를 타고 가서 게임을 플레이해볼수 있다. 
+
+Galaga git
+
+https://github.com/LSH3333/Galaga
+
+ManyGames git 
+
+https://github.com/LSH3333/Unity_ManyGames
 
