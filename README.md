@@ -9,7 +9,9 @@
 
 <br/>
 
-<img src="https://github.com/LSH3333/Instaweb/assets/62237852/f1cd71b7-835f-492e-8dbd-af8f29cf835c.png" width="15px" height="15px"/>  가입
+<br/>
+
+<img src="https://github.com/LSH3333/Instaweb/assets/62237852/f1cd71b7-835f-492e-8dbd-af8f29cf835c.png" width="15px" height="15px"/> 가입
 
 <img  alt="image" src="https://github.com/LSH3333/Instaweb/assets/62237852/a6391119-2a24-4b27-865e-25833bcd45dd" width="80%" height="80%" >
 
