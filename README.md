@@ -12,8 +12,11 @@
 
 <img src="https://github.com/LSH3333/Instaweb/assets/62237852/f1cd71b7-835f-492e-8dbd-af8f29cf835c.png" width="15px" height="15px"/>  가입
 
-<img src="https://github.com/LSH3333/Instaweb/assets/62237852/54c70dd1-6090-4812-a09f-be42bd660e57.png" width="80%" height="80%"/>
+<img  alt="image" src="https://github.com/LSH3333/Instaweb/assets/62237852/a6391119-2a24-4b27-865e-25833bcd45dd" width="80%" height="80%" >
 
+입력한 내용이 주어진 조건에 맞는지 확인, db에 중복되는 loginId, name 있는지 확인.
+
+https://github.com/LSH3333/Instaweb/blob/main/src/main/java/web/instaweb/controller/MemberController.java
 
 <br/><br/>
 
