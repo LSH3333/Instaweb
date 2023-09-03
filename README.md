@@ -1,12 +1,11 @@
-# Instaweb
 
-## 배포 주소 
+# 배포 주소 
 (https://lsh-instaweb.herokuapp.com/)
 
-## 도메인 모델 
+# 도메인 모델 
 <img src="https://github.com/LSH3333/Instaweb/assets/62237852/b1cd4c26-9f62-4473-9a16-f53f87c0ce3e.png" width="80%" height="80%"/>
 
-## 주요 기능 
+# 주요 기능 
 
 <br/>
 
@@ -68,7 +67,8 @@ https://github.com/LSH3333/Instaweb/blob/3055332448adafbf4d22b2a890ca155be510a96
 
 <br/>
 
-:x: 글 삭제 
+
+## :x: 글 삭제 
 
 로그인한 Member 가 작성한 Page 는 삭제할수 있다. 
 
