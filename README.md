@@ -187,6 +187,25 @@ https://github.com/LSH3333/Instaweb/blob/9af57f52e3ccb1d8a411621c36bc7e298c2f1e1
 <br/>
 <br/>
 
+:iphone:	모바일 ui 지원 
+
+<img alt="image" src="https://github.com/LSH3333/Instaweb/assets/62237852/64769c8d-8705-47e9-b32b-a9ceda56cfe8" width="40%" height="40%">
+
+<img alt="image" src="https://github.com/LSH3333/Instaweb/assets/62237852/e7b9fbbf-f8df-4b07-8bd1-b5f8c3e7846d" width="40%" height="40%">
+
+좌: 데스크톱 웹 
+
+우: 모바일 
+
+css @media 로 화면 크기 감지해서 html element 변경으로 처리. 
+
+https://github.com/LSH3333/Instaweb/blob/main/src/main/resources/static/css/pageBlock.css#L106-L155
+
+
+<br/>
+<br/>
+
+
 <img src="https://github.com/LSH3333/Instaweb/assets/62237852/fdbfeb82-f933-4b2a-a59d-e1cd7b585861.png" width="15px" height="15px"/>  게임 
 
 <img src="https://github.com/LSH3333/Instaweb/assets/62237852/8d410c4f-8bee-46de-b028-7c3cefe6ba62.png" width="20%" height="20%"/>
