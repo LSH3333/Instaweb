@@ -4,7 +4,7 @@
 (https://lsh-instaweb.herokuapp.com/)
 
 ## 도메인 모델 
-<img src="https://github.com/LSH3333/Instaweb/assets/62237852/b1cd4c26-9f62-4473-9a16-f53f87c0ce3e.png" width="60%" height="60%"/>
+<img src="https://github.com/LSH3333/Instaweb/assets/62237852/b1cd4c26-9f62-4473-9a16-f53f87c0ce3e.png" width="80%" height="80%"/>
 
 ## 주요 기능 
 
@@ -12,14 +12,14 @@
 
 <img src="https://github.com/LSH3333/Instaweb/assets/62237852/f1cd71b7-835f-492e-8dbd-af8f29cf835c.png" width="15px" height="15px"/>  가입
 
-<img src="https://github.com/LSH3333/Instaweb/assets/62237852/54c70dd1-6090-4812-a09f-be42bd660e57.png" width="60%" height="60%"/>
+<img src="https://github.com/LSH3333/Instaweb/assets/62237852/54c70dd1-6090-4812-a09f-be42bd660e57.png" width="80%" height="80%"/>
 
 
 <br/><br/>
 
 <img src="https://github.com/LSH3333/Instaweb/assets/62237852/b1e18815-e808-4987-a3b9-459899261331.png" width="15px" height="15px"/>  로그인
 
-<img src="https://github.com/LSH3333/Instaweb/assets/62237852/ad5c3a10-c97f-482b-bb90-592edf075ee4.png" width="60%" height="60%"/>
+<img src="https://github.com/LSH3333/Instaweb/assets/62237852/ad5c3a10-c97f-482b-bb90-592edf075ee4.png" width="80%" height="80%"/>
 
 로그인 여부 확인은 Spring Interceptor 통해서 진행.
 
@@ -38,7 +38,7 @@ https://github.com/LSH3333/Instaweb/blob/3055332448adafbf4d22b2a890ca155be510a96
 
 <img src="https://github.com/LSH3333/Instaweb/assets/62237852/95b2c05c-bbfa-43f5-a53b-f25b37ca6852.png" width="15px" height="15px"/>  글 작성, 수정, 삭제  
 
-<img src="https://github.com/LSH3333/Instaweb/assets/62237852/c41861cd-402f-4485-9af9-679f5020c271.png" width="60%" height="60%"/>
+<img src="https://github.com/LSH3333/Instaweb/assets/62237852/c41861cd-402f-4485-9af9-679f5020c271.png" width="80%" height="80%"/>
 
 글 작성, 수정에서 작성된 모든 내용 (제목,콘텐츠,이미지 등) 들은 모두 ajax 요청으로 서버로 보내서 저장 처리.
 
@@ -69,9 +69,9 @@ https://github.com/LSH3333/Instaweb/blob/3055332448adafbf4d22b2a890ca155be510a96
 
 로그인한 Member 가 작성한 Page 는 삭제할수 있다. 
 
-<img src="https://github.com/LSH3333/Instaweb/assets/62237852/f0c9e80e-d1f5-45c5-8c1d-9e8554096049.png" width="50%" height="50%"/>
+<img src="https://github.com/LSH3333/Instaweb/assets/62237852/f0c9e80e-d1f5-45c5-8c1d-9e8554096049.png" width="80%" height="80%"/>
 
-<img src="https://github.com/LSH3333/Instaweb/assets/62237852/cc5f42a0-796c-4292-96ba-656bc142725e.png" width="50%" height="50%"/>
+<img src="https://github.com/LSH3333/Instaweb/assets/62237852/cc5f42a0-796c-4292-96ba-656bc142725e.png" width="80%" height="80%"/>
 
 스프링 인터셉터로 등록된 LoginCheckInterceptor 에서는 삭제를 포함한 모든 로그인이 필요한 요청에 대해, 로그인되지 않은 상태로 요청할 경우 로그인 화면으로 리다이렉트하도록 되어있다.
 
@@ -121,7 +121,7 @@ https://github.com/LSH3333/Instaweb/blob/af3e3fab8dc91a822f6ada977f9685d21311b58
 
 서버에서 Page 와 Page 에 속하는 첫 번째 이미지를 Wrap 해서 클라이언트로 보내주고, 클라이언트는 받아서 화면에 띄운다. 
 
-<img src="https://github.com/LSH3333/Instaweb/assets/62237852/d68a6b07-1122-4c7d-8bae-cd49dba4c056.png" width="50%" height="50%"/>
+<img src="https://github.com/LSH3333/Instaweb/assets/62237852/d68a6b07-1122-4c7d-8bae-cd49dba4c056.png" width="80%" height="80%"/>
 
 <details>
 <summary>접기/펼치기</summary>
@@ -157,16 +157,16 @@ https://github.com/LSH3333/Instaweb/blob/4bc9a2228f3c4b98ee0f3d970ff2c20d8d33e25
 
 <br/>
 
-<img src="https://github.com/LSH3333/Instaweb/assets/62237852/31cd3047-05dc-4e97-8697-5912fc2922aa.png" width="50%" height="50%"/>
+<img src="https://github.com/LSH3333/Instaweb/assets/62237852/31cd3047-05dc-4e97-8697-5912fc2922aa.png" width="80%" height="80%"/>
 
-<img src="https://github.com/LSH3333/Instaweb/assets/62237852/ef4a46f0-2077-4058-ae13-9ecdecb1f2ed.png" width="50%" height="50%"/>
+<img src="https://github.com/LSH3333/Instaweb/assets/62237852/ef4a46f0-2077-4058-ae13-9ecdecb1f2ed.png" width="80%" height="80%"/>
 
 <br/>
 <br/>
 
 :speech_balloon: 댓글 
 
-<img src="https://github.com/LSH3333/Instaweb/assets/62237852/3d439281-c9ac-4f8b-8678-1795bb8d329b.png" width="50%" height="50%"/>
+<img src="https://github.com/LSH3333/Instaweb/assets/62237852/3d439281-c9ac-4f8b-8678-1795bb8d329b.png" width="80%" height="80%"/>
 
 댓글 입력, 삭제할때는 ajax 로 동적으로 처리. 
 
@@ -188,7 +188,7 @@ https://github.com/LSH3333/Instaweb/blob/9af57f52e3ccb1d8a411621c36bc7e298c2f1e1
 
 <img src="https://github.com/LSH3333/Instaweb/assets/62237852/8d410c4f-8bee-46de-b028-7c3cefe6ba62.png" width="20%" height="20%"/>
 
-<img src="https://github.com/LSH3333/Instaweb/assets/62237852/6a7e1766-b09d-4de9-9e04-5160ba59d101.png" width="50%" height="50%"/>
+<img src="https://github.com/LSH3333/Instaweb/assets/62237852/6a7e1766-b09d-4de9-9e04-5160ba59d101.png" width="80%" height="80%"/>
 
 Unity 로 만든 게임들을 itch.io 라는 인디게임들을 올릴수 있는 사이트에 올려 놓았는데 링크를 타고 가서 게임을 플레이해볼수 있다. 
 
