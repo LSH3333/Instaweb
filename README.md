@@ -45,11 +45,15 @@ https://github.com/LSH3333/Instaweb/blob/main/src/main/java/web/instaweb/control
 
 <img src="https://github.com/LSH3333/Instaweb/assets/62237852/b1e18815-e808-4987-a3b9-459899261331.png" width="15px" height="15px"/>  로그인
 
-<img src="https://github.com/LSH3333/Instaweb/assets/62237852/ad5c3a10-c97f-482b-bb90-592edf075ee4.png" width="80%" height="80%"/>
+<img src="https://github.com/LSH3333/Instaweb/assets/62237852/d0db960d-4c5a-4a2a-ac23-eaa98c67791f.png" width="80%" height="80%"/>
+
 
 로그인 여부 확인은 Spring Interceptor 통해서 진행.
 
 모든 경로 막아 놓고 로그인 불필요한 경로(home 화면, 글 보기, ajax 요청 경로 등) 만 Interceptor 거치치 않도록 함
+
+회원가입 없이 guest 아이디 로그인 지원. 
+
 <details>
 <summary>접기/펼치기</summary>
 
