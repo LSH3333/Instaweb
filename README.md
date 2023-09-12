@@ -35,7 +35,7 @@ DB:
 
 https://github.com/LSH3333/Instaweb/blob/main/src/main/java/web/instaweb/controller/MemberController.java
 
-<br/><br/>
+---
 
 <img src="https://github.com/LSH3333/Instaweb/assets/62237852/b1e18815-e808-4987-a3b9-459899261331.png" width="15px" height="15px"/>  로그인
 
@@ -53,8 +53,7 @@ https://github.com/LSH3333/Instaweb/blob/3055332448adafbf4d22b2a890ca155be510a96
   
 </details>
 
-
-<br/>
+---
 
 <img src="https://github.com/LSH3333/Instaweb/assets/62237852/95b2c05c-bbfa-43f5-a53b-f25b37ca6852.png" width="15px" height="15px"/>  글 작성, 수정, 삭제  
 
@@ -73,7 +72,7 @@ https://github.com/LSH3333/Instaweb/blob/3055332448adafbf4d22b2a890ca155be510a96
 
 **작성된 내용**들은 html 그대로 db 에 저장된다. 
 
-<br/>
+<br>
 
 **에디터** 내 복사 붙여넣기 지원. (html element 를 통째로 복사해서 붙여 넣는 방법으로 속성(폰트크기 등)들 유지됨)
 
@@ -83,10 +82,9 @@ https://github.com/LSH3333/Instaweb/blob/3055332448adafbf4d22b2a890ca155be510a96
 에디터 기능은 글 작성, 수정에서 동일하게 쓰이므로 thymeleaf fragment 로 만들어서 관리함.
 (https://github.com/LSH3333/Instaweb/blob/main/src/main/resources/templates/fragment/editorData.html)
 
-<br/>
+---
 
-
-## :x: 글 삭제 
+:x: 글 삭제 
 
 로그인한 Member 가 작성한 Page 는 삭제할수 있다. 
 
@@ -103,8 +101,7 @@ https://github.com/LSH3333/Instaweb/blob/a32aabc8b8631e3889c0daf8c77fc8c7de52597
   
 </details>
 
-<br/>
-<br/>
+---
 
 <img src="https://github.com/LSH3333/Instaweb/assets/62237852/24be8d3d-aee3-43a7-b3e8-190c81dc3694.png" width="15px" height="15px"/>  홈
 
@@ -123,8 +120,7 @@ https://github.com/LSH3333/Instaweb/blob/af3e3fab8dc91a822f6ada977f9685d21311b58
   
 </details>
 
-<br/>
-
+---
 
 <img src="https://github.com/LSH3333/Instaweb/assets/62237852/aefd5535-1b90-4556-824c-3a636d558b2f.png" width="15px" height="15px"/>  나의 작성 목록 
 
@@ -132,7 +128,7 @@ https://github.com/LSH3333/Instaweb/blob/af3e3fab8dc91a822f6ada977f9685d21311b58
 
 나의 작성 목록 탭에서는 내가 작성한 글들만 표시된다. 
 
-<br/>
+---
 
 :infinity: Infinite Scroll 
 
@@ -156,8 +152,7 @@ https://github.com/LSH3333/Instaweb/blob/main/src/main/resources/templates/fragm
 
 </details>
 
-
-<br/>
+---
 
 <img src="https://github.com/LSH3333/Instaweb/assets/62237852/b8b3e240-566a-4e56-bcaa-4a58c5b901b2.png" width="15px" height="15px"/>  글 검색 
 
@@ -176,14 +171,12 @@ https://github.com/LSH3333/Instaweb/blob/4bc9a2228f3c4b98ee0f3d970ff2c20d8d33e25
 
 </details>
 
-<br/>
 
 <img src="https://github.com/LSH3333/Instaweb/assets/62237852/31cd3047-05dc-4e97-8697-5912fc2922aa.png" width="80%" height="80%"/>
 
 <img src="https://github.com/LSH3333/Instaweb/assets/62237852/ef4a46f0-2077-4058-ae13-9ecdecb1f2ed.png" width="80%" height="80%"/>
 
-<br/>
-<br/>
+---
 
 :speech_balloon: 댓글 
 
@@ -202,8 +195,7 @@ https://github.com/LSH3333/Instaweb/blob/9af57f52e3ccb1d8a411621c36bc7e298c2f1e1
 
 </details>
 
-<br/>
-<br/>
+---
 
 :iphone:	모바일 ui 지원 
 
@@ -219,10 +211,7 @@ css @media 로 화면 크기 감지해서 html element 변경으로 처리.
 
 https://github.com/LSH3333/Instaweb/blob/main/src/main/resources/static/css/pageBlock.css#L106-L155
 
-
-<br/>
-<br/>
-
+---
 
 <img src="https://github.com/LSH3333/Instaweb/assets/62237852/fdbfeb82-f933-4b2a-a59d-e1cd7b585861.png" width="15px" height="15px"/>  게임 
 
