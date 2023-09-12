@@ -2,8 +2,12 @@
 # 배포 주소 
 (https://lsh-instaweb.herokuapp.com/)
 
+<br>
+
 # 도메인 모델 
 <img src="https://github.com/LSH3333/Instaweb/assets/62237852/b1cd4c26-9f62-4473-9a16-f53f87c0ce3e.png" width="80%" height="80%"/>
+
+<br>
 
 # 기술 스택 
 
@@ -20,6 +24,8 @@ Deployment:
 
 DB:
 ![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
+
+<br>
 
 # 주요 기능 
 
