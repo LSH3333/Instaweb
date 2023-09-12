@@ -10,6 +10,7 @@ import web.instaweb.repository.MemberRepository;
 
 import javax.persistence.EntityManager;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Transactional(readOnly = false)
@@ -47,5 +48,15 @@ public class MemberService {
     public void setMemberWritingPageId(Long memberId, Long writingPageId) {
         Member member = memberRepository.findById(memberId);
         member.setWritingPageId(writingPageId);
+    }
+
+    public Member registerNewGuest() {
+        Member member = new Member();
+        String uuid = UUID.randomUUID().toString();
+        member.setLoginId(uuid);
+        member.setPassword(uuid);
+        member.setName("guest");
+        memberRepository.save(member);
+        return member;
     }
 }

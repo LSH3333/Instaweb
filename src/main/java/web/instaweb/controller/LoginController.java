@@ -22,6 +22,7 @@ import javax.validation.Valid;
 public class LoginController {
 
     private final LoginService loginService;
+    private final MemberService memberService;
 
     /**
      * 로그인
@@ -43,6 +44,7 @@ public class LoginController {
         if (bindingResult.hasErrors()) {
             return "login/loginForm";
         }
+
 
         Member loginMember = loginService.login(form.getLoginId(), form.getPassword());
 
@@ -74,4 +76,18 @@ public class LoginController {
         return "redirect:/"; // 홈 으로 리다이렉트
     }
 
+    /**
+     * Guest login
+     */
+    @GetMapping("/loginGuest")
+    public String loginGuest(@RequestParam(defaultValue = "/") String redirectURL, HttpServletRequest request) {
+        Member guest = memberService.registerNewGuest();
+
+        // request 에 세션 있으면 있는 세션 반환, 없으면 신규 세션 생성
+        HttpSession session = request.getSession();
+        session.setAttribute(SessionConst.LOGIN_MEMBER, guest);
+
+        // 로그인 성공 -> request 가 온 url 로 되돌아가도록 리다이렉트 처리
+        return "redirect:" + redirectURL;
+    }
 }
