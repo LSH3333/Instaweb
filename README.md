@@ -39,6 +39,8 @@ DB:
 
 https://github.com/LSH3333/Instaweb/blob/main/src/main/java/web/instaweb/controller/MemberController.java
 
+<br>
+
 ---
 
 <img src="https://github.com/LSH3333/Instaweb/assets/62237852/b1e18815-e808-4987-a3b9-459899261331.png" width="15px" height="15px"/>  로그인
@@ -56,6 +58,8 @@ https://github.com/LSH3333/Instaweb/blob/3055332448adafbf4d22b2a890ca155be510a96
 https://github.com/LSH3333/Instaweb/blob/3055332448adafbf4d22b2a890ca155be510a96b/src/main/java/web/instaweb/WebConfig.java#L9-L40
   
 </details>
+
+<br>
 
 ---
 
@@ -86,6 +90,8 @@ https://github.com/LSH3333/Instaweb/blob/3055332448adafbf4d22b2a890ca155be510a96
 에디터 기능은 글 작성, 수정에서 동일하게 쓰이므로 thymeleaf fragment 로 만들어서 관리함.
 (https://github.com/LSH3333/Instaweb/blob/main/src/main/resources/templates/fragment/editorData.html)
 
+<br>
+
 ---
 
 :x: 글 삭제 
@@ -104,6 +110,8 @@ https://github.com/LSH3333/Instaweb/blob/3055332448adafbf4d22b2a890ca155be510a96
 https://github.com/LSH3333/Instaweb/blob/a32aabc8b8631e3889c0daf8c77fc8c7de525973/src/main/java/web/instaweb/interceptor/LoginCheckInterceptor.java#L13-L37
   
 </details>
+
+<br>
 
 ---
 
@@ -124,6 +132,8 @@ https://github.com/LSH3333/Instaweb/blob/af3e3fab8dc91a822f6ada977f9685d21311b58
   
 </details>
 
+<br>
+
 ---
 
 <img src="https://github.com/LSH3333/Instaweb/assets/62237852/aefd5535-1b90-4556-824c-3a636d558b2f.png" width="15px" height="15px"/>  나의 작성 목록 
@@ -131,6 +141,8 @@ https://github.com/LSH3333/Instaweb/blob/af3e3fab8dc91a822f6ada977f9685d21311b58
 <img src="https://github.com/LSH3333/Instaweb/assets/62237852/ecd1cc91-ed19-4701-8cbb-50d7dc7a68f1.png" width="20%" height="20%"/>
 
 나의 작성 목록 탭에서는 내가 작성한 글들만 표시된다. 
+
+<br>
 
 ---
 
@@ -156,6 +168,8 @@ https://github.com/LSH3333/Instaweb/blob/main/src/main/resources/templates/fragm
 
 </details>
 
+<br>
+
 ---
 
 <img src="https://github.com/LSH3333/Instaweb/assets/62237852/b8b3e240-566a-4e56-bcaa-4a58c5b901b2.png" width="15px" height="15px"/>  글 검색 
@@ -180,6 +194,8 @@ https://github.com/LSH3333/Instaweb/blob/4bc9a2228f3c4b98ee0f3d970ff2c20d8d33e25
 
 <img src="https://github.com/LSH3333/Instaweb/assets/62237852/ef4a46f0-2077-4058-ae13-9ecdecb1f2ed.png" width="80%" height="80%"/>
 
+<br>
+
 ---
 
 :speech_balloon: 댓글 
@@ -199,6 +215,8 @@ https://github.com/LSH3333/Instaweb/blob/9af57f52e3ccb1d8a411621c36bc7e298c2f1e1
 
 </details>
 
+<br>
+
 ---
 
 :iphone:	모바일 ui 지원 
@@ -214,6 +232,8 @@ https://github.com/LSH3333/Instaweb/blob/9af57f52e3ccb1d8a411621c36bc7e298c2f1e1
 css @media 로 화면 크기 감지해서 html element 변경으로 처리. 
 
 https://github.com/LSH3333/Instaweb/blob/main/src/main/resources/static/css/pageBlock.css#L106-L155
+
+<br>
 
 ---
 
@@ -232,4 +252,7 @@ https://github.com/LSH3333/Galaga
 ManyGames git 
 
 https://github.com/LSH3333/Unity_ManyGames
+
+<br>
+
 
