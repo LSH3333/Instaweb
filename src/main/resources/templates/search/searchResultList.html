@@ -48,8 +48,7 @@
                 document.documentElement.offsetHeight
             );
 
-            if (scrollPosition + windowHeight >= documentHeight) {
-                console.log('scroll')
+            if (scrollPosition + windowHeight + 10 >= documentHeight) {
                 // 이전 request 에 대한 게시글들 로딩 완료된 이후에만 또 다른 request 보냄
                 if (xhr.readyState == XMLHttpRequest.DONE) {
                     if (xhr.status == 200) {
