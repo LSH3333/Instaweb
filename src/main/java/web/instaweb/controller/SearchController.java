@@ -56,9 +56,9 @@ public class SearchController {
     @ResponseBody
     @GetMapping("/search/searchAll")
     public Map<String,?> searchAll(@RequestParam int beginIdx, @RequestParam("searchQuery") String searchQuery) {
-//        System.out.println("searchAll = " + searchQuery);
+        System.out.println("searchAll = " + searchQuery);
         PagesAndEndIdxDto pagesAndEndIdxDto = pageService.findSearchQuery(beginIdx, 10, searchQuery);
-        return wrapInfo(pagesAndEndIdxDto, beginIdx);
+        return wrapInfoForSearch(pagesAndEndIdxDto);
     }
 
     /**
@@ -120,4 +120,49 @@ public class SearchController {
     }
 
 
+
+    /**
+     * Search 를 위한 wrapInfo
+     * search 는 전체 페이지 불러와서 그중 쿼리 조건 만족한 애들만 골라서 클라이언트에 보내기 때문에 전체 페이지 리턴하는 wrapInfo 와 다름
+     *
+     */
+    private Map<String, ?> wrapInfoForSearch(PagesAndEndIdxDto pagesAndEndIdxDto) {
+        List<Page> foundPages = pagesAndEndIdxDto.getRetPages();
+
+        Map<String, List<?>> ret = new HashMap<>();
+
+        // page
+        List<Object> pageListForms = new ArrayList<>();
+
+        for (Page page : foundPages) {
+            PageListForm pageListForm = new PageListForm(page.getId(), page.getTitle(), page.getContent(), page.getMember().getId(), page.getMember().getName(), page.getCreatedTime());
+            pageListForms.add(pageListForm);
+        }
+
+        // images
+        // 각 페이지의 첫번째 이미지(존재한다면)를 base64 로 인코딩 후 리스트에 저장
+        List<String> images = new ArrayList<>();
+        for (Page page : foundPages) {
+            List<Image> pageImages = imageService.findAllImageFromPage(page.getId());
+            String base64Image;
+            if (!pageImages.isEmpty()) {
+                base64Image = pageImages.get(0).generateBase64Image();
+            }
+            else {
+                // 페이지에 이미지가 하나도 없을 경우 "no-img.png" 디스플레이 하도록함
+                base64Image = Base64.encodeBase64String(noImgProvider.getNoImgFile());
+            }
+            images.add(base64Image);
+        }
+
+        // next begin idx
+        List<String> nextBeginIdxList = new ArrayList<>();
+        nextBeginIdxList.add(Integer.toString(pagesAndEndIdxDto.getEndIdx()));
+
+        ret.put("pages", pageListForms);
+        ret.put("images", images);
+        ret.put("nextBeginIdx", nextBeginIdxList);
+
+        return ret;
+    }
 }

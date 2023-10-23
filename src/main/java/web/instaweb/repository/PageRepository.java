@@ -66,28 +66,28 @@ public class PageRepository {
 
     /**
      * findAll, 모든 member 의 모든 page 대상 검색
+     * 최대 10개의 쿼리 조건에 만족하는 페이지 리턴 , 클라이언트에 endIdx 를 넘겨서 다음 스크롤시 endIdx 인덱스 부터 시작함 
      * @param beginIdx : 가져올 시작 인덱스
-     * @param count : 최대 몇개 가져 올지
      * @param searchQuery
      * @return : page.title, page.content 중 searchQuery 스트링을 포함하는 page 들 리턴
      */
     public PagesAndEndIdxDto findSearchQuery(int beginIdx, int count, String searchQuery) {
-
         List<Page> resultList = new ArrayList<>();
 
         List<Page> allPage = em.createQuery("SELECT p FROM Page p ORDER BY p.createdTime DESC", Page.class)
-                .setFirstResult(beginIdx)
-                .setMaxResults(count)
                 .getResultList();
 
-        for (Page page : allPage) {
-            if (checkContentWithSearchQuery(page.getTitle(), page.getContent(), searchQuery)) {
+
+        int endIdx = beginIdx;
+
+        for(int i = beginIdx; i < allPage.size(); i++) {
+            Page page = allPage.get(i);
+            if (page.getTitle() != null && checkContentWithSearchQuery(page.getTitle(), page.getContent(), searchQuery)) {
                 resultList.add(page);
             }
+            if(resultList.size() > 10) break; // 결과 10개 넘으면 그만 담음
+            endIdx++;
         }
-
-
-        int endIdx = beginIdx + resultList.size();
 
         return new PagesAndEndIdxDto(endIdx, resultList);
     }
