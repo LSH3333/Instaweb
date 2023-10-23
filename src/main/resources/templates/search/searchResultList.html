@@ -52,15 +52,6 @@
                 // 이전 request 에 대한 게시글들 로딩 완료된 이후에만 또 다른 request 보냄
                 if (xhr.readyState == XMLHttpRequest.DONE) {
                     if (xhr.status == 200) {
-                        // xhr.open(
-                        //     "GET",
-                        //     "/pages/ajaxReq?beginIdx=" +
-                        //     beginIdx.toString() +
-                        //     "&memberId=" +
-                        //     memberId.toString(),
-                        //     true
-                        // );
-                        console.log('beginIdx = ' + beginIdx)
                         xhr.open(
                             "GET",
                             "/search/searchAll?beginIdx=" + beginIdx.toString() + "&searchQuery=" + searchQuery.toString(),
@@ -74,7 +65,6 @@
 
         // 최초 페이지 로드 완료시 페이지 idx=0 부터 cnt=10 개 로드
         window.onload = function () {
-            console.log('onload = ' + beginIdx.toString() + ' ' + searchQuery.toString())
             xhr.open(
                 "GET",
                 "/search/searchAll?beginIdx=" + beginIdx.toString() + "&searchQuery=" + searchQuery.toString(),

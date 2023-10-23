@@ -72,7 +72,7 @@ public class SearchController {
         Long memberId = loginMember.getId();
         PagesAndEndIdxDto pagesAndEndIdxDto = pageService.findMineSearchQuery(beginIdx, 10, searchQuery, memberId);
 
-        return wrapInfo(pagesAndEndIdxDto, beginIdx);
+        return wrapInfoForSearch(pagesAndEndIdxDto);
     }
 
 

@@ -54,10 +54,7 @@
                     if (xhr.status == 200) {
                         xhr.open(
                             "GET",
-                            "/pages/ajaxReq?beginIdx=" +
-                            beginIdx.toString() +
-                            "&memberId=" +
-                            memberId.toString(),
+                            "/search/searchMine?beginIdx=" + beginIdx.toString() + "&searchQuery=" + searchQuery.toString(),
                             true
                         );
                         xhr.send();
@@ -68,7 +65,6 @@
 
         // 최초 페이지 로드 완료시 페이지 idx=0 부터 cnt=10 개 로드
         window.onload = function () {
-            console.log('onload = ' + beginIdx.toString() + ' ' + searchQuery.toString())
             xhr.open(
                 "GET",
                 "/search/searchMine?beginIdx=" + beginIdx.toString() + "&searchQuery=" + searchQuery.toString(),
