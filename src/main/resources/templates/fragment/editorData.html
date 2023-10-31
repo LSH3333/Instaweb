@@ -270,12 +270,13 @@
 
   // editor paste event
   editor.addEventListener("paste", function (event) {
-    event.preventDefault(); // Prevent default paste behavior
+    event.preventDefault(); 
 
     let clipboardData = event.clipboardData || window.clipboardData;
     let pastedData = clipboardData.getData("text/html");
 
     // 복사된 내용이 순수 스트링일때, 복사된 스트링을 개행 기준 분리 후 <div id='brDiv'> 에 넣어서 처리 
+    // (외부에서 복사한 경우)
     if (!pastedData) {
       navigator.clipboard.readText()
         .then(externalClipboardData => {
@@ -298,16 +299,14 @@
             let brDiv = document.createElement('div');
             brDiv.id = 'brDiv';
 
-            // gist 
+            // 복사한게 gist <script> 인 경우 
             if (externalClipboardData.startsWith("<script")) {
               let scriptEle = document.createElement('script');
-              // Define a regular expression pattern to match the src attribute
               const pattern = /src="(.*?)"/;
-              // Use the exec method of the RegExp object to extract the URL
               const match = pattern.exec(externalClipboardData);
               const srcPart = match[1];
               addGist(brDiv, srcPart);
-            }
+            } // 하이퍼링크인 경우 
             else if (isHyperlink(pastedLine)) {
               let linkEle = document.createElement('a');
               linkEle.href = pastedLine;
@@ -327,24 +326,24 @@
           console.error("Failed to read clipboard:", err);
         });
     }
-    // 복사한 내용이 element 포함될때 (내 editor 복사한 경우 포함)
+    // 복사한 내용이 element 포함될때 (내 에디터에서 복사한 경우)
     else {
       const tempDiv = document.createElement("div");
       tempDiv.innerHTML = pastedData;
 
-      // Create a document fragment and append the temporary div contents to it
+      // documentFragment 에 복사된 element 들 저장
       const fragment = document.createDocumentFragment();
       while (tempDiv.firstChild) {
         fragment.appendChild(tempDiv.firstChild);
       }
 
-      // Get all elements from the document fragment
+      // documentFargment 에서 element 들 모두 꺼내면서 내 에디터의 양식에 맞는 새로운 <div> 로 만든다
       let copiedElements = Array.from(fragment.childNodes).filter(function (
         node
       ) {
         return node.nodeType === Node.ELEMENT_NODE;
       });
-
+      // 내 에디터 양식에 맞는 새로운 <div> 생성 
       for (let i = 0; i < copiedElements.length; i++) {
         let brDiv = document.createElement('div');
         brDiv.id = 'brDiv';
