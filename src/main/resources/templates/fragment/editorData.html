@@ -165,7 +165,7 @@
   ///////////////////////////// text size /////////////////////////////////
 
   (function () {
-
+    // 글자 크기 변경 버튼 클릭시 현재 혹은 마지막으로 선택한 html element 
     function pressTextSizeBtn(textSizeType, btn) {
       if (previousFocusedElement == null) return;
       let selectedRange = saveSelection();
@@ -179,7 +179,9 @@
         "textSizeTitle3",
       ];
 
-
+      // draggedElements 는 선택된 html element 들 
+      // 드래그된 element 들의 클래스에 선택한 글자크기 style 추가, 
+      // 나머지 글자크기 관련 style 은 모두 클래스에서 제거
       textSizeList.forEach((type) => {
         if (type === textSizeType) {
           draggedElements.forEach((draggedElement) => {
@@ -191,7 +193,7 @@
           })
         }
       });
-
+      // 버튼 클릭에 따른 버튼 디자인 변경, 에디터 크기 조절 등 추가 필요 연산 수행
       changeSummaryTextAndCloseDetails(btn);
       setCursorPositionToEnd(previousFocusedElement);
       resizeEditor();
