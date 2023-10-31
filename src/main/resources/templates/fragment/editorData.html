@@ -802,7 +802,7 @@
       };
 
       xhr.onerror = function () {
-        reject(new Error("Network error")); // Reject the promise with a network error
+        reject(new Error("Network error"));
       };
 
       xhr.send(formData);
@@ -929,13 +929,13 @@
   // editor 의 children 모두 로드 될때까지 대기
   function waitForEditorChildren() {
     return new Promise((resolve) => {
-      // Check if all child elements are loaded
+      // 에디터 내부 모든 element 들 로드 됐는지 확인 
       function checkChildrenLoaded() {
         const editor = document.getElementById("editor");
         const childNodes = editor.childNodes;
 
         let allChildrenLoaded = true;
-        let height = 62; // editor's default padding and border
+        let height = 62; // 에디터 기본 높이 
 
         for (let i = 0; i < childNodes.length; i++) {
           const childNode = childNodes[i];
@@ -947,14 +947,14 @@
         }
 
         if (allChildrenLoaded) {
-          resolve(height); // Resolve the Promise with the total height
+          resolve(height); // Promise resolved 
         } else {
-          // Wait for a brief moment and check again
+          // 모두 로드 안됐다면 잠시 대기 
           setTimeout(checkChildrenLoaded, 100);
         }
       }
 
-      checkChildrenLoaded(); // Start checking for loaded children
+      checkChildrenLoaded(); 
     });
   }
 
