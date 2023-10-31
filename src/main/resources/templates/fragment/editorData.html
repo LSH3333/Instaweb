@@ -487,8 +487,7 @@
   editor.addEventListener('mousemove', function (event) {
     let element = event.target;
     if (event.buttons === 1) {
-      // If the left mouse button is pressed (dragging)
-      // Add the current target element to the selected elements array
+      // 좌클릭시 (드래그 포함) draggedElements 에 포함되는 html element 들 저장함
       if (!draggedElements.includes(element) && element.id !== null && element.id == 'brDiv') {
         draggedElements.push(element);
       }
@@ -891,10 +890,7 @@
   // 에디터 크기 조절
   // 에디터 내부 모든 엘레먼트 높이 계산후 조절 (onload, paste 시)
   function resizeEditorAllElements() {
-    // Perform additional actions after the element is displayed
     window.requestAnimationFrame(function () {
-      // Your additional actions here
-      // This code will run after the element is rendered
       let height = 62; // editor 기본 padding, border 포함
       for (let i = 0; i < editor.childNodes.length; i++) {
         let childNode = editor.childNodes[i];
@@ -964,9 +960,9 @@
     if (isFormSubmitting) {
       return; // Allow the default behavior for form submission
     }
-    // Cancel the event as a fallback
+    
     event.preventDefault();
-    // Set the message that will be displayed in the confirmation dialog
+    // 경고 메시지
     event.returnValue =
       "Are you sure you want to leave this page? Your unsaved changes may be lost.";
 
