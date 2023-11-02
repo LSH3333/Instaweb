@@ -450,9 +450,9 @@
   }
 
   function isHyperlink(text) {
-    // Use a regular expression to check if the text matches a URL pattern
     // let urlPattern = /^(https?:\/\/)?([\w.-]+\.[a-zA-Z]{2,6})([\/\w.-]*)*\/?$/;    
-    let urlPattern = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
+    // let urlPattern = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
+    let urlPattern = /^(https?):\/\//i;
     return urlPattern.test(text.trim());
   }
 
