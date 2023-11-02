@@ -452,7 +452,7 @@
   function isHyperlink(text) {
     // let urlPattern = /^(https?:\/\/)?([\w.-]+\.[a-zA-Z]{2,6})([\/\w.-]*)*\/?$/;    
     // let urlPattern = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
-    let urlPattern = /^(https?):\/\//i;
+    let urlPattern = /(http(s?)):\/\//i;
     return urlPattern.test(text.trim());
   }
 
