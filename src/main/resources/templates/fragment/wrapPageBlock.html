@@ -88,6 +88,8 @@
 
                     contentContainer.appendChild(pageBlock);
                 }
+
+                unVisibleLoading();
             } else {
                 console.error("error");
             }
@@ -113,5 +115,12 @@
         }
 
         return str;
+    }
+
+    function unVisibleLoading() {
+        document.getElementById('loading').classList.add('unVisible');
+    }
+    function visibleLoading() {
+        document.getElementById('loading').classList.remove('unVisible');
     }
 </script>

@@ -24,6 +24,10 @@
   <div class="contents">
   </div>
 
+  <div class="loadingContainer">
+    <div id="loading" class="lds-dual-ring"></div>
+  </div>
+
   <!-- footer -->
   <footer th:replace="fragment/footer :: footer"></footer>
 
@@ -42,23 +46,25 @@
         document.documentElement.offsetHeight
       );
 
-      
+
       if (
         scrollPosition + windowHeight + 10 >= documentHeight
       ) {
         // 이전 request 에 대한 게시글들 로딩 완료된 이후에만 또 다른 request 보냄
         if (xhr.readyState == XMLHttpRequest.DONE) {
           if (xhr.status == 200) {
+            visibleLoading();
             xhr.open(
               "GET",
               "/allPages/ajaxReq?beginIdx=" + beginIdx.toString(),
               true
-            );
+            );        
             xhr.send();
           }
         }
       }
     });
+    
 
     // 최초 페이지 로드 완료시 페이지 idx=0 부터 cnt=10 개 로드
     window.onload = function () {
