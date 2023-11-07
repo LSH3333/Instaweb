@@ -25,8 +25,12 @@ public class Image {
     private byte[] image;
 
 
-    // 이미지의 유니크한 uuid, Image 파일은 최초에 클라이언트 쪽에서 삽입되기 때문에 클라이언트에서 uuid 값 생성하고
-    // 서버로 보낸 후에 해당값 저장함
+    /**
+     * 이미지의 유니크한 uuid, Image 파일은 최초에 클라이언트 쪽에서 삽입되기 때문에 클라이언트에서 uuid 값 생성하고 서버로 보낸 후에 해당값 저장함.
+     * 이 UUID 값은 클라이언트에서 이미지를 랜더링할때도 사용됨
+     * <img id="7dcbd0e3-2240-4fc4-b097-8b5bd159cb35">
+     * <img> 엘레먼트에는 이처럼 uuid 가 저장되고, 이를 이용해서 맞는 이미지 객체 찾음
+     */
     private String UUID;
 
     public void setImgUUID(String UUID) {
