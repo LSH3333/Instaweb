@@ -305,8 +305,19 @@ public class PageController {
         return "redirect:/" + memberId + "/pages";
     }
 
+
     /**
-     * 작성폼, 수정폼에서 데이터 서버로 보내오면 처리함
+     * 작성폼, 수정폼에서 데이터 서버로 보내오면 저장함 
+     * @param pageId : 작성된 Page 의 id
+     * @param files : 이미지 파일들 리스트
+     * @param uuids : 각 이미지에 대응되는 고유한 uuid.
+     *              이미지는 최초에 클라이언트에서 생성되기 때문에 클라이언트에서 uuid 값 생성해서 서버로 보냄
+     * @param title : 작성된 Page 의 제목
+     * @param content : 작성된 Page 의 내용 (Page.java 의 content 필드에 주석 참고)
+     * @param createdTime : 작성 시간
+     * @param writingDone : 정상적으로 submit 눌러서 작성이 끝났는지 or 페이지 벗어나서 임시저장인지 여부
+     * @param loginMember : Page 를 작성한 로그인된 Member
+     * @return : HttpStatus
      */
     @PostMapping("/pages/upload")
     public ResponseEntity<String> handleFileUpload(@RequestParam("pageId") String pageId,
@@ -320,20 +331,19 @@ public class PageController {
 
         String message = "";
         Page page = pageService.findOne(Long.parseLong(pageId));
-        Long memberId = loginMember.getId();
 
         try {
             // title, content, createdTime 저장
-
             String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS";
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
             LocalDateTime localDateTime = LocalDateTime.parse(createdTime, formatter);
 
+            // Page 저장
             pageService.updatePage(Long.parseLong(pageId), title, content, localDateTime, writingDone);
-
+            // 해당 Page 가 기존에 존재하던 Page 인 경우, 이미지 모두 지우고 새롭게 저장
             imageService.deletePagesAllImages(Long.parseLong(pageId));
 
-            // 이미지 파일은 없을수도 있음
+            // 이미지 파일은 없을수도 있음, 있다면 imageService 통해 저장
             if(files != null) {
                 int i = 0;
                 for (MultipartFile file : files) {
