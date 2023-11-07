@@ -23,6 +23,13 @@ public class CommentService {
     private final PageService pageService;
     private final MemberService memberService;
 
+    /**
+     * Comment 는 Page 와 다대일 관계, Member 와 다대일 관계
+     * 트랜잭션 내부인 서비스 영역에서 Page, Member 조회해서 Comment 와 관계 맺은 후 레포지토리를 통해 저장
+     * @param comment : Comment 객체
+     * @param pageId : 댓글이 달린 Page 의 pageId
+     * @param memberId : 댓글을 작성한 Member 의 id
+     */
     public void save(Comment comment, Long pageId, Long memberId) {
 
         Page page = pageService.findOne(pageId);

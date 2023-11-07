@@ -21,7 +21,11 @@ public class CommentController {
     private final CommentService commentService;
 
     /**
-     * ajax로 전달받은 Comment 저장
+     * ajax 요청, loginMember 가 작성한 pageId 를 갖는 Page 의 Comment 저장
+     * @param pageId : 댓글이 달린 Page 의 pageId
+     * @param commentContent : 작성한 댓글 내용
+     * @param loginMember : 댓글을 작성한, 로그인 되어 있는 Member
+     * @return : 저장 성공, HttpStatus OK
      */
     @PostMapping("/comment/upload")
     public ResponseEntity<String> submit(@RequestParam("pageId") String pageId,
