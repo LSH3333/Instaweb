@@ -6,10 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.util.UriComponentsBuilder;
 import web.instaweb.domain.Member;
 import web.instaweb.dto.GoogleLoginResponse;
 import web.instaweb.dto.GoogleOAuthRequest;
@@ -33,6 +30,8 @@ public class OAuthService {
     @Value("${google.secret}")
     private String googleClientSecret;
 
+
+
     private final MemberService memberService;
     private final LoginService loginService;
 
@@ -46,10 +45,9 @@ public class OAuthService {
     }
 
     /**
-     * OAuth 의 모든 과정
-     * 1.
-     * @param authCode
-     * @return
+     * autoCode 구글에 보내서 token 얻고, token 구글에 보내서 유저 정보 받는다
+     * @param authCode : 구글에 보낼 authorization code
+     * @return : 구글에게 리턴 받은 사용자 정보 포함된 GoogleUserInfoDto
      */
     public GoogleUserInfoDto getGoogleUserInfoDto(String authCode) {
         // authorization code 포함 정보들 구글에 보내고, token 담긴 response 얻는다
@@ -61,6 +59,11 @@ public class OAuthService {
         return getUserInfoFromGoogle(googleToken);
     }
 
+    /**
+     * autoCode 구글에 보내서 token 얻는다
+     * @param authCode : 구글에 보낼 authorization code
+     * @return : 구글에게 받은 token 포함된 GoogleLoginResponse
+     */
     private GoogleLoginResponse getGoogleLoginResponse(String authCode) {
         // token 받기 위해 구글에 보낼 authorization_code 포함하는 GoogleOAuthRequest 객체 생성
         GoogleOAuthRequest googleOAuthRequest = GoogleOAuthRequest
