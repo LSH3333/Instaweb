@@ -22,7 +22,7 @@ spring:
 
   jpa:
     hibernate:
-      # 최초에만 create       
+      # 최초에만 create
       ddl-auto: none
       dialect: org.hibernate.dialect.PostgreSQL10Dialect
     properties:
