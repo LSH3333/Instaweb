@@ -53,8 +53,13 @@ public class OAuthController {
 
     /**
      * 유저 구글 로그인 이후 리다이렉트 되는 경로
+     * OAuth 의 모든 과정 진행
+     * 1. authCode 포함 정보를 구글에 보내 access_token, id_token 요청한다
+     * 2. 발급 받은 token 으로 id_token 기반 유저 정보 요청한다
+     * 3. 받은 유저 정보를 기반으로 회원가입,로그인 처리한다
+     *
      * @param authCode : access_token,id_token 을 얻기 위한 authorization code
-     * @return : 구글 로그인 후 navigate 될 경로 
+     * @return : 구글 로그인 후 navigate 될 경로
      */
     @GetMapping("/login/googleOAuth")
     public String googleOAuth(@RequestParam(value = "code") String authCode, HttpServletRequest request) {
@@ -62,12 +67,9 @@ public class OAuthController {
         // authCode 를 구글에 보내 유저 정보 반환 받는다
         GoogleUserInfoDto googleUserInfoDto = oAuthService.getGoogleUserInfoDto(authCode);
         // 유저 정보를 기반으로 로그인 시도한다
-        Member loggedInMember = oAuthService.loginGoogle(googleUserInfoDto, request);
-
+        oAuthService.loginGoogle(googleUserInfoDto, request);
         return "home";
     }
-
-
 
 
 }

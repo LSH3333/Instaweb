@@ -7,15 +7,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
-import web.instaweb.SessionConst;
 import web.instaweb.domain.Member;
 import web.instaweb.dto.GoogleLoginResponse;
 import web.instaweb.dto.GoogleOAuthRequest;
 import web.instaweb.dto.GoogleUserInfoDto;
-
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+
 
 @Service
 @Transactional(readOnly = false)
@@ -40,17 +40,29 @@ public class OAuthService {
      * @return : 구글에게 요청 보낼 url
      */
     public String getReqUrl() {
-        String reqUrl = googleLoginUrl + "/o/oauth2/v2/auth?client_id=" +
+        return googleLoginUrl + "/o/oauth2/v2/auth?client_id=" +
                 googleClientId + "&redirect_uri=" +
                 googleRedirectUrl + "&response_type=code&scope=email%20profile%20openid&access_type=offline";
-
-        log.info("myLog-ClientId : {}",googleClientId);
-        log.info("myLog-RedirectUrl : {}",googleRedirectUrl);
-        return reqUrl;
     }
 
+    /**
+     * OAuth 의 모든 과정
+     * 1.
+     * @param authCode
+     * @return
+     */
     public GoogleUserInfoDto getGoogleUserInfoDto(String authCode) {
-        // 구글에 등록된 클라이언트 설정정보를 보내어 약속된 access_token 받기위한 객체 생성
+        // authorization code 포함 정보들 구글에 보내고, token 담긴 response 얻는다
+        GoogleLoginResponse googleLoginResponse = getGoogleLoginResponse(authCode);
+
+        // 받은 토큰을 구글에 보내 유저정보를 얻고
+        // 허가된 토큰의 유저정보를 결과로 받는다.
+        String googleToken = googleLoginResponse.getId_token();
+        return getUserInfoFromGoogle(googleToken);
+    }
+
+    private GoogleLoginResponse getGoogleLoginResponse(String authCode) {
+        // token 받기 위해 구글에 보낼 authorization_code 포함하는 GoogleOAuthRequest 객체 생성
         GoogleOAuthRequest googleOAuthRequest = GoogleOAuthRequest
                 .builder()
                 .clientId(googleClientId)
@@ -60,28 +72,45 @@ public class OAuthService {
                 .grantType("authorization_code")
                 .build();
 
-        RestTemplate restTemplate = new RestTemplate();
 
-        // RestTemplate 을 통해 구글에 access_token 요청
-        ResponseEntity<GoogleLoginResponse> apiResponse = restTemplate.postForEntity(googleAuthUrl + "/token", googleOAuthRequest, GoogleLoginResponse.class);
-        // 받은 토큰을 토큰객체에 저장
-        GoogleLoginResponse googleLoginResponse = apiResponse.getBody();
+        // WebClient 에 googleOAuthRequest 담아서 요청 보내고 응답 받는다
+        WebClient webClient = WebClient.builder()
+                .baseUrl(googleAuthUrl) // api 요청 base path
+                .build();
 
-        log.info("responseBody {}",googleLoginResponse.toString());
+        ResponseEntity<GoogleLoginResponse> apiResponse = webClient.post().uri(uriBuilder -> uriBuilder.path("/token").build())
+                .bodyValue(googleOAuthRequest)
+                .header("from", "client")
+                .retrieve()
+                .toEntity(GoogleLoginResponse.class) // GoogleLoginResponse 로 받는다
+                .block();
 
-        String googleToken = googleLoginResponse.getId_token();
-        // 구글에 보낼 requestUrl 생성 (토큰 포함)
-        String requestUrl = UriComponentsBuilder.fromHttpUrl(googleAuthUrl + "/tokeninfo").queryParam("id_token",googleToken).toUriString();
+        return apiResponse.getBody();
+    }
+
+    /**
+     * token 을 구글에 보내 유저 정보 응답 받는다
+     * @param googleToken : 구글에게 발급받은 id_token
+     * @return : 구글에게 응답 받은 유저 정보 포함된 GoogleUserInfoDto
+     */
+    private GoogleUserInfoDto getUserInfoFromGoogle(String googleToken) {
         // 받은 토큰을 구글에 보내 유저정보를 얻고
         // 허가된 토큰의 유저정보를 결과로 받는다.
-//        String resultJson = restTemplate.getForObject(requestUrl, String.class);
 
-        ResponseEntity<GoogleUserInfoDto> googleUserInfoDtoResponseEntity = restTemplate.getForEntity(requestUrl, GoogleUserInfoDto.class);
-        GoogleUserInfoDto googleUserInfoDto = googleUserInfoDtoResponseEntity.getBody();
-        log.info("googleUserInfoDto {}", googleUserInfoDto.toString());
+        // 구글에 access_token 요청
+        WebClient webClient = WebClient.builder()
+                .baseUrl(googleAuthUrl)
+                .defaultHeader("from", "client")
+                .build();
 
-        return googleUserInfoDto;
+        ResponseEntity<GoogleUserInfoDto> googleUserInfoDtoResponseEntity = webClient.get().uri(uriBuilder -> uriBuilder.path("/tokeninfo").queryParam("id_token",googleToken).build())
+                .retrieve()
+                .toEntity(GoogleUserInfoDto.class)
+                .block();
+
+        return googleUserInfoDtoResponseEntity.getBody();
     }
+
 
     /**
      *
