@@ -19,16 +19,6 @@ import java.net.URI;
 @RequiredArgsConstructor
 @Slf4j
 public class OAuthController {
-    @Value("${google.auth.url}")
-    private String googleAuthUrl;
-    @Value("${google.login.url}")
-    private String googleLoginUrl;
-    @Value("${google.client.id}")
-    private String googleClientId;
-    @Value("${google.redirect.url}")
-    private String googleRedirectUrl;
-    @Value("${google.secret}")
-    private String googleClientSecret;
 
     private final OAuthService oAuthService;
 
@@ -39,7 +29,6 @@ public class OAuthController {
      */
     @GetMapping("/login/getAuthUrl")
     public ResponseEntity<?> getGoogleAuthUrl() {
-        log.info("getGoogleAuthUrl()");
         // 구글에게 로그인 페이지 요청
         String reqUrl = oAuthService.getReqUrl();
         HttpHeaders headers = new HttpHeaders();

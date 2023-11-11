@@ -7,7 +7,6 @@ import org.springframework.context.annotation.PropertySource;
 import java.io.IOException;
 
 @SpringBootApplication
-@PropertySource(value = {"classpath:secret.yml"}, factory = FileConfig.class)
 public class InstawebApplication {
 
 	public static void main(String[] args) throws IOException {

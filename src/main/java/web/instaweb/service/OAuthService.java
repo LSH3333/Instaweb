@@ -19,15 +19,15 @@ import javax.servlet.http.HttpServletRequest;
 @RequiredArgsConstructor
 @Slf4j
 public class OAuthService {
-    @Value("${google.auth.url}")
+    @Value("${GOOGLE_AUTH_URL}")
     private String googleAuthUrl;
-    @Value("${google.login.url}")
+    @Value("${GOOGLE_LOGIN_URL}")
     private String googleLoginUrl;
-    @Value("${google.client.id}")
+    @Value("${GOOGLE_CLIENT_ID}")
     private String googleClientId;
-    @Value("${google.redirect.url}")
+    @Value("${GOOGLE_REDIRECT_URL}")
     private String googleRedirectUrl;
-    @Value("${google.secret}")
+    @Value("${GOOGLE_SECRET_CLIENT}")
     private String googleClientSecret;
 
 
