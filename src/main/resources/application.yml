@@ -1,17 +1,4 @@
 spring:
-#  h2 db
-#  datasource:
-#    url: jdbc:h2:tcp://localhost/~/instaweb
-#    username: sa
-#    password:
-#    driver-class-name: org.h2.Driver
-#
-#  jpa:
-#    hibernate:
-#      ddl-auto: create
-#    properties:
-#      hibernate:
-#        format_sql: true
 
 #  postgresql db (1.local, 2.heroku deploy)
   datasource:
