@@ -13,7 +13,6 @@ spring:
     username: mpcdhjuocwciio
     password: 3fc888680efc3d57d8a90a3f46246d90d6913bf5e1be8bcbffb54c7b616b0b3c
 
-# added
     maxActive: 10
     maxIdle: 5
     minIdle: 2
