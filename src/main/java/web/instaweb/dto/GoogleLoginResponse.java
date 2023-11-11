@@ -3,6 +3,9 @@ package web.instaweb.dto;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * GoogleOAuthRequest 를 받은 구글이 보내온 Response (access_token 포함)
+ */
 @Data
 @RequiredArgsConstructor
 public class GoogleLoginResponse {
@@ -15,5 +18,6 @@ public class GoogleLoginResponse {
     private String scope;
     // 반환된 토큰 유형
     private String token_type;
+    // 사용자의 정보: name, email 등 담겨있음
     private String id_token;
 }

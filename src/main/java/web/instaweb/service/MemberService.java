@@ -31,10 +31,21 @@ public class MemberService {
     public boolean checkLoginIdDuplication(Member member) {
         return memberRepository.findByLoginId(member.getLoginId()).isPresent();
     }
+    // loginId 가 이미 db 에 존재하면 return false
+    public boolean checkLoginIdDuplication(String loginId) {
+        return memberRepository.findByLoginId(loginId).isPresent();
+    }
+
+    public Member getMemberWithLoginId(String loginId) {
+        return memberRepository.findByLoginId(loginId).orElse(null);
+    }
 
     public boolean checkNameDuplication(Member member) {
         return memberRepository.findByName(member.getName()).isPresent();
     }
+
+
+
 
     public Member registerNewMember(String loginId, String password, String name) {
         Member member = new Member();
@@ -59,4 +70,6 @@ public class MemberService {
         memberRepository.save(member);
         return member;
     }
+
+
 }
