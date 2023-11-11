@@ -39,7 +39,6 @@ public class OAuthService {
      * @return : 구글에게 요청 보낼 url
      */
     public String getReqUrl() {
-        System.out.println("googleRedirectUrl = " + googleRedirectUrl);
         return googleLoginUrl + "/o/oauth2/v2/auth?client_id=" +
                 googleClientId + "&redirect_uri=" +
                 googleRedirectUrl + "&response_type=code&scope=email%20profile%20openid&access_type=offline";

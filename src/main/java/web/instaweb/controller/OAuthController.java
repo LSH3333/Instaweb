@@ -31,6 +31,7 @@ public class OAuthController {
     public ResponseEntity<?> getGoogleAuthUrl() {
         // 구글에게 로그인 페이지 요청
         String reqUrl = oAuthService.getReqUrl();
+        System.out.println("googleURL = " + reqUrl);
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(URI.create(reqUrl));
 
