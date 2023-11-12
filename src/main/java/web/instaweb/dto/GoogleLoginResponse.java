@@ -18,6 +18,7 @@ public class GoogleLoginResponse {
     private String scope;
     // 반환된 토큰 유형
     private String token_type;
-    // 사용자의 정보: name, email 등 담겨있음
+    // 사용자의 정보: name, email 등 담겨있음.
+    // 리소스 오너에게 보내는 용도가 아닌 클라이언트에서 유저 식별 용도로 사용
     private String id_token;
 }

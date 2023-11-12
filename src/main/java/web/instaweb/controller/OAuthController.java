@@ -24,19 +24,15 @@ public class OAuthController {
 
 
     /**
-     * 구글 로그인 요청 경로
-     * @return : 유저 구글 로그인 후 리다이렉트될 경로 담겨있는 ResponseEntity
+     * 구글 로그인 버튼 누를시 요청 경로
+     * @return : 구글에게 로그인 페이지 요청할 경로로 리다이렉트
      */
     @GetMapping("/login/getAuthUrl")
-    public ResponseEntity<?> getGoogleAuthUrl() {
-        // 구글에게 로그인 페이지 요청
+    public String getGoogleAuthUrl() {
+        // 구글에게 요청 보낼 경로
         String reqUrl = oAuthService.getReqUrl();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create(reqUrl));
-
         // 구글 로그인 창을 띄우고, 로그인 후 login/googleOAuth 로 리다이렉트
-        // (status=MOVED_PERMANENTLY 인데 헤더에 uri 있을경우 자동 리다이렉트함)
-        return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
+        return "redirect:/" + reqUrl;
     }
 
 
@@ -52,7 +48,6 @@ public class OAuthController {
      */
     @GetMapping("/login/googleOAuth")
     public String googleOAuth(@RequestParam(value = "code") String authCode, HttpServletRequest request) {
-        log.info("googleOAuth");
         // authCode 를 구글에 보내 유저 정보 반환 받는다
         GoogleUserInfoDto googleUserInfoDto = oAuthService.getGoogleUserInfoDto(authCode);
         // 유저 정보를 기반으로 로그인 시도한다

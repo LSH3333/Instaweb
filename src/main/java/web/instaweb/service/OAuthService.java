@@ -45,7 +45,7 @@ public class OAuthService {
     }
 
     /**
-     * autoCode 구글에 보내서 token 얻고, token 구글에 보내서 유저 정보 받는다
+     * autoCode 구글에 보내서 access_token 얻고, access_token 구글에 보내서 유저 정보 받는다
      * @param authCode : 구글에 보낼 authorization code
      * @return : 구글에게 리턴 받은 사용자 정보 포함된 GoogleUserInfoDto
      */
@@ -53,9 +53,8 @@ public class OAuthService {
         // authorization code 포함 정보들 구글에 보내고, token 담긴 response 얻는다
         GoogleLoginResponse googleLoginResponse = getGoogleLoginResponse(authCode);
 
-        // 받은 토큰을 구글에 보내 유저정보를 얻고
-        // 허가된 토큰의 유저정보를 결과로 받는다.
-        String googleToken = googleLoginResponse.getId_token();
+        // 받은 access_token 구글에 보내 유저정보를 얻는다
+        String googleToken = googleLoginResponse.getAccess_token();
         return getUserInfoFromGoogle(googleToken);
     }
 
@@ -106,7 +105,7 @@ public class OAuthService {
                 .defaultHeader("from", "client")
                 .build();
 
-        ResponseEntity<GoogleUserInfoDto> googleUserInfoDtoResponseEntity = webClient.get().uri(uriBuilder -> uriBuilder.path("/tokeninfo").queryParam("id_token",googleToken).build())
+        ResponseEntity<GoogleUserInfoDto> googleUserInfoDtoResponseEntity = webClient.get().uri(uriBuilder -> uriBuilder.path("/tokeninfo").queryParam("access_token",googleToken).build())
                 .retrieve()
                 .toEntity(GoogleUserInfoDto.class)
                 .block();
