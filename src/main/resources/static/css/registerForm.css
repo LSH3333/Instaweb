@@ -108,18 +108,27 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    
+
     width: 400px;
     height: 80px;
     border: 2px solid rgb(128, 128, 128, 0.5);
     margin: 0 auto 0 auto;
 }
 
-.toLoginBox div {
+.toLoginBox span {
+    font-size: 15px;
+}
+
+.toLoginBox span a {
+    font-size: 15px;
+    color: rgb(8, 148, 244);
+}
+
+/* .toLoginBox div {
     font-size: 15px;
 }
 
 .toLoginBox div a {
     font-size: 15px;
     color: rgb(8, 148, 244);
-}
+} */
