@@ -39,7 +39,6 @@ public class PageController {
     private final MemberService memberService;
     private final NoImgProvider noImgProvider;
 
-    private final OAuthService oAuthService;
 
     /**
      * 글 작성 폼
@@ -136,7 +135,7 @@ public class PageController {
     public String home(
             @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
             Model model) {
-        System.out.println("googleReqUrl = " + oAuthService.getReqUrl());
+
         if(loginMember == null) {
             return "home";
         }

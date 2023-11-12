@@ -105,8 +105,10 @@
 
 .toLoginBox {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+    
     width: 400px;
     height: 80px;
     border: 2px solid rgb(128, 128, 128, 0.5);
