@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 @RequiredArgsConstructor
 @Slf4j
 public class OAuthService {
+    // 노출되면 안되는 secret key 들은 환경변수로 등록해서 사용
     @Value("${GOOGLE_AUTH_URL}")
     private String googleAuthUrl;
     @Value("${GOOGLE_LOGIN_URL}")
@@ -36,34 +37,29 @@ public class OAuthService {
     private final LoginService loginService;
 
     /**
+     * client_id : 클라이언트를 구글에 등록했을때 발급받은 값
+     * redirect_uri : 사전에 등록한 구글 로그인 성공 후 리다이렉트 될 경로
+     * response_type=code : 로그인 성공시 구글에서 code(access_code) 값을 리턴할것을 요구
+     * scope : 권한 요청 범위
+     * access_type=offline : refresh token 발급 (사용자가 오프라인 상태일때도 클라이언트가 리소스 서버에게 권한을 요청할수 있게 됨)
      * @return : 구글에게 요청 보낼 url
      */
     public String getReqUrl() {
-        return googleLoginUrl + "/o/oauth2/v2/auth?client_id=" +
-                googleClientId + "&redirect_uri=" +
-                googleRedirectUrl + "&response_type=code&scope=email%20profile%20openid&access_type=offline";
+        return googleLoginUrl + "/o/oauth2/v2/auth" +
+                "?client_id=" + googleClientId +
+                "&redirect_uri=" + googleRedirectUrl +
+                "&response_type=code" +
+                "&scope=email%20profile%20openid" +
+                "&access_type=offline";
     }
 
-    /**
-     * autoCode 구글에 보내서 access_token 얻고, access_token 구글에 보내서 유저 정보 받는다
-     * @param authCode : 구글에 보낼 authorization code
-     * @return : 구글에게 리턴 받은 사용자 정보 포함된 GoogleUserInfoDto
-     */
-    public GoogleUserInfoDto getGoogleUserInfoDto(String authCode) {
-        // authorization code 포함 정보들 구글에 보내고, token 담긴 response 얻는다
-        GoogleLoginResponse googleLoginResponse = getGoogleLoginResponse(authCode);
-
-        // 받은 access_token 구글에 보내 유저정보를 얻는다
-        String googleToken = googleLoginResponse.getAccess_token();
-        return getUserInfoFromGoogle(googleToken);
-    }
 
     /**
-     * autoCode 구글에 보내서 token 얻는다
+     * autoCode 구글에 보내서 access_token 얻는다
      * @param authCode : 구글에 보낼 authorization code
      * @return : 구글에게 받은 token 포함된 GoogleLoginResponse
      */
-    private GoogleLoginResponse getGoogleLoginResponse(String authCode) {
+    public GoogleLoginResponse requestAccessTokenToResourceServer(String authCode) {
         // token 받기 위해 구글에 보낼 authorization_code 포함하는 GoogleOAuthRequest 객체 생성
         GoogleOAuthRequest googleOAuthRequest = GoogleOAuthRequest
                 .builder()
@@ -91,11 +87,11 @@ public class OAuthService {
     }
 
     /**
-     * token 을 구글에 보내 유저 정보 응답 받는다
-     * @param googleToken : 구글에게 발급받은 id_token
+     * access_token 을 구글에 보내 유저 정보 응답 받는다
+     * @param googleToken : 구글에게 발급받은 access_token
      * @return : 구글에게 응답 받은 유저 정보 포함된 GoogleUserInfoDto
      */
-    private GoogleUserInfoDto getUserInfoFromGoogle(String googleToken) {
+    public GoogleUserInfoDto getUserInfoFromGoogle(String googleToken) {
         // 받은 토큰을 구글에 보내 유저정보를 얻고
         // 허가된 토큰의 유저정보를 결과로 받는다.
 
