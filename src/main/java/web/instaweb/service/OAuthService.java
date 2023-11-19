@@ -20,10 +20,12 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 public class OAuthService {
     // 노출되면 안되는 secret key 들은 환경변수로 등록해서 사용
-    @Value("${GOOGLE_AUTH_URL}")
-    private String googleAuthUrl;
+    // 리소서 서버에 로그인 요청 url, 응답으로 auth_code 받음
     @Value("${GOOGLE_LOGIN_URL}")
     private String googleLoginUrl;
+    // 리소스 서버에 access_token 요청 url
+    @Value("${GOOGLE_AUTH_URL}")
+    private String googleAuthUrl;
     @Value("${GOOGLE_CLIENT_ID}")
     private String googleClientId;
     @Value("${GOOGLE_REDIRECT_URL}")

@@ -27,7 +27,8 @@ public class WebConfig implements WebMvcConfigurer {
                         "/allPages", "/allPages/ajaxReq", "/game/list",
                         "/search/resultList/**", "/search/searchAll", "/search/resultMineList/**", "/search/searchMine",
                         "/comment/getComments/**", "/comment/delete/**",
-                        "/login/googleOAuth", "/login/getAuthUrl" // google oauth api
+                        "/login/googleOAuth", "/login/getAuthUrl", // google oauth api
+                        "/login/kakaoOAuthLogin", "/login/kakaoOAuth"
                         );
 
         // 로그인 상태라면 postHandle 에서 loginMemberId attribute 에 저장
