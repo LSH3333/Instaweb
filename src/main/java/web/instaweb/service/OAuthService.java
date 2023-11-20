@@ -3,13 +3,16 @@ package web.instaweb.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import web.instaweb.domain.Member;
 import web.instaweb.dto.GoogleLoginResponse;
-import web.instaweb.dto.GoogleOAuthRequest;
 import web.instaweb.dto.GoogleUserInfoDto;
 import javax.servlet.http.HttpServletRequest;
 
@@ -32,7 +35,6 @@ public class OAuthService {
     private String googleRedirectUrl;
     @Value("${GOOGLE_SECRET_CLIENT}")
     private String googleClientSecret;
-
 
 
     private final MemberService memberService;
@@ -62,15 +64,12 @@ public class OAuthService {
      * @return : 구글에게 받은 token 포함된 GoogleLoginResponse
      */
     public GoogleLoginResponse requestAccessTokenToResourceServer(String authCode) {
-        // token 받기 위해 구글에 보낼 authorization_code 포함하는 GoogleOAuthRequest 객체 생성
-        GoogleOAuthRequest googleOAuthRequest = GoogleOAuthRequest
-                .builder()
-                .clientId(googleClientId)
-                .clientSecret(googleClientSecret)
-                .code(authCode)
-                .redirectUri(googleRedirectUrl)
-                .grantType("authorization_code")
-                .build();
+        MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+        formData.add("grantType", "authorization_code");
+        formData.add("clientId", googleClientId);
+        formData.add("redirectUri", googleRedirectUrl);
+        formData.add("code", authCode);
+        formData.add("clientSecret", googleClientSecret);
 
 
         // WebClient 에 googleOAuthRequest 담아서 요청 보내고 응답 받는다
@@ -79,7 +78,8 @@ public class OAuthService {
                 .build();
 
         ResponseEntity<GoogleLoginResponse> apiResponse = webClient.post().uri(uriBuilder -> uriBuilder.path("/token").build())
-                .bodyValue(googleOAuthRequest)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .body(BodyInserters.fromFormData(formData))
                 .header("from", "client")
                 .retrieve()
                 .toEntity(GoogleLoginResponse.class) // GoogleLoginResponse 로 받는다

@@ -5,13 +5,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.json.simple.JSONObject;
 import web.instaweb.domain.Member;
-import web.instaweb.dto.GoogleUserInfoDto;
 import web.instaweb.dto.KakaoLoginResponse;
 import web.instaweb.dto.KakaoUserInfoDto;
 
@@ -19,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = false)
 public class KakaoOAuthService {
     // 노출되면 안되는 secret key 들은 환경변수로 등록해서 사용
     @Value("${KAKAO_AUTH_URL}")
