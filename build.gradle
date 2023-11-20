@@ -33,6 +33,10 @@ dependencies {
 
 //	implementation group: 'jakarta.validation', name: 'jakarta.validation-api', version: '2.0.2'
 
+	// https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple
+	implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
+
+
 	// https://mvnrepository.com/artifact/org.postgresql/postgresql
 	implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.23' // 추가
 	runtimeOnly 'org.postgresql:postgresql' // 추가
