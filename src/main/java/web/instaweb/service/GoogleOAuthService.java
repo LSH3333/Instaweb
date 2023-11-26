@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 @Transactional(readOnly = false)
 @RequiredArgsConstructor
 @Slf4j
-public class OAuthService {
+public class GoogleOAuthService {
     // 노출되면 안되는 secret key 들은 환경변수로 등록해서 사용
     // 리소서 서버에 로그인 요청 url, 응답으로 auth_code 받음
     @Value("${GOOGLE_LOGIN_URL}")
