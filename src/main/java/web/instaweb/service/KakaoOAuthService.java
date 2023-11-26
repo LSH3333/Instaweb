@@ -11,8 +11,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import web.instaweb.domain.Member;
-import web.instaweb.dto.KakaoLoginResponse;
 import web.instaweb.dto.KakaoUserInfoDto;
+import web.instaweb.dto.OAuthServerResponse;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -57,7 +57,7 @@ public class KakaoOAuthService {
      * @param authCode : Resource Server 에 보낼 authorization code
      * @return : Resource Server 에게 받은 token 포함된 Response 객체
      */
-    public KakaoLoginResponse requestAccessTokenToResourceServer(String authCode) {
+    public OAuthServerResponse requestAccessTokenToResourceServer(String authCode) {
         /////////
         WebClient webClient = WebClient.builder()
                 .baseUrl(kakaoAuthUrl) // api 요청 base path
@@ -70,12 +70,12 @@ public class KakaoOAuthService {
         formData.add("code", authCode);
 
         // kakao 는 google 과 다르게 form 형식으로만 받음
-        ResponseEntity<KakaoLoginResponse> apiResponse = webClient.post()
+        ResponseEntity<OAuthServerResponse> apiResponse = webClient.post()
                 .uri(uriBuilder -> uriBuilder.path("/token").build())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .body(BodyInserters.fromFormData(formData))
                 .retrieve()
-                .toEntity(KakaoLoginResponse.class)
+                .toEntity(OAuthServerResponse.class)
                 .block();
 
         return apiResponse.getBody();

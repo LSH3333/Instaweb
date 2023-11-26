@@ -5,10 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import web.instaweb.dto.GoogleLoginResponse;
-import web.instaweb.dto.GoogleUserInfoDto;
-import web.instaweb.dto.KakaoLoginResponse;
-import web.instaweb.dto.KakaoUserInfoDto;
+import web.instaweb.dto.*;
 import web.instaweb.service.GoogleOAuthService;
 import web.instaweb.service.KakaoOAuthService;
 
@@ -51,13 +48,14 @@ public class OAuthController {
     @GetMapping("/login/googleOAuth")
     public String googleOAuth(@RequestParam(value = "code") String authCode, HttpServletRequest request) {
         // authorization_code 포함 정보들 구글에 보내고, access_token 담긴 response 얻는다
-        GoogleLoginResponse googleLoginResponse = googleOAuthService.requestAccessTokenToResourceServer(authCode);
+        OAuthServerResponse oAuthServerResponse = googleOAuthService.requestAccessTokenToResourceServer(authCode);
         // 받은 access_token 구글에 보내 유저정보를 얻는다
-        String googleToken = googleLoginResponse.getAccess_token();
+        String googleToken = oAuthServerResponse.getAccess_token();
         GoogleUserInfoDto googleUserInfoDto = googleOAuthService.getUserInfoFromGoogle(googleToken);
-
+//        OAuthUserInfoDto googleUserInfoDto = googleOAuthService.getUserInfoFromGoogle(googleToken);
         // 유저 정보를 기반으로 로그인 시도한다
         googleOAuthService.loginGoogle(googleUserInfoDto, request);
+//        googleOAuthService.login(googleUserInfoDto, request);
         return "home";
     }
 
@@ -71,8 +69,8 @@ public class OAuthController {
 
     @GetMapping("/login/kakaoOAuth")
     public String kakaoOAuth(@RequestParam(value = "code") String authCode, HttpServletRequest request) {
-        KakaoLoginResponse kakaoLoginResponse = kakaoOAuthService.requestAccessTokenToResourceServer(authCode);
-        String access_token = kakaoLoginResponse.getAccess_token();
+        OAuthServerResponse oAuthServerResponse = kakaoOAuthService.requestAccessTokenToResourceServer(authCode);
+        String access_token = oAuthServerResponse.getAccess_token();
         KakaoUserInfoDto userInfoFromKakao = kakaoOAuthService.getUserInfoFromKakao(access_token);
 
         kakaoOAuthService.loginKakao(userInfoFromKakao, request);

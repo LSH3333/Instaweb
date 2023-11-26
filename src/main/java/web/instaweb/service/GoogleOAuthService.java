@@ -12,8 +12,10 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import web.instaweb.domain.Member;
-import web.instaweb.dto.GoogleLoginResponse;
 import web.instaweb.dto.GoogleUserInfoDto;
+import web.instaweb.dto.OAuthServerResponse;
+import web.instaweb.dto.OAuthUserInfoDto;
+
 import javax.servlet.http.HttpServletRequest;
 
 
@@ -63,7 +65,7 @@ public class GoogleOAuthService {
      * @param authCode : 구글에 보낼 authorization code
      * @return : 구글에게 받은 token 포함된 GoogleLoginResponse
      */
-    public GoogleLoginResponse requestAccessTokenToResourceServer(String authCode) {
+    public OAuthServerResponse requestAccessTokenToResourceServer(String authCode) {
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         formData.add("grantType", "authorization_code");
         formData.add("clientId", googleClientId);
@@ -77,12 +79,12 @@ public class GoogleOAuthService {
                 .baseUrl(googleAuthUrl) // api 요청 base path
                 .build();
 
-        ResponseEntity<GoogleLoginResponse> apiResponse = webClient.post().uri(uriBuilder -> uriBuilder.path("/token").build())
+        ResponseEntity<OAuthServerResponse> apiResponse = webClient.post().uri(uriBuilder -> uriBuilder.path("/token").build())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .body(BodyInserters.fromFormData(formData))
                 .header("from", "client")
                 .retrieve()
-                .toEntity(GoogleLoginResponse.class) // GoogleLoginResponse 로 받는다
+                .toEntity(OAuthServerResponse.class) // GoogleLoginResponse 로 받는다
                 .block();
 
         return apiResponse.getBody();
@@ -141,6 +143,40 @@ public class GoogleOAuthService {
         return null;
     }
 
+    /**
+     * kakao, google 통합 진행중 ... 
+     */
+    public Member login(OAuthUserInfoDto oAuthUserInfoDto, HttpServletRequest request) {
+        String oauthType = oAuthUserInfoDto.getOAuthType();
+        GoogleUserInfoDto googleUserInfoDto = (GoogleUserInfoDto)oAuthUserInfoDto;
+
+        if (oauthType.equals("KAKAO")) {
+
+        } else if (oauthType.equals("GOOGLE")) {
+            // 존재하지 않는 맴버 -> 회원가입 진행 -> 로그인 진행
+            if (!memberService.checkLoginIdDuplication(googleUserInfoDto.getEmail())) {
+                // 회원가입 진행
+                Member registeredMember = memberService.registerNewMember(googleUserInfoDto.getEmail(), googleUserInfoDto.getEmail(), googleUserInfoDto.getName());
+                // 로그인 진행 성공
+                if (loginService.loginOAuth(registeredMember)) {
+                    loginService.regSession(request, registeredMember);
+                    return registeredMember;
+                }
+            }
+            // 존재하는 맴버 -> 로그인 진행
+            else {
+                Member member = memberService.getMemberWithLoginId(googleUserInfoDto.getEmail());
+                // 로그인 진행 성공
+                if (loginService.loginOAuth(member)) {
+                    loginService.regSession(request, member);
+                    return member;
+                }
+            }
+
+        }
+
+        return null;
+    }
 
 
 }
