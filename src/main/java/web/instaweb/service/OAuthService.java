@@ -94,10 +94,10 @@ public class OAuthService {
      * @return : 구글에게 응답 받은 유저 정보 포함된 GoogleUserInfoDto
      */
     public GoogleUserInfoDto getUserInfoFromGoogle(String googleToken) {
-        // 받은 토큰을 구글에 보내 유저정보를 얻고
+        // 받은 토큰을 리소스 서버에 보내 유저정보를 얻고
         // 허가된 토큰의 유저정보를 결과로 받는다.
 
-        // 구글에 access_token 요청
+        // 리소스 서버에 access_token 요청
         WebClient webClient = WebClient.builder()
                 .baseUrl(googleAuthUrl)
                 .defaultHeader("from", "client")
