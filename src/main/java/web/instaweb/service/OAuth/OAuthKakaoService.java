@@ -44,6 +44,11 @@ public class OAuthKakaoService implements OAuthService {
 
 
     @Override
+    public String getType() {
+        return "kakao";
+    }
+
+    @Override
     public String getReqUrl() {
         return kakaoLoginUrl +
                 "?client_id=" + kakaoClientId +

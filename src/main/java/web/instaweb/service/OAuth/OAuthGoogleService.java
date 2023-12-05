@@ -43,6 +43,11 @@ public class OAuthGoogleService implements OAuthService {
     private final LoginService loginService;
 
     @Override
+    public String getType() {
+        return "google";
+    }
+
+    @Override
     public String getReqUrl() {
         return loginUrl + "/o/oauth2/v2/auth" +
                 "?client_id=" + clientId +

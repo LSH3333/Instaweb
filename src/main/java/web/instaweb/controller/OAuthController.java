@@ -7,8 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import web.instaweb.dto.OAuth.OAuthLoginResponse;
 import web.instaweb.dto.OAuth.OAuthUserInfoDto;
-import web.instaweb.service.OAuth.OAuthGoogleService;
-import web.instaweb.service.OAuth.OAuthKakaoService;
+import web.instaweb.factory.OAuthServiceFactory;
 import web.instaweb.service.OAuth.OAuthService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,8 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 public class OAuthController {
 
-    private final OAuthGoogleService oAuthGoogleService;
-    private final OAuthKakaoService oAuthKakaoService;
+    private final OAuthServiceFactory oAuthServiceFactory;
 
     /////////////////// GOOGLE
 
@@ -30,7 +28,7 @@ public class OAuthController {
     @GetMapping("/login/getAuthUrl")
     public String getGoogleAuthUrl() {
         // 구글에게 요청 보낼 경로
-        String reqUrl = oAuthGoogleService.getReqUrl();
+        String reqUrl = oAuthServiceFactory.getOAuthService("google").getReqUrl();
         // reqUrl 로 요청하면 구글 로그인 창으로 이동함
         // 사용자가 로그인 성공하면 지정된 redirect_uri 로 리다이렉트됨
         return "redirect:" + reqUrl;
@@ -49,7 +47,7 @@ public class OAuthController {
      */
     @GetMapping("/login/googleOAuth")
     public String googleOAuth(@RequestParam(value = "code") String authCode, HttpServletRequest request) {
-        handleOAuthLogin(oAuthGoogleService, authCode, request);
+        handleOAuthLogin(oAuthServiceFactory.getOAuthService("google"), authCode, request);
         return "home";
     }
 
@@ -58,13 +56,13 @@ public class OAuthController {
 
     @GetMapping("/login/kakaoOAuthLogin")
     public String loginKakaoOAuth() {
-        String reqUrl = oAuthKakaoService.getReqUrl();
+        String reqUrl = oAuthServiceFactory.getOAuthService("kakao").getReqUrl();
         return "redirect:" + reqUrl;
     }
 
     @GetMapping("/login/kakaoOAuth")
     public String kakaoOAuth(@RequestParam(value = "code") String authCode, HttpServletRequest request) {
-        handleOAuthLogin(oAuthKakaoService, authCode, request);
+        handleOAuthLogin(oAuthServiceFactory.getOAuthService("kakao"), authCode, request);
         return "home";
     }
 

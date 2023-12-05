@@ -7,6 +7,7 @@ import web.instaweb.dto.OAuth.OAuthUserInfoDto;
 import javax.servlet.http.HttpServletRequest;
 
 public interface OAuthService {
+    String getType();
     String getReqUrl();
     OAuthLoginResponse requestAccessTokenToResourceServer(String authCode);
     OAuthUserInfoDto getUserInfoFromResourceServer(String token);
