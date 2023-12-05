@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import web.instaweb.SessionConst;
 import web.instaweb.domain.Member;
-import web.instaweb.dto.GoogleUserInfoDto;
 import web.instaweb.repository.MemberRepository;
 
 import javax.servlet.http.HttpServletRequest;

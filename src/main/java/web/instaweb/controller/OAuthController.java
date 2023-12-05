@@ -3,10 +3,13 @@ package web.instaweb.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import web.instaweb.dto.GoogleLoginResponse;
-import web.instaweb.dto.GoogleUserInfoDto;
-import web.instaweb.service.OAuthService;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import web.instaweb.dto.OAuth.OAuthLoginResponse;
+import web.instaweb.dto.OAuth.OAuthUserInfoDto;
+import web.instaweb.service.OAuth.OAuthGoogleService;
+import web.instaweb.service.OAuth.OAuthKakaoService;
+import web.instaweb.service.OAuth.OAuthService;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,8 +18,10 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 public class OAuthController {
 
-    private final OAuthService oAuthService;
+    private final OAuthGoogleService oAuthGoogleService;
+    private final OAuthKakaoService oAuthKakaoService;
 
+    /////////////////// GOOGLE
 
     /**
      * 구글 로그인 버튼 누를시 요청 경로
@@ -25,12 +30,11 @@ public class OAuthController {
     @GetMapping("/login/getAuthUrl")
     public String getGoogleAuthUrl() {
         // 구글에게 요청 보낼 경로
-        String reqUrl = oAuthService.getReqUrl();
+        String reqUrl = oAuthGoogleService.getReqUrl();
         // reqUrl 로 요청하면 구글 로그인 창으로 이동함
         // 사용자가 로그인 성공하면 지정된 redirect_uri 로 리다이렉트됨
         return "redirect:" + reqUrl;
     }
-
 
     /**
      * 유저 구글 로그인 이후 리다이렉트 되는 경로
@@ -45,15 +49,39 @@ public class OAuthController {
      */
     @GetMapping("/login/googleOAuth")
     public String googleOAuth(@RequestParam(value = "code") String authCode, HttpServletRequest request) {
-        // authorization_code 포함 정보들 구글에 보내고, access_token 담긴 response 얻는다
-        GoogleLoginResponse googleLoginResponse = oAuthService.requestAccessTokenToResourceServer(authCode);
-        // 받은 access_token 구글에 보내 유저정보를 얻는다
-        String googleToken = googleLoginResponse.getAccess_token();
-        GoogleUserInfoDto googleUserInfoDto = oAuthService.getUserInfoFromGoogle(googleToken);
-
-        // 유저 정보를 기반으로 로그인 시도한다
-        oAuthService.loginGoogle(googleUserInfoDto, request);
+        handleOAuthLogin(oAuthGoogleService, authCode, request);
         return "home";
+    }
+
+
+    /////////////////// KAKAO
+
+    @GetMapping("/login/kakaoOAuthLogin")
+    public String loginKakaoOAuth() {
+        String reqUrl = oAuthKakaoService.getReqUrl();
+        return "redirect:" + reqUrl;
+    }
+
+    @GetMapping("/login/kakaoOAuth")
+    public String kakaoOAuth(@RequestParam(value = "code") String authCode, HttpServletRequest request) {
+        handleOAuthLogin(oAuthKakaoService, authCode, request);
+        return "home";
+    }
+
+
+    /**
+     * OAuthService 의 구현체를 전달 받아서 각 플랫폼(카카오,구글..) 에 맞는 방식으로 리소스 서버에 요청 및 유저 정보 반환 받고 로그인 처리한다  
+     * @param oAuthService : OAuthService 인터페이스의 구현체가 전달된다
+     * @param authCode : 리소스 서버에게 유저 정보 요청하기 위해 보내야하는 authorization code
+     */
+    private void handleOAuthLogin(OAuthService oAuthService, String authCode, HttpServletRequest request) {
+        // authorization_code 포함 정보들 리소스 서버에 보내고, access_token 담긴 response 얻는다
+        OAuthLoginResponse loginResponse = oAuthService.requestAccessTokenToResourceServer(authCode);
+        String accessToken = loginResponse.getAccess_token();
+        // 받은 access_token 리소스 서버에 보내 유저정보를 얻는다
+        OAuthUserInfoDto userInfo = oAuthService.getUserInfoFromResourceServer(accessToken);
+        // 유저 정보를 기반으로 로그인 시도한다
+        oAuthService.login(userInfo, request);
     }
 
 

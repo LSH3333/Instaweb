@@ -1,4 +1,4 @@
-package web.instaweb.service;
+package web.instaweb.service.OAuth;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,15 +11,20 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import web.instaweb.domain.Member;
-import web.instaweb.dto.KakaoLoginResponse;
-import web.instaweb.dto.KakaoUserInfoDto;
+import web.instaweb.dto.OAuth.KakaoLoginResponse;
+import web.instaweb.dto.OAuth.KakaoUserInfoDto;
+import web.instaweb.dto.OAuth.OAuthLoginResponse;
+import web.instaweb.dto.OAuth.OAuthUserInfoDto;
+import web.instaweb.service.LoginService;
+import web.instaweb.service.MemberService;
 
 import javax.servlet.http.HttpServletRequest;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = false)
-public class KakaoOAuthService {
+public class OAuthKakaoService implements OAuthService {
+
     // 노출되면 안되는 secret key 들은 환경변수로 등록해서 사용
     @Value("${KAKAO_AUTH_URL}")
     private String kakaoAuthUrl;
@@ -37,13 +42,8 @@ public class KakaoOAuthService {
     private final MemberService memberService;
     private final LoginService loginService;
 
-    /**
-     * client_id : 클라이언트를 Resource Server 에 등록했을때 발급받은 값
-     * redirect_uri : 사전에 등록한 OAuth 로그인 성공 후 리다이렉트 될 경로
-     * response_type=code : 로그인 성공시 Resource Server 에 code(access_code) 값을 리턴할것을 요구
-     * scope : 권한 요청 범위
-     * @return : Resource Server 에 요청 보낼 url
-     */
+
+    @Override
     public String getReqUrl() {
         return kakaoLoginUrl +
                 "?client_id=" + kakaoClientId +
@@ -52,12 +52,8 @@ public class KakaoOAuthService {
                 "&scope=profile_nickname";
     }
 
-    /**
-     * autoCode Resource Server 에 보내서 access_token 얻는다
-     * @param authCode : Resource Server 에 보낼 authorization code
-     * @return : Resource Server 에게 받은 token 포함된 Response 객체
-     */
-    public KakaoLoginResponse requestAccessTokenToResourceServer(String authCode) {
+    @Override
+    public OAuthLoginResponse requestAccessTokenToResourceServer(String authCode) {
         /////////
         WebClient webClient = WebClient.builder()
                 .baseUrl(kakaoAuthUrl) // api 요청 base path
@@ -81,14 +77,8 @@ public class KakaoOAuthService {
         return apiResponse.getBody();
     }
 
-
-    /**
-     * kakao 는 json 으로 반환됨
-     * access_token 을 Resource Server 에 보내 유저 정보 응답 받는다
-     * @param token : Resource Server 에게 발급받은 access_token
-     * @return : Resource Server 에게 응답 받은 유저 정보 포함된 Dto
-     */
-    public KakaoUserInfoDto getUserInfoFromKakao(String token) {
+    @Override
+    public OAuthUserInfoDto getUserInfoFromResourceServer(String token) {
         // 받은 토큰을 리소스 서버에 보내 유저정보를 얻고
         // 허가된 토큰의 유저정보를 결과로 받는다.
 
@@ -109,14 +99,10 @@ public class KakaoOAuthService {
         return kakaoUserInfoDto.getBody();
     }
 
+    @Override
+    public Member login(OAuthUserInfoDto oAuthUserInfoDto, HttpServletRequest request) {
+        KakaoUserInfoDto kakaoUserInfoDto = (KakaoUserInfoDto) oAuthUserInfoDto;
 
-    /**
-     *
-     * @param kakaoUserInfoDto : Resource Server 에게서 받은 유저 정보 포함하는 로그인 처리 필요한 유저 정보 Dto
-     * @param request : HttpServletRequest
-     * @return : 로그인 성공했다면 로그인된 Member 객체, 실패했다면 null
-     */
-    public Member loginKakao(KakaoUserInfoDto kakaoUserInfoDto, HttpServletRequest request) {
         // 존재하지 않는 맴버 -> 회원가입 진행 -> 로그인 진행
         if (!memberService.checkLoginIdDuplication(kakaoUserInfoDto.getId().toString())) {
             // 회원가입 진행

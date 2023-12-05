@@ -1,11 +1,11 @@
-package web.instaweb.dto;
+package web.instaweb.dto.OAuth;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 @Data
 @RequiredArgsConstructor
-public class KakaoLoginResponse {
+public class KakaoLoginResponse implements OAuthLoginResponse {
     // 반환된 토큰 유형
     private String token_type;
     // 어플리케이션이 Google Api 요청을 승인하기 위해 보내는 토큰

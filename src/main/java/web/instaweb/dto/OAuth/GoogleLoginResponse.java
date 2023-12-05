@@ -1,4 +1,4 @@
-package web.instaweb.dto;
+package web.instaweb.dto.OAuth;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Data
 @RequiredArgsConstructor
-public class GoogleLoginResponse {
+public class GoogleLoginResponse implements OAuthLoginResponse {
     // 어플리케이션이 Google Api 요청을 승인하기 위해 보내는 토큰
     private String access_token;
     // access_token 의 수명

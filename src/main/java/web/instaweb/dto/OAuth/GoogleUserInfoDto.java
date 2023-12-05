@@ -1,11 +1,11 @@
-package web.instaweb.dto;
+package web.instaweb.dto.OAuth;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 @Data
 @RequiredArgsConstructor
-public class GoogleUserInfoDto {
+public class GoogleUserInfoDto implements OAuthUserInfoDto {
     private String email;
     private Boolean email_verified;
     private String name;

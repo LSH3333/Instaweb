@@ -1,4 +1,4 @@
-package web.instaweb.dto;
+package web.instaweb.dto.OAuth;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -6,7 +6,7 @@ import org.json.simple.JSONObject;
 
 @Data
 @RequiredArgsConstructor
-public class KakaoUserInfoDto {
+public class KakaoUserInfoDto implements OAuthUserInfoDto {
     private Long id;
     private JSONObject properties; // nickname
     // https://developers.kakao.com/docs/latest/ko/kakaologin/rest-api#req-user-info
