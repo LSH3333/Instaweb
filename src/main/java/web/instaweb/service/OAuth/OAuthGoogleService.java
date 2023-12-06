@@ -1,6 +1,6 @@
 package web.instaweb.service.OAuth;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +10,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-import web.instaweb.domain.Member;
 import web.instaweb.dto.OAuth.GoogleLoginResponse;
 import web.instaweb.dto.OAuth.GoogleUserInfoDto;
 import web.instaweb.dto.OAuth.OAuthLoginResponse;
@@ -18,12 +17,10 @@ import web.instaweb.dto.OAuth.OAuthUserInfoDto;
 import web.instaweb.service.LoginService;
 import web.instaweb.service.MemberService;
 
-import javax.servlet.http.HttpServletRequest;
 
 @Service
 @Transactional(readOnly = false)
-@RequiredArgsConstructor
-public class OAuthGoogleService implements OAuthService {
+public class OAuthGoogleService extends OAuthLoginService {
 
     // 노출되면 안되는 secret key 들은 환경변수로 등록해서 사용
     // 리소서 서버에 로그인 요청 url, 응답으로 auth_code 받음
@@ -39,8 +36,10 @@ public class OAuthGoogleService implements OAuthService {
     @Value("${GOOGLE_SECRET_CLIENT}")
     private String clientSecret;
 
-    private final MemberService memberService;
-    private final LoginService loginService;
+    @Autowired
+    public OAuthGoogleService(MemberService memberService, LoginService loginService) {
+        super(memberService, loginService);
+    }
 
     @Override
     public String getType() {
@@ -102,28 +101,18 @@ public class OAuthGoogleService implements OAuthService {
         return googleUserInfoDtoResponseEntity.getBody();
     }
 
+
     @Override
-    public Member login(OAuthUserInfoDto oAuthUserInfoDto, HttpServletRequest request) {
+    public String getLoginId(OAuthUserInfoDto oAuthUserInfoDto) {
         GoogleUserInfoDto googleUserInfoDto = (GoogleUserInfoDto) oAuthUserInfoDto;
-        // 존재하지 않는 맴버 -> 회원가입 진행 -> 로그인 진행
-        if (!memberService.checkLoginIdDuplication(googleUserInfoDto.getEmail())) {
-            // 회원가입 진행
-            Member registeredMember = memberService.registerNewMember(googleUserInfoDto.getEmail(), googleUserInfoDto.getEmail(), googleUserInfoDto.getName());
-            // 로그인 진행 성공
-            if (loginService.loginOAuth(registeredMember)) {
-                loginService.regSession(request, registeredMember);
-                return registeredMember;
-            }
-        }
-        // 존재하는 맴버 -> 로그인 진행
-        else {
-            Member member = memberService.getMemberWithLoginId(googleUserInfoDto.getEmail());
-            // 로그인 진행 성공
-            if (loginService.loginOAuth(member)) {
-                loginService.regSession(request, member);
-                return member;
-            }
-        }
-        return null;
+        return googleUserInfoDto.getEmail();
     }
+
+    @Override
+    public String getUserName(OAuthUserInfoDto oAuthUserInfoDto) {
+        GoogleUserInfoDto googleUserInfoDto = (GoogleUserInfoDto) oAuthUserInfoDto;
+        return googleUserInfoDto.getName();
+    }
+
+
 }

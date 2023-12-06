@@ -9,7 +9,7 @@ public class GoogleUserInfoDto implements OAuthUserInfoDto {
     private String email;
     private Boolean email_verified;
     private String name;
-    private String given_na,e;
+    private String given_name;
     private String picture;
     private String locale;
 }

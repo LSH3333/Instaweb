@@ -5,13 +5,13 @@ spring:
     driver-class-name: org.postgresql.Driver
     platform: postgres
     # local
-#    url: jdbc:postgresql://localhost:5432/instaweb
-#    username: admin_jake
-#    password: admin_jake
+    url: jdbc:postgresql://localhost:5432/instaweb
+    username: admin_jake
+    password: admin_jake
     # heroku deploy
-    url: jdbc:postgresql://ec2-34-197-91-131.compute-1.amazonaws.com/dckofr3ptkpa9b
-    username: mpcdhjuocwciio
-    password: 3fc888680efc3d57d8a90a3f46246d90d6913bf5e1be8bcbffb54c7b616b0b3c
+#    url: jdbc:postgresql://ec2-34-197-91-131.compute-1.amazonaws.com/dckofr3ptkpa9b
+#    username: mpcdhjuocwciio
+#    password: 3fc888680efc3d57d8a90a3f46246d90d6913bf5e1be8bcbffb54c7b616b0b3c
 
     maxActive: 10
     maxIdle: 5
@@ -58,7 +58,7 @@ server:
       timeout: 1800
 
   # heroku deploy 시 명시 필수, 로칼에서는 주석 처리
-  port: ${PORT:5432}
+#  port: ${PORT:5432}
 
   error:
     whitelabel:
